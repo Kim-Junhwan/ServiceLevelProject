@@ -18,7 +18,7 @@ struct SplashScreenView: View {
                     .frame(width: geometry.size.width*0.8)
                     .font(CustomFont.title1.font)
             })
-            Image("onboarding")
+            Image(.onboarding)
                 .frame(width: 368, height: 368)
                 .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fill)
         }
