@@ -10,6 +10,8 @@ import SwiftUI
 
 struct SocialLoginView: View {
     
+    @State private var showRegisterView: Bool = false
+    
     var body: some View {
         VStack (spacing: 16) {
             RoundedButton(action: {
@@ -52,7 +54,7 @@ struct SocialLoginView: View {
             HStack(spacing: 0) {
                 Text("또는")
                 Button(" 새롭게 회원가입 하기") {
-                    
+                    showRegisterView.toggle()
                 }
                 .foregroundStyle(.brandGreen)
             }
@@ -63,6 +65,9 @@ struct SocialLoginView: View {
         .presentationDetents([.height(290)])
         .presentationDragIndicator(.visible)
         .font(CustomFont.title2.font)
+        .sheet(isPresented: $showRegisterView, content: {
+            RegisterView(isPresenting: $showRegisterView)
+        })
     }
 }
 
