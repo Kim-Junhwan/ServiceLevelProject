@@ -67,5 +67,5 @@ struct SocialLoginView: View {
 }
 
 #Preview {
-    OnBoardingView()
+    SocialLoginView()
 }

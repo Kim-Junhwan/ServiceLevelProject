@@ -21,6 +21,7 @@ struct RoundedButton<Label: View>: View {
                 .padding([.leading, .trailing], 16)
                 .foregroundStyle(.white)
                 .background(backgroundColor)
+                .frame(height: 44)
                 .clipShape(.rect(cornerRadius: 8))
                 .font(CustomFont.title2.font)
         }
