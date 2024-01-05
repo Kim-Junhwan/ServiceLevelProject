@@ -52,13 +52,12 @@ struct TitleTextField<SplitView: View>: View {
             
             HStack (spacing: 12) {
                 getField()
+                    .frame(maxWidth: .infinity)
                     .frame(height: 44)
                     .padding(.leading, 12)
-                    .background {
-                        RoundedRectangle(cornerRadius: 8)
-                            .foregroundStyle(.white)
-                    }
-                .font(CustomFont.body.font)
+                    .background(RoundedRectangle(cornerRadius: 8)
+                        .foregroundStyle(.white))
+                    .font(CustomFont.title2.font)
                 splitView?()
             }
         }
