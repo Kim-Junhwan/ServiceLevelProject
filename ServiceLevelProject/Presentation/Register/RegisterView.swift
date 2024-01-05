@@ -13,6 +13,7 @@ struct RegisterView: View {
     @State var email: String = ""
     @Binding var isPresenting: Bool
     @State var canRegister: Bool = true
+    @State private var toast: Toast? = nil
     
     var body: some View {
         NavigationStack {
@@ -21,7 +22,7 @@ struct RegisterView: View {
                     VStack (spacing: 24) {
                         TitleTextField(title: "이메일", placeHolder: "이메일을 입력하세요", kind: .textField, textFieldTitle: $email, splitView: {
                             RoundedButton(action: {
-                                
+                                toast = .init(message: "반가워요", duration: 1.0)
                             }, label: {
                                 Text("중복확인")
                             }, backgroundColor: canRegister ? .brandGreen : .brandInactive)
@@ -47,6 +48,7 @@ struct RegisterView: View {
                 
                 VStack {
                     Spacer()
+                        .toastView(toast: $toast)
                     VStack(spacing: 0) {
                         if isFocus {
                             Rectangle()
