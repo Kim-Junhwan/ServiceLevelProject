@@ -26,7 +26,7 @@ struct OnBoardingView: View {
         }
         .background(.backgroundPrimary)
         .sheet(isPresented: $showRegisterView, content: {
-            SocialLoginView()
+            LoginView()
         })
     }
 }

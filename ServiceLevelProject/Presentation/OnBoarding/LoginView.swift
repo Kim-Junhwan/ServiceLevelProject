@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-struct SocialLoginView: View {
+struct LoginView: View {
     
     @State private var showRegisterView: Bool = false
     
@@ -72,5 +72,5 @@ struct SocialLoginView: View {
 }
 
 #Preview {
-    SocialLoginView()
+    LoginView()
 }
