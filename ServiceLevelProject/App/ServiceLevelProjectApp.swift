@@ -6,9 +6,16 @@
 //
 
 import SwiftUI
+import KakaoSDKCommon
+import KakaoSDKAuth
 
 @main
 struct ServiceLevelProjectApp: App {
+    
+    init() {
+        KakaoSDK.initSDK(appKey: SecretKey.KAKAO_NATIVE_APP_KEY)
+    }
+    
     var body: some Scene {
         WindowGroup {
             OnBoardingView()
