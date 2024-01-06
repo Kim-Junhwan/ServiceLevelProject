@@ -13,7 +13,8 @@ import KakaoSDKAuth
 struct ServiceLevelProjectApp: App {
     
     init() {
-        KakaoSDK.initSDK(appKey: SecretKey.KAKAO_NATIVE_APP_KEY)
+        let kakaokAPIKey = Bundle.main.infoDictionary?["KAKAO_NATIVE_APP_KEY"] ?? ""
+        KakaoSDK.initSDK(appKey: kakaokAPIKey as! String)
     }
     
     var body: some Scene {
