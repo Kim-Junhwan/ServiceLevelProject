@@ -13,6 +13,7 @@ enum KakaoLoginError: Error {
     case cannotFetchToken
 }
 
+@MainActor
 struct KakaoLoginManager {
     
     typealias token = String
