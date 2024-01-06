@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Combine
 
 enum LoginPlatform {
     case kakao
@@ -15,5 +14,5 @@ enum LoginPlatform {
 }
 
 protocol LoginUseCase {
-    func excute(_ platform: LoginPlatform) -> Future<Bool, Error>
+    func excute(_ platform: LoginPlatform) async throws -> Bool
 }
