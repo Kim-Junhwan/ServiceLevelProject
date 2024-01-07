@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import _AuthenticationServices_SwiftUI
 
 struct LoginView: View {
     
@@ -25,6 +26,28 @@ struct LoginView: View {
                 }
             }, backgroundColor: .appleBlack)
             .frame(height: 44)
+            
+            SignInWithAppleButton { request in
+                request.requestedScopes = [.fullName, .email]
+            } onCompletion: { result in
+                switch result {
+                case .success(let auth):
+                    switch auth.credential {
+                    case let appleIDCredential as ASAuthorizationAppleIDCredential:
+                        let userIdentifier = appleIDCredential.user
+                        let fullName = appleIDCredential.fullName
+                        let email = appleIDCredential.email
+                        print(fullName)
+                        print(appleIDCredential.identityToken)
+                    default:
+                        break
+                    }
+                case .failure(_):
+                    break
+                }
+            }
+            .frame(height: 44)
+            
             
             RoundedButton(action: {
                 
