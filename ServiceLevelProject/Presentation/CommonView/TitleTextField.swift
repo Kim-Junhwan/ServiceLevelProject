@@ -18,21 +18,24 @@ struct TitleTextField<SplitView: View>: View {
     var placeHolder: String
     var kind: TextFieldKind
     @Binding var textFieldTitle: String
+    @Binding var isValid: Bool
     var splitView: (() -> SplitView)?
     
-    init(title: String, placeHolder: String, kind: TextFieldKind, textFieldTitle: Binding<String>, splitView: (() -> SplitView)?) {
+    init(title: String, isValid: Binding<Bool>, placeHolder: String, kind: TextFieldKind, textFieldTitle: Binding<String>, splitView: (() -> SplitView)?) {
         self.title = title
         self.placeHolder = placeHolder
         self.kind = kind
         self._textFieldTitle = textFieldTitle
         self.splitView = splitView
+        self._isValid = isValid
     }
     
-    init(title: String, placeHolder: String, kind: TextFieldKind, textFieldTitle: Binding<String>) where SplitView == EmptyView {
+    init(title: String, isValid: Binding<Bool>, placeHolder: String, kind: TextFieldKind, textFieldTitle: Binding<String>) where SplitView == EmptyView {
         self.title = title
         self.placeHolder = placeHolder
         self.kind = kind
         self._textFieldTitle = textFieldTitle
+        self._isValid = isValid
     }
     
     @ViewBuilder
@@ -49,6 +52,7 @@ struct TitleTextField<SplitView: View>: View {
         VStack (alignment: .leading, spacing: 8) {
             Text(title)
                 .font(CustomFont.title2.font)
+                .foregroundStyle(isValid ? .black : .red)
             
             HStack (spacing: 12) {
                 getField()
@@ -65,7 +69,7 @@ struct TitleTextField<SplitView: View>: View {
 }
 
 #Preview {
-    TitleTextField(title: "123", placeHolder: "123", kind: .textField, textFieldTitle: .constant("123")) {
-        Text("123")
+    TitleTextField(title: "123", isValid: .constant(true), placeHolder: "안녕", kind: .textField, textFieldTitle: .constant("12312321")) {
+        Text("Hello World")
     }
 }
