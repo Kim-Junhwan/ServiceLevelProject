@@ -12,28 +12,32 @@ import _AuthenticationServices_SwiftUI
 struct LoginView: View {
     
     @State private var showRegisterView: Bool = false
+    @ObservedObject var viewModel: LoginViewModel = .init()
     
-    private var appleLoginAction: ((Result<ASAuthorization, Error>) -> Void) = { result in
-        switch result {
-        case .success(let auth):
-            guard let appleIDCredential = auth.credential as? ASAuthorizationAppleIDCredential,
-                  let fullName = appleIDCredential.fullName,
-                  let identityToken = appleIDCredential.identityToken else { return }
-        case .failure(_):
-            break
-        }
+    @ViewBuilder
+    var appleLoginButton: some View {
+        SignInWithAppleButton(onRequest: { request in
+            request.requestedScopes = [.fullName]
+        }, onCompletion: { result in
+            switch result {
+            case .success(let auth):
+                guard let appleIDCredential = auth.credential as? ASAuthorizationAppleIDCredential,
+                      let fullName = appleIDCredential.fullName,
+                      let identityToken = appleIDCredential.identityToken else { return }
+                viewModel.trigger(.appleLogin(idToken: identityToken, nickName: fullName))
+            case .failure(_):
+                break
+            }
+        })
+        .frame(height: 44)
     }
     
     var body: some View {
         VStack (spacing: 16) {
-            
-            SignInWithAppleButton(onRequest: { request in
-                request.requestedScopes = [.fullName]
-            }, onCompletion: appleLoginAction)
-            .frame(height: 44)
+            appleLoginButton
             
             RoundedButton(action: {
-                
+                viewModel.trigger(.kakaoLogin)
             }, label: {
                 HStack (spacing: 8) {
                     Image(.kakaoLogo)
