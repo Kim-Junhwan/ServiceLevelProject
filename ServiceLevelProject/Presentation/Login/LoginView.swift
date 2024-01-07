@@ -7,23 +7,29 @@
 
 import Foundation
 import SwiftUI
+import _AuthenticationServices_SwiftUI
 
 struct LoginView: View {
     
     @State private var showRegisterView: Bool = false
     
+    private var appleLoginAction: ((Result<ASAuthorization, Error>) -> Void) = { result in
+        switch result {
+        case .success(let auth):
+            guard let appleIDCredential = auth.credential as? ASAuthorizationAppleIDCredential,
+                  let fullName = appleIDCredential.fullName,
+                  let identityToken = appleIDCredential.identityToken else { return }
+        case .failure(_):
+            break
+        }
+    }
+    
     var body: some View {
         VStack (spacing: 16) {
-            RoundedButton(action: {
-                
-            }, label: {
-                HStack (spacing: 5) {
-                    Image(.appleLogo)
-                        .resizable()
-                        .scaledToFit()
-                    Text("Apple로 계속하기")
-                }
-            }, backgroundColor: .appleBlack)
+            
+            SignInWithAppleButton(onRequest: { request in
+                request.requestedScopes = [.fullName]
+            }, onCompletion: appleLoginAction)
             .frame(height: 44)
             
             RoundedButton(action: {

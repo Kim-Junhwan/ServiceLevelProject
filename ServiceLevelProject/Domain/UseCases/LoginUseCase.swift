@@ -9,7 +9,7 @@ import Foundation
 
 enum LoginPlatform {
     case kakao
-    case apple
+    case apple(idToken: String, nickName: String)
     case email(email: String, password: String)
 }
 
