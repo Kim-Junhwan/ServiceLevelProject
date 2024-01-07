@@ -16,7 +16,7 @@ final class LoginViewModel: ViewModel {
     }
     
     enum LoginInput {
-        case appleLogin
+        case appleLogin(idToken: Data, nickName: PersonNameComponents)
         case kakaoLogin
     }
     

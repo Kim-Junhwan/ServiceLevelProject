@@ -13,41 +13,24 @@ struct LoginView: View {
     
     @State private var showRegisterView: Bool = false
     
+    private var appleLoginAction: ((Result<ASAuthorization, Error>) -> Void) = { result in
+        switch result {
+        case .success(let auth):
+            guard let appleIDCredential = auth.credential as? ASAuthorizationAppleIDCredential,
+                  let fullName = appleIDCredential.fullName,
+                  let identityToken = appleIDCredential.identityToken else { return }
+        case .failure(_):
+            break
+        }
+    }
+    
     var body: some View {
         VStack (spacing: 16) {
-            RoundedButton(action: {
-                
-            }, label: {
-                HStack (spacing: 5) {
-                    Image(.appleLogo)
-                        .resizable()
-                        .scaledToFit()
-                    Text("Apple로 계속하기")
-                }
-            }, backgroundColor: .appleBlack)
-            .frame(height: 44)
             
-            SignInWithAppleButton { request in
-                request.requestedScopes = [.fullName, .email]
-            } onCompletion: { result in
-                switch result {
-                case .success(let auth):
-                    switch auth.credential {
-                    case let appleIDCredential as ASAuthorizationAppleIDCredential:
-                        let userIdentifier = appleIDCredential.user
-                        let fullName = appleIDCredential.fullName
-                        let email = appleIDCredential.email
-                        print(fullName)
-                        print(appleIDCredential.identityToken)
-                    default:
-                        break
-                    }
-                case .failure(_):
-                    break
-                }
-            }
+            SignInWithAppleButton(onRequest: { request in
+                request.requestedScopes = [.fullName]
+            }, onCompletion: appleLoginAction)
             .frame(height: 44)
-            
             
             RoundedButton(action: {
                 
