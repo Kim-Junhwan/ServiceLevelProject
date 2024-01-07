@@ -12,6 +12,7 @@ import _AuthenticationServices_SwiftUI
 struct LoginView: View {
     
     @State private var showRegisterView: Bool = false
+    @State private var showEmailLoginView: Bool = false
     @ObservedObject var viewModel: LoginViewModel = .init()
     
     @ViewBuilder
@@ -50,7 +51,7 @@ struct LoginView: View {
             }, backgroundColor: .kakaoYellow)
             
             RoundedButton(action: {
-                
+                showEmailLoginView.toggle()
             }, label: {
                 HStack (spacing: 4) {
                     Image(.email)
@@ -69,14 +70,16 @@ struct LoginView: View {
                 .foregroundStyle(.brandGreen)
             }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding([.leading, .trailing], 35)
-        .background(.backgroundPrimary)
+        .defaultBackground()
         .presentationDetents([.height(290)])
         .presentationDragIndicator(.visible)
         .font(CustomFont.title2.font)
         .sheet(isPresented: $showRegisterView, content: {
             RegisterView(isPresenting: $showRegisterView)
+        })
+        .sheet(isPresented: $showEmailLoginView, content: {
+            EmailLoginView(isPresenting: $showEmailLoginView)
         })
     }
 }

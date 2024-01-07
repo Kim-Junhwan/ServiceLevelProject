@@ -49,31 +49,11 @@ struct RegisterView: View {
                 VStack {
                     Spacer()
                         .toastView(toast: $toast)
-                    VStack(spacing: 0) {
-                        if isFocus {
-                            Rectangle()
-                                .frame(height: 1)
-                                .foregroundStyle(.seperator)
-                        }
-                            
-                        RoundedButton(action: {
-                            
-                        }, label: {
-                            Text("가입하기")
-                        }, backgroundColor: canRegister ? .brandGreen : .brandInactive)
-                        .padding([.top, .bottom], 12)
-                        .padding([.leading, .trailing], 24)
-                        .background(
-                            Color.backgroundPrimary
-                    )
-                    }
+                    KeyboardStickeyButton(isFocus: $isFocus, title: "가입하기", isEnable: $canRegister)
                 }
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color.backgroundPrimary)
-            .navigationTitle("회원가입")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(.visible, for: .navigationBar)
+            .defaultBackground()
+            .underlineNavigationBar(title: "회원가입")
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button(action: {
