@@ -9,15 +9,7 @@ import SwiftUI
 
 struct RegisterView: View {
     
-    enum FocusTextField {
-        case email
-        case nick
-        case phoneNumber
-        case password
-        case checkPassword
-    }
-    
-    @FocusState var isFocus: Bool
+    @FocusState var focusFeild: RegisterViewModel.FocusTextField?
     @Binding var isPresenting: Bool
     @StateObject var viewModel: RegisterViewModel = RegisterViewModel()
     
@@ -35,30 +27,30 @@ struct RegisterView: View {
                             .frame(width: 100)
                             .disabled(viewModel.email.isEmpty)
                         })
-                            .focused($isFocus)
+                        .focused($focusFeild, equals: .email)
                         
                         TitleTextField(title: "닉네임", isValid: $viewModel.state.isValidNick, placeHolder: "닉네임을 입력하세요", kind: .textField, textFieldTitle: $viewModel.nick)
-                            .focused($isFocus)
+                            .focused($focusFeild, equals: .nick)
                         
                         TitleTextField(title: "연락처", isValid: $viewModel.state.isValidPhoneNumber, placeHolder: "전화번호를 입력하세요", kind: .textField, textFieldTitle: $viewModel.phoneNumber)
-                            .focused($isFocus)
+                            .focused($focusFeild, equals: .phoneNumber)
                         
                         TitleTextField(title: "비밀번호", isValid: $viewModel.state.isValidPassword, placeHolder: "비밀번호을 입력하세요", kind: .secureField, textFieldTitle: $viewModel.password)
-                            .focused($isFocus)
+                            .focused($focusFeild, equals: .password)
                         
                         TitleTextField(title: "비밀번호 확인", isValid: $viewModel.state.passwordIsSame, placeHolder: "비밀번호를 한번 더 입력하세요", kind: .secureField, textFieldTitle: $viewModel.checkPassword)
-                            .focused($isFocus)
+                            .focused($focusFeild, equals: .checkPassword)
                         Spacer()
                     }
                     .padding(24)
                 }
-                
+                        
                 VStack {
                     Spacer()
                         .toastView(toast: $viewModel.state.toastMessage)
-                    KeyboardStickeyButton(isFocus: .constant(true), title: "가입하기", isEnable: $viewModel.state.canTapRegisterButton) {
+                    KeyboardStickeyButton(isFocus: .constant(focusFeild != nil), title: "가입하기", isEnable: $viewModel.state.canTapRegisterButton) {
                         viewModel.trigger(.tapRegisterButton)
-                        
+                        focusFeild = viewModel.state.focusField
                     }
                 }
             }
