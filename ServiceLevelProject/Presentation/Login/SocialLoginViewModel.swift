@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class LoginViewModel: ViewModel {
+final class SocialLoginViewModel: ViewModel {
     
     struct LoginState {
         var error: Error?
@@ -15,7 +15,7 @@ final class LoginViewModel: ViewModel {
         var successLogin: Bool = false
     }
     
-    enum LoginInput {
+    enum SocialLoginInput {
         case appleLogin(idToken: Data, nickName: PersonNameComponents)
         case kakaoLogin
     }
@@ -26,7 +26,7 @@ final class LoginViewModel: ViewModel {
         state = LoginState()
     }
     
-    func trigger(_ input: LoginInput) {
+    func trigger(_ input: SocialLoginInput) {
         
     }
     

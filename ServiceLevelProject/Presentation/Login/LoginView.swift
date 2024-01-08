@@ -13,9 +13,8 @@ struct LoginView: View {
     
     @State private var showRegisterView: Bool = false
     @State private var showEmailLoginView: Bool = false
-    @ObservedObject var viewModel: LoginViewModel = .init()
+    @ObservedObject var viewModel: SocialLoginViewModel = .init()
     
-    @ViewBuilder
     var appleLoginButton: some View {
         SignInWithAppleButton(onRequest: { request in
             request.requestedScopes = [.fullName]
