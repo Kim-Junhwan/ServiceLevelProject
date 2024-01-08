@@ -8,21 +8,21 @@
 import SwiftUI
 
 struct KeyboardStickeyButton: View {
-    
-    var isFocus: FocusState<Bool>.Binding
+    @Binding var isFocus: Bool
     var title: String
     @Binding var isEnable: Bool
+    let action: () -> Void
     
     var body: some View {
         VStack(spacing: 0) {
-            if isFocus.wrappedValue {
+            if $isFocus.wrappedValue {
                 Rectangle()
                     .frame(height: 1)
                     .foregroundStyle(.seperator)
             }
                 
             RoundedButton(action: {
-                
+                action()
             }, label: {
                 Text(title)
             }, backgroundColor: isEnable ? .brandGreen : .brandInactive)
@@ -30,7 +30,8 @@ struct KeyboardStickeyButton: View {
             .padding([.leading, .trailing], 24)
             .background(
                 Color.backgroundPrimary
-        )
+            )
+            .disabled(!isEnable)
         }
     }
 }
