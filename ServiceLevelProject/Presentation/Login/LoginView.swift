@@ -79,7 +79,7 @@ struct LoginView: View {
             RegisterView(isPresenting: $showRegisterView)
         })
         .sheet(isPresented: $showEmailLoginView, content: {
-            EmailLoginView(isPresenting: $showEmailLoginView)
+            EmailLoginView(isPresenting: $showEmailLoginView, viewModel: EmailLoginViewModel())
         })
     }
 }
