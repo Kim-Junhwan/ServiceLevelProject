@@ -15,6 +15,6 @@ final class SesacSession: Session {
     static let shared: SesacSession = {
         let configuration = URLSessionConfiguration.af.default
         configuration.timeoutIntervalForRequest = NetworkPolicy.defaultTimeoutInterval
-        return .init(configuration: configuration, interceptor: Interceptor(adapters: [DefaultAdapter()]))
+        return .init(configuration: configuration, interceptor: Interceptor(adapters: [NetworkingBaseAdapter()]))
     }()
 }
