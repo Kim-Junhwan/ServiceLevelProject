@@ -7,6 +7,7 @@
 
 import Foundation
 
-enum DefaultSettingError: Error {
-    case missingSesacKey
+enum DefaultNetworkingError: Error {
+    case failSetBaseURLRequest
+    case failCreateURL
 }
