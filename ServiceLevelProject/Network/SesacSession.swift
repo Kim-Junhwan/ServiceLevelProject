@@ -10,12 +10,11 @@ import Alamofire
 
 let SSAC = SesacSession.shared
 
-private final class SesacSession {
-    static let shared: Session = {
+final class SesacSession: Session {
+    
+    static let shared: SesacSession = {
         let configuration = URLSessionConfiguration.af.default
         configuration.timeoutIntervalForRequest = NetworkPolicy.defaultTimeoutInterval
-        return Session(configuration: configuration)
+        return .init(configuration: configuration, interceptor: Interceptor(adapters: [DefaultAdapter()]))
     }()
-    
-    private init() {}
 }
