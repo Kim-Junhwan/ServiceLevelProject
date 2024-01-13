@@ -10,4 +10,6 @@ import Foundation
 enum DefaultNetworkingError: Error {
     case failSetBaseURLRequest
     case failCreateURL
+    case failDecodeResponseError
+    case unknownResponseError
 }
