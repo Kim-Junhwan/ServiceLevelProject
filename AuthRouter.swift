@@ -11,10 +11,11 @@ import Alamofire
 enum AuthRouter: URLRequestConvertible {
     
     case checkValidEmail(ValidEmailRequestDTO)
+    case registerUser(RegisterUserRequestDTO)
     
     var method: HTTPMethod {
         switch self {
-        case .checkValidEmail(_):
+        case .checkValidEmail(_), .registerUser(_):
             return .post
         }
     }
@@ -23,6 +24,8 @@ enum AuthRouter: URLRequestConvertible {
         switch self {
         case .checkValidEmail(_):
             return "v1/users/validation/email"
+        case .registerUser(_):
+            return "v1/users/join"
         }
     }
     
@@ -34,6 +37,8 @@ enum AuthRouter: URLRequestConvertible {
         switch self {
         case .checkValidEmail(let validEmailRequestDTO):
             request = try JSONParameterEncoder().encode(validEmailRequestDTO, into: request)
+        case .registerUser(let registerUserRequestDTO):
+            request = try JSONParameterEncoder().encode(registerUserRequestDTO, into: request)
         }
         return request
     }
