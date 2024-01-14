@@ -21,7 +21,7 @@ struct RegisterView: View {
                         VStack (spacing: 24) {
                             TitleTextField(title: "이메일", isValid: $viewModel.state.isValidEmail, placeHolder: "이메일을 입력하세요", kind: .textField, textFieldTitle: $viewModel.email, splitView: {
                                 RoundedButton(action: {
-                                    
+                                    viewModel.trigger(.checkDuplication)
                                 }, label: {
                                     Text("중복확인")
                                 }, backgroundColor: !viewModel.email.isEmpty ? .brandGreen : .brandInactive)

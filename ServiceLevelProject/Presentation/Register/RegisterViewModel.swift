@@ -54,6 +54,8 @@ final class RegisterViewModel: ViewModel {
             .eraseToAnyPublisher()
     }
     
+    let authRepository = DefaultAuthRepository()
+    
     init() {
         self.state = RegisterState()
         canTapRegisterButton
@@ -68,11 +70,23 @@ final class RegisterViewModel: ViewModel {
         switch input {
         case .checkDuplication:
             if checkEmailValidate() {
-                
+                checkEmail()
             }
         case .tapRegisterButton:
             if checkValidate() {
                 
+            }
+        }
+    }
+    
+    func checkEmail() {
+        Task { @MainActor in
+            do {
+                let _ = try await authRepository.checkValidateEmail(email: email)
+                state.toastMessage = .init(message: "사용할 수 있는 이메일입니다.", duration: 1.0)
+                checkPassword = email
+            } catch {
+                state.toastMessage = .init(message: error.localizedDescription, duration: 1.0)
             }
         }
     }
@@ -83,6 +97,9 @@ final class RegisterViewModel: ViewModel {
             return false
         }
         let emailValid = Validator.isValid(category: .email, email)
+        if !emailValid {
+            state.toastMessage = .init(message: "이메일 형식이 옳바르지 않습니다.", duration: 1.0)
+        }
         return emailValid
     }
     
