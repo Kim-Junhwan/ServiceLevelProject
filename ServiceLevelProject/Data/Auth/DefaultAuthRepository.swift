@@ -10,8 +10,12 @@ import Alamofire
 
 final class DefaultAuthRepository: AuthRepository {
     func checkValidateEmail(email: String) async throws -> Bool {
-        let _ = try await SSAC.request(AuthRouter.checkValidEmail(.init(email: email))).serializingData(emptyResponseCodes: [200]).value
+        do {
+            let _ = try await SSAC.request(AuthRouter.checkValidEmail(.init(email: email))).slpSerializingDecodable(Empty.self , emptyResponseCodes: [200], responseErrorMapper: ValidEmailErrorMapper()).value
+        } catch {
+            guard let originError = error.asAFError?.unwrap() else { throw DefaultNetworkingError.unknownResponseError }
+            throw originError
+        }
         return true
     }
-    
 }
