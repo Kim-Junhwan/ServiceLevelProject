@@ -9,4 +9,5 @@ import Foundation
 
 protocol AuthRepository {
     func checkValidateEmail(email: String) async throws -> Bool
+    func registerUser(_ query: RegisterUserRequestQuery) async throws -> RegistedUserProfile
 }
