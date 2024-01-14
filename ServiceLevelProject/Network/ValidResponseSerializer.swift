@@ -25,7 +25,7 @@ class SLPResponseSerializer<T: Decodable, ErrorMapper: ResponseErrorMapper, S: S
         self.responseErrorMapper = responseErrorMapper
         self.acceptableStatusCode = acceptableStatusCode
     }
-    
+
     func serialize(request: URLRequest?, response: HTTPURLResponse?, data: Data?, error: Error?) throws -> T {
         guard error == nil, let response else { throw error! }
         guard let data, !data.isEmpty else {
@@ -65,7 +65,6 @@ extension DataRequest {
     func slpSerializingDecodable<Value: Decodable, S: Sequence>(_ type: Value.Type = Value.self,
                                                                 statusCode acceptableStatusCode: S = 200..<300,
                                                    automaticallyCancelling shouldAutomaticallyCancel: Bool = true,
-                                                   dataPreprocessor: DataPreprocessor = DecodableResponseSerializer<Value>.defaultDataPreprocessor,
                                                    decoder: DataDecoder = JSONDecoder(),
                                                    emptyResponseCodes: Set<Int> = DecodableResponseSerializer<Value>.defaultEmptyResponseCodes,
                                                    responseErrorMapper: some ResponseErrorMapper
