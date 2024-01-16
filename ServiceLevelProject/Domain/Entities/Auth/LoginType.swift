@@ -8,7 +8,37 @@
 import Foundation
 
 enum LoginType {
-    case apple
+    case apple(idToken: String, nickName: String)
     case kakao
     case email(email: String, password: String)
+    case none
+}
+
+extension LoginType: RawRepresentable {
+    typealias RawValue = String
+    
+    init?(rawValue: String) {
+        if rawValue == "apple" {
+            self = .apple(idToken: "", nickName: "")
+        } else if rawValue == "kakao" {
+            self = .kakao
+        } else if rawValue == "email" {
+            self = .email(email: "", password: "")
+        } else if rawValue == "none" {
+            self = .none
+        }
+    }
+    
+    var rawValue: String {
+        switch self {
+        case .apple:
+            return "apple"
+        case .kakao:
+            return "kakao"
+        case .email(let email, let password):
+            return "email"
+        case .none:
+            return "none"
+        }
+    }
 }
