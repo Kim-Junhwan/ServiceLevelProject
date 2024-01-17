@@ -55,9 +55,11 @@ final class RegisterViewModel: ViewModel {
     }
     
     let authRepository = DefaultAuthRepository()
+    let registerUseCase: RegisterUserUseCase
     
-    init() {
-        self.state = RegisterState()
+    init(registerUseCase: RegisterUserUseCase) {
+        self.state = State()
+        self.registerUseCase = registerUseCase
         canTapRegisterButton
             .receive(on: RunLoop.main)
             .sink(receiveValue: { value in
@@ -74,7 +76,7 @@ final class RegisterViewModel: ViewModel {
             }
         case .tapRegisterButton:
             if checkValidate() {
-                
+                registerUser()
             }
         }
     }
@@ -84,7 +86,7 @@ final class RegisterViewModel: ViewModel {
             do {
                 let _ = try await authRepository.checkValidateEmail(email: email)
                 state.toastMessage = .init(message: "사용할 수 있는 이메일입니다.", duration: 1.0)
-                checkPassword = email
+                validatedEmail = email
             } catch {
                 state.toastMessage = .init(message: error.localizedDescription, duration: 1.0)
             }
@@ -131,5 +133,15 @@ final class RegisterViewModel: ViewModel {
             state.focusField = .checkPassword
         }
         return checkedEmailValid && nickValid && phoneNumberValid && passwordValid && checkPasswordValid
+    }
+    
+    func registerUser() {
+        Task { @MainActor in
+            do {
+                try await authRepository.registerUser(.init(email: email, password: password, nickName: nick, phoneNumber: phoneNumber, deviceToken: ""))
+            } catch {
+                state.toastMessage = .init(message: error.localizedDescription, duration: 1.0)
+            }
+        }
     }
 }

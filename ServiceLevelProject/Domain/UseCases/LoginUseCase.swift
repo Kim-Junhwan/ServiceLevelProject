@@ -14,5 +14,5 @@ enum LoginPlatform {
 }
 
 protocol LoginUseCase {
-    func excute(_ platform: LoginPlatform) async throws -> Bool
+    func excute(_ platform: LoginType) async throws -> Bool
 }
