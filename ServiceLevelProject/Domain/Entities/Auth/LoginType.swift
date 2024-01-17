@@ -24,7 +24,7 @@ extension LoginType: RawRepresentable {
             self = .kakao
         } else if rawValue == "email" {
             self = .email(email: "", password: "")
-        } else if rawValue == "none" {
+        } else {
             self = .none
         }
     }
@@ -35,7 +35,7 @@ extension LoginType: RawRepresentable {
             return "apple"
         case .kakao:
             return "kakao"
-        case .email(let email, let password):
+        case .email(_, _):
             return "email"
         case .none:
             return "none"
