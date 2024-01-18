@@ -45,6 +45,8 @@ final class RegisterViewModel: ViewModel {
     @Published var checkPassword: String = ""
     private var validatedEmail: String = ""
     
+    var diContainer: AuthorizationSceneDIContainer
+    
     private var canTapRegisterButton: AnyPublisher<Bool, Never> {
         return $email
             .combineLatest($nick, $password, $checkPassword)
@@ -54,11 +56,13 @@ final class RegisterViewModel: ViewModel {
             .eraseToAnyPublisher()
     }
     
-    let authRepository = DefaultAuthRepository()
+    let checkEmailUseCase: CheckEmailUseCase
     let registerUseCase: RegisterUserUseCase
     
-    init(registerUseCase: RegisterUserUseCase) {
+    init(authDIContainer: AuthorizationSceneDIContainer, checkEmailUseCase: CheckEmailUseCase, registerUseCase: RegisterUserUseCase) {
         self.state = State()
+        self.checkEmailUseCase = checkEmailUseCase
+        self.diContainer = authDIContainer
         self.registerUseCase = registerUseCase
         canTapRegisterButton
             .receive(on: RunLoop.main)
@@ -84,7 +88,7 @@ final class RegisterViewModel: ViewModel {
     func checkEmail() {
         Task { @MainActor in
             do {
-                let _ = try await authRepository.checkValidateEmail(email: email)
+                try await checkEmailUseCase.excute(email: email)
                 state.toastMessage = .init(message: "사용할 수 있는 이메일입니다.", duration: 1.0)
                 validatedEmail = email
             } catch {
@@ -138,7 +142,8 @@ final class RegisterViewModel: ViewModel {
     func registerUser() {
         Task { @MainActor in
             do {
-                try await authRepository.registerUser(.init(email: email, password: password, nickName: nick, phoneNumber: phoneNumber, deviceToken: ""))
+                let query = RegisterUserRequestQuery(email: email, password: password, nickName: nick, phoneNumber: phoneNumber, deviceToken: "")
+                try await registerUseCase.excute(query)
             } catch {
                 state.toastMessage = .init(message: error.localizedDescription, duration: 1.0)
             }

@@ -21,9 +21,11 @@ final class SocialLoginViewModel: ViewModel {
     }
     
     @Published var state: LoginState
+    let diContainer: AuthorizationSceneDIContainer
     
-    init() {
+    init(authDIContainer: AuthorizationSceneDIContainer) {
         state = LoginState()
+        self.diContainer = authDIContainer
     }
     
     func trigger(_ input: SocialLoginInput) {

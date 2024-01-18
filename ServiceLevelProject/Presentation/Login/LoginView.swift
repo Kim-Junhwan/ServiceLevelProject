@@ -13,7 +13,7 @@ struct LoginView: View {
     
     @State private var showRegisterView: Bool = false
     @State private var showEmailLoginView: Bool = false
-    @ObservedObject var viewModel: SocialLoginViewModel = .init()
+    @ObservedObject var viewModel: SocialLoginViewModel
     
     var appleLoginButton: some View {
         SignInWithAppleButton(onRequest: { request in
@@ -75,7 +75,7 @@ struct LoginView: View {
         .presentationDragIndicator(.visible)
         .font(CustomFont.title2.font)
         .sheet(isPresented: $showRegisterView, content: {
-            RegisterView(isPresenting: $showRegisterView)
+            viewModel.diContainer.makeRegisterView(presenting: $showRegisterView)
         })
         .sheet(isPresented: $showEmailLoginView, content: {
             EmailLoginView(isPresenting: $showEmailLoginView, viewModel: EmailLoginViewModel())
@@ -84,5 +84,5 @@ struct LoginView: View {
 }
 
 #Preview {
-    LoginView()
+    LoginView(viewModel: .init(authDIContainer: .init()))
 }

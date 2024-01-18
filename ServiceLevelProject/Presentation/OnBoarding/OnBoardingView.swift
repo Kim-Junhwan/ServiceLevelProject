@@ -10,6 +10,7 @@ import SwiftUI
 struct OnBoardingView: View {
     
     @State var showRegisterView: Bool = false
+    let authDIContainer: AuthorizationSceneDIContainer
     
     var body: some View {
         ZStack {
@@ -26,11 +27,11 @@ struct OnBoardingView: View {
         }
         .background(.backgroundPrimary)
         .sheet(isPresented: $showRegisterView, content: {
-            LoginView()
+            authDIContainer.makeLoginView()
         })
     }
 }
 
 #Preview {
-    OnBoardingView()
+    OnBoardingView(authDIContainer: .init())
 }

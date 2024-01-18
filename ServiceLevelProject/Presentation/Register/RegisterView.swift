@@ -11,7 +11,7 @@ struct RegisterView: View {
     
     @FocusState var focusFeild: RegisterViewModel.FocusTextField?
     @Binding var isPresenting: Bool
-    @StateObject var viewModel: RegisterViewModel = RegisterViewModel()
+    @StateObject var viewModel: RegisterViewModel
     
     var body: some View {
         NavigationStack {
@@ -78,6 +78,14 @@ struct RegisterView: View {
     }
 }
 
+private final class TestAuthRepository: CheckEmailUseCase {
+    func excute(email: String) async throws {}
+}
+
+private final class TestUsecase: RegisterUserUseCase {
+    func excute(_ query: RegisterUserRequestQuery) async throws {}
+}
+
 #Preview {
-    RegisterView(isPresenting: .constant(true))
+    RegisterView(isPresenting: .constant(true), viewModel: .init(authDIContainer: .init(), checkEmailUseCase: TestAuthRepository(), registerUseCase: TestUsecase()))
 }
