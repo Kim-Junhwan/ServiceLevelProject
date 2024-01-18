@@ -28,9 +28,6 @@ struct KeyboardStickeyButton: View {
             }, backgroundColor: isEnable ? .brandGreen : .brandInactive)
             .padding([.top, .bottom], 12)
             .padding([.leading, .trailing], 24)
-            .background(
-                Color.backgroundPrimary
-            )
             .disabled(!isEnable)
         }
     }
