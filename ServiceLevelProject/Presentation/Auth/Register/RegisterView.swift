@@ -75,6 +75,9 @@ struct RegisterView: View {
             
         }//NavigationStack
         .presentationDragIndicator(.visible)
+        .fullScreenCover(isPresented: $viewModel.state.registerSuccess, content: {
+            WorkSpaceInitalView()
+        })
     }
 }
 

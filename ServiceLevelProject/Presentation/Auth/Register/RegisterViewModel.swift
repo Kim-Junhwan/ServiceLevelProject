@@ -28,6 +28,7 @@ final class RegisterViewModel: ViewModel {
         var passwordIsSame: Bool = true
         var canTapRegisterButton: Bool = false
         var checkedValidEmail: Bool = true
+        var registerSuccess: Bool = false
     }
     
     enum RegisterInput {
@@ -144,6 +145,7 @@ final class RegisterViewModel: ViewModel {
             do {
                 let query = RegisterUserRequestQuery(email: email, password: password, nickName: nick, phoneNumber: phoneNumber, deviceToken: "")
                 try await registerUseCase.excute(query)
+                self.state.registerSuccess = true
             } catch {
                 state.toastMessage = .init(message: error.localizedDescription, duration: 1.0)
             }
