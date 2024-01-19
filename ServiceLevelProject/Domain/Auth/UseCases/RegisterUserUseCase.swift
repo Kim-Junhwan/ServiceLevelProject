@@ -26,6 +26,5 @@ extension DefaultRegisterUserUseCase: RegisterUserUseCase {
         let registedUserInfo = try await authRepository.registerUser(query)
         loginInfoRepository.loginType = .email(email: query.email, password: query.password)
         try loginInfoRepository.saveToken(accessToken: registedUserInfo.accessToken, refreshToken: registedUserInfo.refreshToken)
-        loginInfoRepository.isLoggedIn = true
     }
 }

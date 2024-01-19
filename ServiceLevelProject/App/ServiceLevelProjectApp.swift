@@ -23,7 +23,7 @@ struct ServiceLevelProjectApp: App {
     var body: some Scene {
         WindowGroup {
             if loginStatusManager.isLoggedIn {
-                
+                HomeView()
             } else {
                 OnBoardingView(authDIContainer: authDIContainer)
                     .environmentObject(loginStatusManager)

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct HomeNavigationBarView: View {
+struct HomeView: View {
     
     @State var hasChatList: Bool = true
     
@@ -46,5 +46,5 @@ struct HomeNavigationBarView: View {
 }
 
 #Preview {
-    HomeNavigationBarView()
+    HomeView()
 }
