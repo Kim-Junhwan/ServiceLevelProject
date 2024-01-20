@@ -12,12 +12,12 @@ enum AuthRouter: URLRequestConvertible {
     
     case checkValidEmail(ValidEmailRequestDTO)
     case registerUser(RegisterUserRequestDTO)
+    case kakaoLogin(KakaoLoginRequestDTO)
+    case appleLogin(AppleLoginRequestDTO)
+    case emailLogin(EmailLoginRequestDTO)
     
     var method: HTTPMethod {
-        switch self {
-        case .checkValidEmail(_), .registerUser(_):
-            return .post
-        }
+        return .post
     }
     
     var path: String {
@@ -26,6 +26,12 @@ enum AuthRouter: URLRequestConvertible {
             return "v1/users/validation/email"
         case .registerUser(_):
             return "v1/users/join"
+        case .kakaoLogin(_):
+            return "v1/users/login/kakao"
+        case .appleLogin(_):
+            return "v1/users/login/apple"
+        case .emailLogin(_):
+            return "v1/users/login"
         }
     }
     
@@ -39,6 +45,12 @@ enum AuthRouter: URLRequestConvertible {
             request = try JSONParameterEncoder().encode(validEmailRequestDTO, into: request)
         case .registerUser(let registerUserRequestDTO):
             request = try JSONParameterEncoder().encode(registerUserRequestDTO, into: request)
+        case .kakaoLogin(let kakaoLoginRequestDTO):
+            request = try JSONParameterEncoder().encode(kakaoLoginRequestDTO, into: request)
+        case .appleLogin(let appleLoginRequestDTO):
+            request = try JSONParameterEncoder().encode(appleLoginRequestDTO, into: request)
+        case .emailLogin(let emailLoginRequestDTO):
+            request = try JSONParameterEncoder().encode(emailLoginRequestDTO, into: request)
         }
         return request
     }
