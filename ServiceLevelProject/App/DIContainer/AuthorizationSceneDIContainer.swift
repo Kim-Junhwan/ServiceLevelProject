@@ -8,14 +8,18 @@
 import Foundation
 import SwiftUI
 
-final class AuthorizationSceneDIContainer {
+final class AuthorizationSceneDIContainer: ObservableObject {
     
-    lazy var userLoginStatusManager: UserLoginStatusManager = {
-       return UserLoginStatusManager()
+    let appState: AppState = {
+       return AppState()
     }()
     
     func makeRegisterUseCase() -> RegisterUserUseCase {
-        return DefaultRegisterUserUseCase(authRepository: makeAuthRepository(), loginInfoRepository: userLoginStatusManager)
+        return DefaultRegisterUserUseCase(authRepository: makeAuthRepository(), appState: appState)
+    }
+    
+    func makeLoginUseCase() -> LoginUseCase {
+        return DefaultLoginUseCase(authRepository: makeAuthRepository(), appState: appState)
     }
     
     func makeCheckEmailUseCase() -> CheckEmailUseCase {
@@ -31,6 +35,6 @@ final class AuthorizationSceneDIContainer {
     }
     
     func makeLoginView() -> some View {
-        return LoginView(viewModel: .init(authDIContainer: self))
+        return LoginView(viewModel: .init(loginUseCase: makeLoginUseCase(), diContainer: self))
     }
 }

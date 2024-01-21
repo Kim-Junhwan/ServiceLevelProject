@@ -8,7 +8,7 @@
 import Foundation
 
 enum LoginType {
-    case apple(idToken: String, nickName: String)
+    case apple(idToken: String, nickName: String?)
     case kakao
     case email(email: String, password: String)
     case none

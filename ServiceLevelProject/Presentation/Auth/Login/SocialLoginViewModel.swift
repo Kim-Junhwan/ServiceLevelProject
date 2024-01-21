@@ -10,7 +10,7 @@ import Foundation
 final class SocialLoginViewModel: ViewModel {
     
     struct LoginState {
-        var error: Error?
+        var toast: Toast?
         var isLoading: Bool = false
         var successLogin: Bool = false
     }
@@ -21,16 +21,37 @@ final class SocialLoginViewModel: ViewModel {
     }
     
     @Published var state: LoginState
+    let loginUseCase: LoginUseCase
     let diContainer: AuthorizationSceneDIContainer
     
-    init(authDIContainer: AuthorizationSceneDIContainer) {
-        state = LoginState()
-        self.diContainer = authDIContainer
+    init(loginUseCase: LoginUseCase, diContainer: AuthorizationSceneDIContainer) {
+        self.state = LoginState()
+        self.loginUseCase = loginUseCase
+        self.diContainer = diContainer
     }
     
     func trigger(_ input: SocialLoginInput) {
-        
+        Task { @MainActor in
+            do {
+                switch input {
+                case .appleLogin(let idToken, let nickName):
+                    try await appleLogin(idToken: idToken ,nickName: nickName)
+                case .kakaoLogin:
+                    try await loginUseCase.excute(.kakao)
+                }
+                diContainer.appState.isLoggedIn = true
+            } catch {
+                self.state.toast = Toast(message: error.localizedDescription, duration: 1.0)
+            }
+        }
     }
     
-    
+    private func appleLogin(idToken: Data, nickName: PersonNameComponents) async throws {
+        guard let idToken = String(data: idToken, encoding: .utf8) else { return }
+        var registNickName: String?
+        if let familyName = nickName.familyName, let givenName = nickName.givenName {
+            registNickName = "\(familyName)\(givenName)"
+        }
+        try await loginUseCase.excute(.apple(idToken: idToken, nickName: registNickName))
+    }
 }
