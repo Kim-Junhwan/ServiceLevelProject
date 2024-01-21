@@ -14,6 +14,7 @@ struct LoginView: View {
     @State private var showRegisterView: Bool = false
     @State private var showEmailLoginView: Bool = false
     @ObservedObject var viewModel: SocialLoginViewModel
+    @EnvironmentObject var diContainer: AuthorizationSceneDIContainer
     
     var appleLoginButton: some View {
         SignInWithAppleButton(onRequest: { request in
@@ -69,13 +70,14 @@ struct LoginView: View {
                 .foregroundStyle(.brandGreen)
             }
         }
+        .toastView(toast: $viewModel.state.toast)
         .padding([.leading, .trailing], 35)
         .defaultBackground()
         .presentationDetents([.height(290)])
         .presentationDragIndicator(.visible)
         .font(CustomFont.title2.font)
         .sheet(isPresented: $showRegisterView, content: {
-            viewModel.diContainer.makeRegisterView(presenting: $showRegisterView)
+            diContainer.makeRegisterView(presenting: $showRegisterView)
         })
         .sheet(isPresented: $showEmailLoginView, content: {
             EmailLoginView(isPresenting: $showEmailLoginView, viewModel: EmailLoginViewModel())
@@ -83,6 +85,13 @@ struct LoginView: View {
     }
 }
 
+class MockLoginUseCase: LoginUseCase {
+    func excute(_ platform: LoginType) async throws {
+        
+    }
+    
+}
+
 #Preview {
-    LoginView(viewModel: .init(authDIContainer: .init()))
+    LoginView(viewModel: .init(loginUseCase: MockLoginUseCase(), diContainer: .init()))
 }

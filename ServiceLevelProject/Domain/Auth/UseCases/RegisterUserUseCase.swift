@@ -13,18 +13,19 @@ protocol RegisterUserUseCase {
 
 final class DefaultRegisterUserUseCase {
     let authRepository: AuthRepository
-    let loginInfoRepository: LoginInfoRepository
+    let appState: AppState
     
-    init(authRepository: AuthRepository, loginInfoRepository: LoginInfoRepository) {
+    init(authRepository: AuthRepository, appState: AppState) {
         self.authRepository = authRepository
-        self.loginInfoRepository = loginInfoRepository
+        self.appState = appState
     }
 }
 
 extension DefaultRegisterUserUseCase: RegisterUserUseCase {
     func excute(_ query: RegisterUserRequestQuery) async throws {
         let registedUserInfo = try await authRepository.registerUser(query)
-        loginInfoRepository.loginType = .email(email: query.email, password: query.password)
-        try loginInfoRepository.saveToken(accessToken: registedUserInfo.accessToken, refreshToken: registedUserInfo.refreshToken)
+        appState.loginInfo.loginType = .email(email: query.email, password: query.password)
+        appState.token.accessToken = registedUserInfo.accessToken
+        appState.token.refreshToken = registedUserInfo.refreshToken
     }
 }
