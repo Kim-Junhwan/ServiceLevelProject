@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct RegisterUserResponseDTO: Decodable {
+struct UserInfoResponseDTO: Decodable {
     let userId: Int
     let email: String
     let nickName: String
