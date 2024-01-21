@@ -7,8 +7,19 @@
 
 import Foundation
 
-final class UserLoginStatusManager: LoginInfoRepository, ObservableObject {
-    
+final class AppState: ObservableObject {
+    @Published var isLoggedIn: Bool = false
+    var loginInfo: LoginInfo = .init()
+    var userData: UserData = .init(nickname: "")
+    var token: Token = .init()
+}
+
+struct UserData {
+    var nickname: String
+    var profileImagePath: String?
+}
+
+struct LoginInfo {
     @UserDefault(key: "loginKey", defaultValue: nil)
     private var loginTypeValue: String?
     @UserDefault(key: "email", defaultValue: nil)
@@ -24,7 +35,6 @@ final class UserLoginStatusManager: LoginInfoRepository, ObservableObject {
         }
     }
     
-    //현재 어떤 방식으로 로그인 했는지에 대한 상태값
     var loginType: LoginType {
         get {
             guard let value = loginTypeValue, let loginType = LoginType(rawValue: value) else { return .none }
@@ -42,18 +52,24 @@ final class UserLoginStatusManager: LoginInfoRepository, ObservableObject {
             loginTypeValue = newValue.rawValue
         }
     }
-    
-    @Published var isLoggedIn: Bool = false
-    
-    func saveToken(accessToken: String, refreshToken: String?) throws {
-        try KeychainManager.shared.saveTokenAtKeyChain(key: Token.accessToken.rawValue, value: accessToken)
-        if let refreshToken {
-            try KeychainManager.shared.saveTokenAtKeyChain(key: Token.refreshToken.rawValue, value: refreshToken)
+}
+
+struct Token {
+    var accessToken: String? {
+        get {
+            try? KeychainManager.shared.readTokenAtKeyChain(key: "accessToken")
+        }
+        set {
+            try? KeychainManager.shared.saveTokenAtKeyChain(key: "accessToken", value: newValue ?? "")
         }
     }
     
-    func logout() {
-        loginType = .none
-        isLoggedIn = false
+    var refreshToken: String? {
+        get {
+            try? KeychainManager.shared.readTokenAtKeyChain(key: "refreshToken")
+        }
+        set {
+            try? KeychainManager.shared.saveTokenAtKeyChain(key: "refreshToken", value: newValue ?? "")
+        }
     }
 }
