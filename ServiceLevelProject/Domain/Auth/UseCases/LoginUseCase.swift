@@ -48,5 +48,7 @@ extension DefaultLoginUseCase: LoginUseCase {
         appState.userData.profileImagePath = userProfile.profileImage
         appState.token.accessToken = userProfile.accessToken
         appState.token.refreshToken = userProfile.refreshToken
+        appState.isLoggedIn = true
+        await appState.setLoginStatus(true)
     }
 }

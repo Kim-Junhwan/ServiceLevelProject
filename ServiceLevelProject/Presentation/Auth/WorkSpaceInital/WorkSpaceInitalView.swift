@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct WorkSpaceInitalView: View {
-    @EnvironmentObject var userLoginManager: UserLoginStatusManager
+    @EnvironmentObject var userLoginManager: AppState
     
     var body: some View {
         NavigationStack {
@@ -58,5 +58,5 @@ final class MockLoginInfoRepository: LoginInfoRepository {
 
 #Preview {
     WorkSpaceInitalView()
-        .environmentObject(UserLoginStatusManager())
+        .environmentObject(AppState())
 }

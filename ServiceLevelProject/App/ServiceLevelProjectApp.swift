@@ -11,9 +11,7 @@ import KakaoSDKAuth
 
 @main
 struct ServiceLevelProjectApp: App {
-    
-    @StateObject private var loginStatusManager = UserLoginStatusManager()
-    private var authDIContainer = AuthorizationSceneDIContainer()
+    @StateObject var authDIContainer = AuthorizationSceneDIContainer()
     
     init() {
         let kakaokAPIKey = Bundle.main.infoDictionary?["KAKAO_NATIVE_APP_KEY"] ?? ""
@@ -22,17 +20,16 @@ struct ServiceLevelProjectApp: App {
     
     var body: some Scene {
         WindowGroup {
-            if loginStatusManager.isLoggedIn {
-                HomeView()
-            } else {
-                OnBoardingView(authDIContainer: authDIContainer)
-                    .environmentObject(loginStatusManager)
-                    .onOpenURL(perform: { url in
-                        if (AuthApi.isKakaoTalkLoginUrl(url)) {
-                            _ = AuthController.handleOpenUrl(url: url)
-                        }
-                    })
+            NavigationStack {
+                ContentView()
             }
+            .environmentObject(authDIContainer)
+            .environmentObject(authDIContainer.appState)
+                .onOpenURL(perform: { url in
+                    if (AuthApi.isKakaoTalkLoginUrl(url)) {
+                        _ = AuthController.handleOpenUrl(url: url)
+                    }
+                })
         }
     }
 }

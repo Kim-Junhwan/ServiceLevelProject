@@ -39,7 +39,6 @@ final class SocialLoginViewModel: ViewModel {
                 case .kakaoLogin:
                     try await loginUseCase.excute(.kakao)
                 }
-                diContainer.appState.isLoggedIn = true
             } catch {
                 self.state.toast = Toast(message: error.localizedDescription, duration: 1.0)
             }

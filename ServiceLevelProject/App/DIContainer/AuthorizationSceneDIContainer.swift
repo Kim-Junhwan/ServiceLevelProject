@@ -10,9 +10,7 @@ import SwiftUI
 
 final class AuthorizationSceneDIContainer: ObservableObject {
     
-    let appState: AppState = {
-       return AppState()
-    }()
+    @Published var appState: AppState = AppState()
     
     func makeRegisterUseCase() -> RegisterUserUseCase {
         return DefaultRegisterUserUseCase(authRepository: makeAuthRepository(), appState: appState)

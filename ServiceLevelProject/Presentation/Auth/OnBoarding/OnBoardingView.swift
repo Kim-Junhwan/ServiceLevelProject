@@ -10,7 +10,7 @@ import SwiftUI
 struct OnBoardingView: View {
     
     @State var showRegisterView: Bool = false
-    let authDIContainer: AuthorizationSceneDIContainer
+    @EnvironmentObject var authDIContainer: AuthorizationSceneDIContainer
     
     var body: some View {
         ZStack {
@@ -33,5 +33,5 @@ struct OnBoardingView: View {
 }
 
 #Preview {
-    OnBoardingView(authDIContainer: .init())
+    OnBoardingView()
 }

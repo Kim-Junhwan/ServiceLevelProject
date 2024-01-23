@@ -8,14 +8,26 @@
 import SwiftUI
 
 struct ContentView: View {
+    @EnvironmentObject var diContainer: AuthorizationSceneDIContainer
+    @EnvironmentObject var appState: AppState
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        content
+    }
+    
+    @ViewBuilder
+    private var content: some View {
+        if appState.isLoggedIn {
+            HomeTabView()
+        } else {
+            OnBoardingView()
+        }
     }
 }
 
 extension ContentView {
     class ContentViewModel: ObservableObject {
-        let container: AuthorizationSceneDIContainer
+        
     }
 }
 
