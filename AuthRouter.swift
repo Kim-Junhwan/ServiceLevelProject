@@ -31,7 +31,7 @@ enum AuthRouter: URLRequestConvertible {
         case .appleLogin(_):
             return "v1/users/login/apple"
         case .emailLogin(_):
-            return "v1/users/login"
+            return "v2/users/login"
         }
     }
     
