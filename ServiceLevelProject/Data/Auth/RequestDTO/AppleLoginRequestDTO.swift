@@ -9,6 +9,6 @@ import Foundation
 
 struct AppleLoginRequestDTO: Encodable {
     let idToken: String
-    let nickName: String?
+    let nickname: String?
     let deviceToken: String?
 }
