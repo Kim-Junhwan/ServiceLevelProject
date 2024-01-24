@@ -20,7 +20,7 @@ protocol LoginUseCase {
 final class DefaultLoginUseCase {
     let authRepository: AuthRepository
     let appState: AppState
-    let deviceToken = ""
+    var deviceToken: String?
     
     init(authRepository: AuthRepository, appState: AppState) {
         self.authRepository = authRepository
@@ -42,13 +42,11 @@ extension DefaultLoginUseCase: LoginUseCase {
         case .none:
             fatalError()
         }
-        print(userProfile)
         appState.loginInfo.loginType = platform
         appState.userData.nickname = userProfile.nickName
         appState.userData.profileImagePath = userProfile.profileImage
         appState.token.accessToken = userProfile.accessToken
         appState.token.refreshToken = userProfile.refreshToken
-        appState.isLoggedIn = true
         await appState.setLoginStatus(true)
     }
 }

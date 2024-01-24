@@ -9,15 +9,14 @@ import Foundation
 
 class BaseState {}
 
-@MainActor
 final class AppState: BaseState, ObservableObject {
-    @Published var isLoggedIn: Bool = false
+    @MainActor @Published var isLoggedIn: Bool = false
     var loginInfo: LoginInfo = .init()
     var userData: UserData = .init(nickname: "")
     var token: Token = .init()
     
-    func setLoginStatus(_ bool: Bool) {
-        isLoggedIn = bool
+    @MainActor func setLoginStatus(_ bool: Bool) {
+        self.isLoggedIn = bool
     }
 }
 

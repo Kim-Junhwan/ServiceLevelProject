@@ -12,7 +12,7 @@ final class DefaultAuthRepository: AuthRepository {
     
     func checkValidateEmail(email: String) async throws {
         do {
-            try await SSAC.request(AuthRouter.checkValidEmail(.init(email: email))).slpSerializingDecodable(Empty.self , emptyResponseCodes: [200], responseErrorMapper: ValidEmailErrorMapper()).value
+            let _ = try await SSAC.request(AuthRouter.checkValidEmail(.init(email: email))).slpSerializingDecodable(Empty.self , emptyResponseCodes: [200], responseErrorMapper: ValidEmailErrorMapper()).value
         } catch {
             guard let originError = error.asAFError?.unwrap() else { throw DefaultNetworkingError.unknownResponseError }
             throw originError
@@ -35,7 +35,7 @@ final class DefaultAuthRepository: AuthRepository {
     }
     
     func appleLogin(_ query: AppleLoginQuery) async throws -> UserProfile {
-        return try await login(urlRequest: AuthRouter.appleLogin(.init(idToken: query.idToken, nickName: query.nickName, deviceToken: query.deviceToken)))
+        return try await login(urlRequest: AuthRouter.appleLogin(.init(idToken: query.idToken, nickname: query.nickName, deviceToken: query.deviceToken)))
     }
     
     func emailLogin(_ query: EmailLoginQuery) async throws -> UserProfile {
@@ -48,7 +48,6 @@ final class DefaultAuthRepository: AuthRepository {
             return .init(userId: response.userId, email: response.email, nickName: response.nickName, profileImage: response.profileImage, phone: response.phone, vendor: response.vendor, createdAt: response.createdAt, accessToken: response.token.accessToken, refreshToken: response.token.refreshToken)
         } catch {
             guard let originError = error.asAFError?.unwrap() else { throw DefaultNetworkingError.unknownResponseError }
-            print(originError)
             throw originError
         }
     }
