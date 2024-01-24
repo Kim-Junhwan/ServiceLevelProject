@@ -80,7 +80,7 @@ struct LoginView: View {
             diContainer.makeRegisterView(presenting: $showRegisterView)
         })
         .sheet(isPresented: $showEmailLoginView, content: {
-            EmailLoginView(isPresenting: $showEmailLoginView, viewModel: EmailLoginViewModel())
+            diContainer.makeEmailLoginView(presenting: $showEmailLoginView)
         })
     }
 }

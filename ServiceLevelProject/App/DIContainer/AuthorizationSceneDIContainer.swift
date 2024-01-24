@@ -35,4 +35,8 @@ final class AuthorizationSceneDIContainer: ObservableObject {
     func makeLoginView() -> some View {
         return LoginView(viewModel: .init(loginUseCase: makeLoginUseCase(), diContainer: self))
     }
+    
+    func makeEmailLoginView(presenting: Binding<Bool>) -> some View {
+        return EmailLoginView(isPresenting: presenting, viewModel: .init(loginUseCase: makeLoginUseCase()))
+    }
 }

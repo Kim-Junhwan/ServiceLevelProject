@@ -62,5 +62,5 @@ struct EmailLoginView: View {
 }
 
 #Preview {
-    EmailLoginView(isPresenting: .constant(true), viewModel: .init())
+    EmailLoginView(isPresenting: .constant(true), viewModel: .init(loginUseCase: MockLoginUseCase()))
 }
