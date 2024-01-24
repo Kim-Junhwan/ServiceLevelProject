@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct WorkSpaceInitalView: View {
-    @EnvironmentObject var userLoginManager: AppState
+    @EnvironmentObject var appState: AppState
     
     var body: some View {
         NavigationStack {
@@ -38,7 +38,7 @@ struct WorkSpaceInitalView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button(action: {
-                        userLoginManager.isLoggedIn = true
+                        appState.isLoggedIn = true
                     }, label: {
                         Image(systemName: "xmark")
                             .foregroundStyle(.black)

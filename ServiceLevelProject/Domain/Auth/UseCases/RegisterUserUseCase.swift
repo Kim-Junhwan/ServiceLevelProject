@@ -27,6 +27,5 @@ extension DefaultRegisterUserUseCase: RegisterUserUseCase {
         self.appState.loginInfo.loginType = .email(email: query.email, password: query.password)
         self.appState.token.accessToken = registedUserInfo.accessToken
         self.appState.token.refreshToken = registedUserInfo.refreshToken
-        await appState.setLoginStatus(true)
     }
 }
