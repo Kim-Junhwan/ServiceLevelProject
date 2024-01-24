@@ -43,10 +43,10 @@ class SLPResponseSerializer<T: Decodable, ErrorMapper: ResponseErrorMapper, S: S
     }
     
     private func mappingError(errorCode: String) throws {
-        if let commonError = SLPCommonError.init(rawValue: errorCode) {
-            throw commonError
+        if let requestError = responseErrorMapper.mappingError(errorCode) {
+            throw requestError
         } else {
-            throw responseErrorMapper.mappingError(errorCode) ?? DefaultNetworkingError.unknownResponseError
+            throw SLPCommonError.init(rawValue: errorCode) ?? DefaultNetworkingError.unknownResponseError
         }
     }
     
