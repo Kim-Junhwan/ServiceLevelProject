@@ -21,7 +21,7 @@ struct ServiceLevelProjectApp: App {
     var body: some Scene {
         WindowGroup {
             NavigationStack {
-                ContentView()
+                authDIContainer.makeContentView()
             }
             .environmentObject(authDIContainer)
             .environmentObject(authDIContainer.appState)

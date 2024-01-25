@@ -24,6 +24,10 @@ final class AuthorizationSceneDIContainer: ObservableObject {
         return DefaultCheckEmailUseCase(authRepository: makeAuthRepository())
     }
     
+    func makeAutoLoginUseCase() -> AutoLoginUseCase {
+        return DefaultAutoLoginUseCase(authRepository: makeAuthRepository(), appState: appState)
+    }
+    
     func makeAuthRepository() -> AuthRepository {
         return DefaultAuthRepository()
     }
@@ -38,5 +42,9 @@ final class AuthorizationSceneDIContainer: ObservableObject {
     
     func makeEmailLoginView(presenting: Binding<Bool>) -> some View {
         return EmailLoginView(isPresenting: presenting, viewModel: .init(loginUseCase: makeLoginUseCase()))
+    }
+    
+    func makeContentView() -> some View {
+        return ContentView(viewModel: .init(loginUseCase: makeAutoLoginUseCase(), container: self))
     }
 }
