@@ -45,18 +45,9 @@ final class RegisterViewModel: ViewModel {
     @Published var password: String = ""
     @Published var checkPassword: String = ""
     private var validatedEmail: String = ""
+    private var originPhoneNumber: String = ""
     
     var diContainer: AuthorizationSceneDIContainer
-    
-    private var canTapRegisterButton: AnyPublisher<Bool, Never> {
-        return $email
-            .combineLatest($nick, $password, $checkPassword)
-            .map { email, nick, password, checkPassword in
-                return !email.isEmpty && !nick.isEmpty && !password.isEmpty && !checkPassword.isEmpty
-            }
-            .eraseToAnyPublisher()
-    }
-    
     let checkEmailUseCase: CheckEmailUseCase
     let registerUseCase: RegisterUserUseCase
     
@@ -65,11 +56,26 @@ final class RegisterViewModel: ViewModel {
         self.checkEmailUseCase = checkEmailUseCase
         self.diContainer = authDIContainer
         self.registerUseCase = registerUseCase
-        canTapRegisterButton
-            .receive(on: RunLoop.main)
-            .sink(receiveValue: { value in
+        
+        $email
+            .combineLatest($nick, $password, $checkPassword)
+            .map { email, nick, password, checkPassword in
+                return !email.isEmpty && !nick.isEmpty && !password.isEmpty && !checkPassword.isEmpty
+            }
+            .sink { value in
                 self.state.canTapRegisterButton = value
-            })
+            }
+            .store(in: &cancellableBag)
+        
+        $phoneNumber.receive(on: RunLoop.main)
+            .sink { value in
+                var removeHypenNumber = value.components(separatedBy: ["-"]).joined()
+                if removeHypenNumber.count > 11 {
+                    removeHypenNumber.removeLast()
+                }
+                self.originPhoneNumber = removeHypenNumber
+                self.phoneNumber = self.originPhoneNumber.withHypen
+            }
             .store(in: &cancellableBag)
     }
     
