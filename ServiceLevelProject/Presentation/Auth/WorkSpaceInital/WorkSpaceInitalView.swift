@@ -17,7 +17,7 @@ struct WorkSpaceInitalView: View {
                     VStack(spacing: 24) {
                         Text("출시 준비 완료!")
                             .font(CustomFont.title1.font)
-                        Text(")님의 조직을 위해 새로운 새싹톡 워크스페이스를 시작할 준비가 완료되었어요!")
+                        Text("\(appState.userData.nickname)님의 조직을 위해 새로운 새싹톡 워크스페이스를 시작할 준비가 완료되었어요!")
                             .multilineTextAlignment(.center)
                             .font(CustomFont.body.font)
                             .padding([.leading, .trailing], 23)
