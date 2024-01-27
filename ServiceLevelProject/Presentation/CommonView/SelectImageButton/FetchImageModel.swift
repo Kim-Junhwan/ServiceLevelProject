@@ -1,0 +1,71 @@
+//
+//  FetchImageModel.swift
+//  ServiceLevelProject
+//
+//  Created by JunHwan Kim on 2024/01/27.
+//
+
+import SwiftUI
+import PhotosUI
+
+@MainActor
+class ImageModel: ObservableObject {
+    enum ImageState {
+        case empty
+        case loading(Progress)
+        case success(Image)
+        case failure(Error)
+    }
+    
+    enum TransferError: Error {
+        case importFail
+    }
+    
+    @Published private(set) var imageState: ImageState = .empty
+    @Published var imageSelection: PhotosPickerItem? = nil {
+        didSet {
+            if let imageSelection {
+                let progress = loadTransferable(from: imageSelection)
+                imageState = .loading(progress)
+            } else {
+                imageState = .empty
+            }
+        }
+    }
+    let maxSize: CGFloat
+    var imageData: Data?
+    
+    init(maxSize: CGFloat) {
+        self.maxSize = maxSize
+    }
+    
+    private func loadTransferable(from imageSelection: PhotosPickerItem) -> Progress {
+        return imageSelection.loadTransferable(type: FetchedImage.self) { result in
+            DispatchQueue.main.async {
+                guard imageSelection == self.imageSelection else {
+                    return
+                }
+                switch result {
+                case .success(let fetchImage?):
+                    let downSamplingImage = fetchImage.image.downSamplingImage(maxSize: self.maxSize)
+                    self.imageData = downSamplingImage.jpegData(compressionQuality: 1.0)
+                    self.imageState = .success(Image(uiImage: downSamplingImage))
+                case .success(nil):
+                    self.imageState = .empty
+                case .failure(let error):
+                    self.imageState = .failure(error)
+                }
+            }
+        }
+    }
+    
+    struct FetchedImage: Transferable {
+        let image: Data
+        
+        static var transferRepresentation: some TransferRepresentation {
+            DataRepresentation(importedContentType: .jpeg) { data in
+                return FetchedImage(image: data)
+            }
+        }
+    }
+}
