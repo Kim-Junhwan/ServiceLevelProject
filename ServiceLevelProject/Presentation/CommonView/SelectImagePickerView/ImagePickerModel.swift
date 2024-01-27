@@ -9,7 +9,7 @@ import SwiftUI
 import PhotosUI
 
 @MainActor
-class ImageModel: ObservableObject {
+class ImagePickerModel: ObservableObject {
     enum ImageState {
         case empty
         case loading(Progress)
