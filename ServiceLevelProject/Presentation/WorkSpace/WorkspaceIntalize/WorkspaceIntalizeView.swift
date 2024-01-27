@@ -11,7 +11,7 @@ struct WorkspaceIntalizeView: View {
     
     @Binding var presenting: Bool
     @ObservedObject private var viewModel: WorkspaceInializeViewModel = .init()
-    @StateObject var imageViewModel = ImageModel(maxSize: 70)
+    @StateObject var imageViewModel = ImagePickerModel(maxSize: 70)
     
     var body: some View {
         NavigationStack {

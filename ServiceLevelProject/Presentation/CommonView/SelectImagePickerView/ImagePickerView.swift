@@ -9,7 +9,7 @@ import SwiftUI
 import PhotosUI
 
 struct MainImage: View {
-    let imageState: ImageModel.ImageState
+    let imageState: ImagePickerModel.ImageState
     
     var body: some View {
         switch imageState {
@@ -31,7 +31,7 @@ struct MainImage: View {
 }
 
 struct ImagePickerView: View {
-    @ObservedObject var viewModel: ImageModel
+    @ObservedObject var viewModel: ImagePickerModel
     
     var body: some View {
         PhotosPicker(selection: $viewModel.imageSelection, matching: .images, photoLibrary: .shared()) {
