@@ -40,11 +40,8 @@ extension DefaultLoginUseCase: LoginUseCase {
         case .none:
             fatalError()
         }
+        appState.setLoginInfo(userProfile: userProfile)
         appState.loginInfo.loginType = loginPlatform
-        appState.userData.nickname = userProfile.nickName
-        appState.userData.profileImagePath = userProfile.profileImage
-        appState.token.accessToken = userProfile.accessToken
-        appState.token.refreshToken = userProfile.refreshToken
         await appState.setLoginStatus(true)
     }
 }

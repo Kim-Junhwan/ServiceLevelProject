@@ -13,17 +13,20 @@ final class AppState: BaseState, ObservableObject {
     @MainActor @Published var isLoggedIn: Bool = false
     var loginInfo: LoginInfo = .init()
     var userData: UserData = .init(nickname: "")
-    var token: Token = .init()
     
     @MainActor func setLoginStatus(_ bool: Bool) {
         self.isLoggedIn = bool
     }
     
     func setLoginInfo(userProfile: UserProfile) {
-        token.accessToken = userProfile.accessToken
-        token.refreshToken = userProfile.refreshToken
+        setToken(accessToken: userProfile.accessToken, refreshToken: userProfile.refreshToken)
         userData.nickname = userProfile.nickName
         userData.profileImagePath = userProfile.profileImage
+    }
+    
+    func setToken(accessToken: String, refreshToken: String?) {
+        Token.accessToken = accessToken
+        Token.refreshToken = refreshToken
     }
 }
 
@@ -74,8 +77,8 @@ struct LoginInfo {
     }
 }
 
-struct Token {
-    var accessToken: String? {
+class Token {
+    static var accessToken: String? {
         get {
             try? KeychainManager.shared.readTokenAtKeyChain(key: "accessToken")
         }
@@ -84,7 +87,7 @@ struct Token {
         }
     }
     
-    var refreshToken: String? {
+    static var refreshToken: String? {
         get {
             try? KeychainManager.shared.readTokenAtKeyChain(key: "refreshToken")
         }
