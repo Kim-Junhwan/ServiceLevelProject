@@ -10,7 +10,7 @@ import Alamofire
 
 class SLPResponseSerializer<T: Decodable, ErrorMapper: ResponseErrorMapper, S: Sequence>: ResponseSerializer where S.Iterator.Element == Int {
     
-    let responseErrorMapper: ErrorMapper
+    let responseErrorMapper: ErrorMapper?
     let decoder: DataDecoder
     let emptyResponseCodes: Set<Int>
     let acceptableStatusCode: S
@@ -43,7 +43,7 @@ class SLPResponseSerializer<T: Decodable, ErrorMapper: ResponseErrorMapper, S: S
     }
     
     private func mappingError(errorCode: String) throws {
-        if let requestError = responseErrorMapper.mappingError(errorCode) {
+        if let requestError = responseErrorMapper?.mappingError(errorCode) {
             throw requestError
         } else {
             throw SLPCommonError.init(rawValue: errorCode) ?? DefaultNetworkingError.unknownResponseError
@@ -61,14 +61,36 @@ class SLPResponseSerializer<T: Decodable, ErrorMapper: ResponseErrorMapper, S: S
     }
 }
 
+struct EmptyErrorMapper: ResponseErrorMapper {
+    struct ResponseError: Error {}
+    
+    func mappingError(_ identifier: String) -> Error? {
+        return nil
+    }
+}
+
 extension DataRequest {
     func slpSerializingDecodable<Value: Decodable, S: Sequence>(_ type: Value.Type = Value.self,
                                                                 statusCode acceptableStatusCode: S = 200..<300,
                                                    automaticallyCancelling shouldAutomaticallyCancel: Bool = true,
                                                    decoder: DataDecoder = JSONDecoder(),
                                                    emptyResponseCodes: Set<Int> = DecodableResponseSerializer<Value>.defaultEmptyResponseCodes,
-                                                   responseErrorMapper: some ResponseErrorMapper
+                                                   responseErrorMapper: some ResponseErrorMapper = EmptyErrorMapper()
     ) -> DataTask<Value> where S.Iterator.Element == Int {
         serializingResponse(using: SLPResponseSerializer(statusCode: acceptableStatusCode, decoder: decoder, emptyResponseCodes: emptyResponseCodes, responseErrorMapper: responseErrorMapper) , automaticallyCancelling: shouldAutomaticallyCancel)
+    }
+    
+    @discardableResult
+    func slpResponseDecodable<T: Decodable, S: Sequence> (of type: T.Type = T.self,
+                                                queue: DispatchQueue = .main,
+                                                statusCode acceptableStatusCode: S = 200..<300,
+                                                dataPreprocessor: DataPreprocessor = DecodableResponseSerializer<T>.defaultDataPreprocessor,
+                                                decoder: DataDecoder = JSONDecoder(),
+                                                emptyResponseCodes: Set<Int> = DecodableResponseSerializer<T>.defaultEmptyResponseCodes,
+                                                responseErrorMapper: some ResponseErrorMapper = EmptyErrorMapper(),
+                                                completionHandler: @escaping (AFDataResponse<T>) -> Void) -> Self where S.Iterator.Element == Int {
+        response(queue: queue,
+                 responseSerializer: SLPResponseSerializer(statusCode: acceptableStatusCode, decoder: decoder, emptyResponseCodes: emptyResponseCodes, responseErrorMapper: responseErrorMapper),
+                 completionHandler: completionHandler)
     }
 }
