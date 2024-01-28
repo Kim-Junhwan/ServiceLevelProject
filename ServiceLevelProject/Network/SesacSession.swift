@@ -16,6 +16,10 @@ final class SesacSession: Session {
         let configuration = URLSessionConfiguration.af.default
         configuration.timeoutIntervalForRequest = NetworkPolicy.defaultTimeoutInterval
         let apiLogger = APIEventLogger()
-        return .init(configuration: configuration, interceptor: Interceptor(adapters: [NetworkingBaseAdapter()], interceptors: [RefreshTokenInterceptor()]), eventMonitors: [apiLogger])
+        return .init(configuration: configuration, interceptor: Interceptor(adapters: [NetworkingBaseAdapter()]), eventMonitors: [apiLogger])
     }()
+    
+    func accessTokenRequest(_ convertible: URLRequestConvertible, interceptor: RequestInterceptor? = TokenInterceptor()) -> DataRequest {
+        return request(convertible, interceptor: interceptor)
+    }
 }
