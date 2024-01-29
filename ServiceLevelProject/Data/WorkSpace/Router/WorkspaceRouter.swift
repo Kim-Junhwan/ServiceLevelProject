@@ -10,17 +10,22 @@ import Alamofire
 
 enum WorkspaceRouter: URLRequestConvertible {
     case fetchComeInWorkspaceList
+    case createWorkspace
     
     var method: HTTPMethod {
         switch self {
         case .fetchComeInWorkspaceList:
             return .get
+        case .createWorkspace:
+            return .post
         }
     }
     
     var path: String {
         switch self {
         case .fetchComeInWorkspaceList:
+            return "v1/workspaces"
+        case .createWorkspace:
             return "v1/workspaces"
         }
     }

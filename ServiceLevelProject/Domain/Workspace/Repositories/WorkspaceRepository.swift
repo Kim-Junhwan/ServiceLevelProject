@@ -9,4 +9,5 @@ import Foundation
 
 protocol WorkspaceRepository {
     func fetchComeInWorkspaceList() async throws -> WorkspaceList
+    func createWorkspace(_ query: CreateWorkspaceQuery) async throws -> WorkSpaceThumbnail
 }
