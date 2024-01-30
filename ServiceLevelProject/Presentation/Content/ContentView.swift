@@ -19,7 +19,7 @@ struct ContentView: View {
     @ViewBuilder
     private var content: some View {
         if appState.isLoggedIn {
-            HomeTabView()
+            HomeView()
         } else {
             OnBoardingView()
                 .onAppear {
@@ -78,4 +78,6 @@ final class MockAutoLoginUseCase: AutoLoginUseCase {
 
 #Preview {
     ContentView(viewModel: .init(loginUseCase: MockAutoLoginUseCase(), container: .init()))
+        .environmentObject(AuthorizationSceneDIContainer())
+        .environmentObject(AppState())
 }
