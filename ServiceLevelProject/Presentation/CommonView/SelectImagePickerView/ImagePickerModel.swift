@@ -8,7 +8,7 @@
 import SwiftUI
 import PhotosUI
 
-@MainActor
+
 class ImagePickerModel: ObservableObject {
     enum ImageState {
         case empty
@@ -21,8 +21,8 @@ class ImagePickerModel: ObservableObject {
         case importFail
     }
     
-    @Published private(set) var imageState: ImageState = .empty
-    @Published var imageSelection: PhotosPickerItem? = nil {
+    @MainActor @Published private(set) var imageState: ImageState = .empty
+    @MainActor @Published var imageSelection: PhotosPickerItem? = nil {
         didSet {
             if let imageSelection {
                 let progress = loadTransferable(from: imageSelection)
@@ -32,11 +32,13 @@ class ImagePickerModel: ObservableObject {
             }
         }
     }
+    
     let maxSize: CGFloat
     var imageData: Data?
     
-    init(maxSize: CGFloat) {
+    init(maxSize: CGFloat, imageData: Data?) {
         self.maxSize = maxSize
+        self.imageData = imageData
     }
     
     private func loadTransferable(from imageSelection: PhotosPickerItem) -> Progress {
