@@ -22,6 +22,7 @@ final class WorkspaceInializeViewModel: ViewModel {
     @Published var state: WorkSpaceInitalState
     @Published var title: String = ""
     @Published var description: String = ""
+    @Published var imageModel = ImagePickerModel(maxSize: 70, imageData: nil)
     
     private var cancellableBag = Set<AnyCancellable>()
     
@@ -37,7 +38,13 @@ final class WorkspaceInializeViewModel: ViewModel {
     }
     
     func trigger(_ input: WorkSpaceInitalInput) {
-        
+        switch input {
+        case .tapCompleteButton:
+            createWorkspace()
+        }
     }
     
+    private func createWorkspace() {
+        
+    }
 }

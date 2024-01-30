@@ -10,14 +10,18 @@ import SwiftUI
 struct WorkspaceIntalizeView: View {
     
     @Binding var presenting: Bool
-    @ObservedObject private var viewModel: WorkspaceInializeViewModel = .init()
-    @StateObject var imageViewModel = ImagePickerModel(maxSize: 70)
+    @ObservedObject private var viewModel: WorkspaceInializeViewModel
+    
+    init(presenting: Binding<Bool>, viewModel: WorkspaceInializeViewModel) {
+        self._presenting = presenting
+        self.viewModel = viewModel
+    }
     
     var body: some View {
         NavigationStack {
             ZStack {
                 VStack {
-                    ImagePickerView(viewModel: imageViewModel)
+                    ImagePickerView(viewModel: viewModel.imageModel)
                     .padding(.bottom, 16)
                     
                     TitleTextField(title: "워크스페이스 이름", isValid: $viewModel.state.isValidTitle, placeHolder: "워크스페이스 이름을 입력하세요 (필수)", kind: .textField, textFieldTitle: $viewModel.title)
@@ -30,7 +34,7 @@ struct WorkspaceIntalizeView: View {
                 VStack {
                     Spacer()
                     KeyboardStickeyButton(isFocus: .constant(false), title: "완료", isEnable: $viewModel.state.canTapCompleteButton) {
-                        
+                        viewModel.trigger(.tapCompleteButton)
                     }
                 }
             }
@@ -49,5 +53,5 @@ struct WorkspaceIntalizeView: View {
 }
 
 #Preview {
-    WorkspaceIntalizeView(presenting: .constant(true))
+    WorkspaceIntalizeView(presenting: .constant(true), viewModel: .init())
 }
