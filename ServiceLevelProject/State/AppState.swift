@@ -73,6 +73,7 @@ struct LoginInfo {
             case .none:
                 break
             }
+            loginTypeValue = newValue.rawValue
         }
     }
 }
