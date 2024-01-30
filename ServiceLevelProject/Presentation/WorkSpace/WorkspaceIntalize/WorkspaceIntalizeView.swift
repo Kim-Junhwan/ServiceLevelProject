@@ -33,6 +33,7 @@ struct WorkspaceIntalizeView: View {
                 .padding(24)
                 VStack {
                     Spacer()
+                        .toastView(toast: $viewModel.state.toast)
                     KeyboardStickeyButton(isFocus: .constant(false), title: "완료", isEnable: $viewModel.state.canTapCompleteButton) {
                         viewModel.trigger(.tapCompleteButton)
                     }
@@ -40,13 +41,15 @@ struct WorkspaceIntalizeView: View {
             }
             .defaultBackground()
             .underlineNavigationBar(title: "워크스페이스 생성")
-        }
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/, label: {
-                    Image(systemName: "xmark")
-                        .foregroundStyle(.black)
-                })
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button(action: {
+                        presenting = false
+                    }, label: {
+                        Image(systemName: "xmark")
+                            .foregroundStyle(.black)
+                    })
+                }
             }
         }
     }

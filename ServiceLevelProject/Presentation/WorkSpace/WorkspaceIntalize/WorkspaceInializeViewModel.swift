@@ -17,6 +17,7 @@ final class WorkspaceInializeViewModel: ViewModel {
     struct WorkSpaceInitalState {
         var isValidTitle: Bool = true
         var canTapCompleteButton: Bool = false
+        var toast: Toast?
     }
     
     @Published var state: WorkSpaceInitalState
@@ -45,6 +46,11 @@ final class WorkspaceInializeViewModel: ViewModel {
     }
     
     private func createWorkspace() {
-        
+        if imageModel.imageData == nil {
+            state.toast = .init(message: "워크스페이스 이름은 1~30자로 설정해주세요.", duration: 1.0)
+        }
+        if !Validator.isValid(category: .workspaceName, title) {
+            state.toast = .init(message: "워크스페이스 이미지를 등록해주세요.", duration: 1.0)
+        }
     }
 }

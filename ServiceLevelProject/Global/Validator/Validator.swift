@@ -14,12 +14,13 @@ struct Validator {
         case nick
         case phoneNumber
         case password
+        case workspaceName
         
         var regex: String {
             switch self {
             case .email:
                 return "^[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.com$"
-            case .nick:
+            case .nick, .workspaceName:
                 return "[A-Z0-9a-z가-힣]{1,30}"
             case .phoneNumber:
                 return "^01[0-9]-([0-9]{3,4})-([0-9]{4})$"
