@@ -25,7 +25,7 @@ final class DefaultWorkspaceRepository: WorkspaceRepository {
             if let description = query.description {
                 multipartFormData.append(Data(description.utf8), withName: "description")
             }
-        }, with: WorkspaceRouter.createWorkspace)
+        }, with: WorkspaceRouter.createWorkspace, interceptor: TokenInterceptor())
             .slpSerializingDecodable(WorkspaceListResponseDTO.self).value
         
         return .init(id: value.ownerId, name: value.name, description: value.description, thumbnailPath: value.thumbnail, ownerId: value.ownerId, createAt: try value.createdAt.toDate())
