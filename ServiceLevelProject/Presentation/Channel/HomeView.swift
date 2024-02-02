@@ -20,6 +20,13 @@ struct HomeView: View {
                     EmptyHomeView()
                 }
             }
+            .onAppear {
+                Task {
+                    do {
+                        let value = try await DefaultWorkspaceRepository().fetchComeInWorkspaceList()
+                    }
+                }
+            }
             .underlineNavigationBar(title: "")
             .toolbarBackground(.white, for: .navigationBar)
             .toolbar {
