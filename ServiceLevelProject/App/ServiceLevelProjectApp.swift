@@ -20,9 +20,7 @@ struct ServiceLevelProjectApp: App {
     
     var body: some Scene {
         WindowGroup {
-            NavigationStack {
-                authDIContainer.makeContentView()
-            }
+            authDIContainer.makeContentView()
             .environmentObject(authDIContainer)
             .environmentObject(authDIContainer.appState)
                 .onOpenURL(perform: { url in

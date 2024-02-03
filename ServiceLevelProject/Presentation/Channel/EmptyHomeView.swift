@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-//qwer1234!Q
+
 struct EmptyHomeView: View {
     var body: some View {
         VStack {
