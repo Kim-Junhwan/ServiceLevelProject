@@ -29,4 +29,19 @@ enum CustomFont {
             return .system(size: 12, weight: .regular)
         }
     }
+    
+    var uifont: UIFont {
+        switch self {
+        case .title1:
+            return .systemFont(ofSize: 22, weight: .bold)
+        case .title2:
+            return .systemFont(ofSize: 14, weight: .bold)
+        case .bodyBold:
+            return .systemFont(ofSize: 13, weight: .bold)
+        case .body:
+            return .systemFont(ofSize: 13, weight: .regular)
+        case .caption:
+            return .systemFont(ofSize: 12, weight: .regular)
+        }
+    }
 }
