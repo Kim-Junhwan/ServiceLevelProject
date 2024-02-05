@@ -28,7 +28,6 @@ struct SideMenu: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
-        .ignoresSafeArea()
         .animation(.easeInOut, value: isPresenting)
     }
 }
