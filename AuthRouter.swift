@@ -23,15 +23,15 @@ enum AuthRouter: URLRequestConvertible {
     var path: String {
         switch self {
         case .checkValidEmail(_):
-            return "v1/users/validation/email"
+            return "/v1/users/validation/email"
         case .registerUser(_):
-            return "v1/users/join"
+            return "/v1/users/join"
         case .kakaoLogin(_):
-            return "v1/users/login/kakao"
+            return "/v1/users/login/kakao"
         case .appleLogin(_):
-            return "v1/users/login/apple"
+            return "/v1/users/login/apple"
         case .emailLogin(_):
-            return "v2/users/login"
+            return "/v2/users/login"
         }
     }
     

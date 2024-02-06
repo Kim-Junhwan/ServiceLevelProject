@@ -24,9 +24,9 @@ enum WorkspaceRouter: URLRequestConvertible {
     var path: String {
         switch self {
         case .fetchComeInWorkspaceList:
-            return "v1/workspaces"
+            return "/v1/workspaces"
         case .createWorkspace:
-            return "v1/workspaces"
+            return "/v1/workspaces"
         }
     }
     

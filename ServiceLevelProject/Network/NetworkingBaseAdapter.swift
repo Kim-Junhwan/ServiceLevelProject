@@ -12,7 +12,7 @@ struct NetworkingBaseAdapter: RequestAdapter {
     
     func adapt(_ urlRequest: URLRequest, for session: Alamofire.Session, completion: @escaping (Result<URLRequest, Error>) -> Void) {
         var urlRequest = urlRequest
-        let baseURL = "http://slp.sesac.kr:27888/"
+        let baseURL = "http://slp.sesac.kr:27888"
         guard let SLPAPIKey = Bundle.main.infoDictionary?["SESAC_APP_KEY"] as? String,
               let path = urlRequest.url?.absoluteString,
               let requestURL = URL(string: "\(baseURL)\(path)")
