@@ -31,7 +31,8 @@ class APIEventLogger: EventMonitor {
           "URL: " + (request.request?.url?.absoluteString ?? "") + "\n"
             + "Result: " + "\(response.result)" + "\n"
             + "StatusCode: " + "\(response.response?.statusCode ?? 0)" + "\n"
-            + "Data: \(response.data?.toPrettyPrintedString ?? "")"
+            + "Data: \(response.data?.toPrettyPrintedString ?? "")" + "\n"
+            + "Header: \(response.response?.headers)"
         )
     }
 }

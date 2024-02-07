@@ -22,4 +22,8 @@ final class SesacSession: Session {
     func accessTokenRequest(_ convertible: URLRequestConvertible, interceptor: RequestInterceptor? = TokenInterceptor()) -> DataRequest {
         return request(convertible, interceptor: interceptor)
     }
+    
+    func accessTokenRequest(_ convertible: URLConvertible, interceptor: RequestInterceptor? = TokenInterceptor()) -> DataRequest {
+        return request(convertible, interceptor: interceptor)
+    }
 }
