@@ -10,7 +10,8 @@ import SwiftUI
 struct WorkspaceListView: View {
     
     @Binding var isPresenting: Bool
-    @State var workspaceList: [Int] = [1,2,3]
+    @EnvironmentObject var appState: AppState
+    @State private var showCreateWorkspace: Bool = false
     
     var body: some View {
             HStack {
@@ -21,10 +22,12 @@ struct WorkspaceListView: View {
                             .frame(width: proxy.size.width * 0.8)
                             .clipShape(.rect(cornerRadius: 20))
                         VStack(alignment: .leading, spacing: 0) {
+                            Spacer()
+                                .frame(height: proxy.safeAreaInsets.bottom)
                             Rectangle()
                                 .fill(.backgroundPrimary)
-                                .frame(height:100)
                                 .clipShape(.rect(topTrailingRadius: 20))
+                                .frame(height: 100)
                                 .overlay(alignment: .bottomLeading) {
                                     Text("워크스페이스")
                                         .font(CustomFont.title1.font)
@@ -35,23 +38,22 @@ struct WorkspaceListView: View {
                             .toolbar(.visible, for: .navigationBar)
                             VStack(alignment: .leading) {
                                 SideMenuOptionButton(title: "워크스페이스 추가", image: Image(systemName: "plus")) {
-                                    print("워크스페이스 추가")
+                                    showCreateWorkspace = true
                                 }
                                 SideMenuOptionButton(title: "도움말", image: Image(systemName: "questionmark.circle")) {
                                     print("도움말")
                                 }
                             }
-                            .offset(y: -proxy.safeAreaInsets.bottom)
                             .padding([.leading], 16)
                         }
+                        .offset(y: -proxy.safeAreaInsets.bottom)
                         .background(.clear)
                         .frame(width: proxy.size.width * 0.8)
-                        .onAppear {
-                            print(proxy.size)
-                            print(proxy.safeAreaInsets)
-                        }
                     }
                     .ignoresSafeArea()
+                    .sheet(isPresented: $showCreateWorkspace, content: {
+                        /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Content@*/Text("Sheet Content")/*@END_MENU_TOKEN@*/
+                    })
                 }
                 Spacer()
             }
@@ -60,11 +62,12 @@ struct WorkspaceListView: View {
     
     @ViewBuilder
     var workspaceContent: some View {
-        if workspaceList.isEmpty {
+        if appState.workspaceList.list.isEmpty {
             SideMenuEmptyWorkspace()
+                .frame(maxHeight: .infinity)
                 .padding(24)
         } else {
-            SideMenuWorkspaceListView()
+            SideMenuWorkspaceListView(workspaceList: .constant(appState.workspaceList.list.map{ WorkspaceThumbnailModel(title: $0.name, createdAt: DateFormatter.yearMonthDateFormatter.string(from: $0.createAt), imagePath: $0.thumbnailPath) }))
                 .padding([.leading, .trailing], 6)
         }
     }
@@ -92,6 +95,6 @@ struct SideMenuOptionButton: View {
 }
 
 #Preview {
-    WorkspaceListView(isPresenting: .constant(true))
+    WorkspaceListView(isPresenting: .constant(false))
         .environmentObject(AppState())
 }

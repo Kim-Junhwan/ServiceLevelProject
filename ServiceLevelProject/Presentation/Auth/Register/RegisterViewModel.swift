@@ -86,7 +86,7 @@ final class RegisterViewModel: ViewModel {
                     removeHypenNumber.removeLast()
                 }
                 self.originPhoneNumber = removeHypenNumber
-                self.phoneNumber = self.originPhoneNumber.withHypen
+                //self.phoneNumber = self.originPhoneNumber.withHypen
             }
             .store(in: &cancellableBag)
     }

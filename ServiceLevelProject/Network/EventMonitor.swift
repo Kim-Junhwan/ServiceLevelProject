@@ -32,7 +32,7 @@ class APIEventLogger: EventMonitor {
             + "Result: " + "\(response.result)" + "\n"
             + "StatusCode: " + "\(response.response?.statusCode ?? 0)" + "\n"
             + "Data: \(response.data?.toPrettyPrintedString ?? "")" + "\n"
-            + "Header: \(response.response?.headers)"
+          + "Header: \(String(describing: response.response?.headers))"
         )
     }
 }
