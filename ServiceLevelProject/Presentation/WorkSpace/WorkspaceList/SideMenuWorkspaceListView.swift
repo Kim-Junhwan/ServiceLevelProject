@@ -60,6 +60,7 @@ struct WorkspaceSideMenuCell: View {
                         .font(CustomFont.bodyBold.font)
                     Text(workspace.createdAt)
                         .font(CustomFont.body.font)
+                        .foregroundStyle(.textSecondary)
                 }
                 Spacer()
                 
