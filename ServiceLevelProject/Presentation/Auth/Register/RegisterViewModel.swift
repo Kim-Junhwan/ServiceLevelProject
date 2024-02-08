@@ -48,14 +48,12 @@ final class RegisterViewModel: ViewModel {
     private var checkValidEmail: Bool = false
     private var originPhoneNumber: String = ""
     
-    var diContainer: AuthorizationSceneDIContainer
     let checkEmailUseCase: CheckEmailUseCase
     let registerUseCase: RegisterUserUseCase
     
-    init(authDIContainer: AuthorizationSceneDIContainer, checkEmailUseCase: CheckEmailUseCase, registerUseCase: RegisterUserUseCase) {
+    init(checkEmailUseCase: CheckEmailUseCase, registerUseCase: RegisterUserUseCase) {
         self.state = RegisterState()
         self.checkEmailUseCase = checkEmailUseCase
-        self.diContainer = authDIContainer
         self.registerUseCase = registerUseCase
         
         $email
