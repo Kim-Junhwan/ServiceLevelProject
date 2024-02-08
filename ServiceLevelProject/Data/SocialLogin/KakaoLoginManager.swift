@@ -25,7 +25,6 @@ struct KakaoLoginManager {
                     continuation.resume(throwing: error)
                 }
                 guard let oauthToken = token?.accessToken else {
-                    continuation.resume(throwing: KakaoLoginError.cannotFetchToken)
                     return
                 }
                 continuation.resume(returning: oauthToken)
@@ -40,7 +39,6 @@ struct KakaoLoginManager {
                     continuation.resume(throwing: error)
                 }
                 guard let oauthToken = token?.accessToken else {
-                    continuation.resume(throwing: KakaoLoginError.cannotFetchToken)
                     return
                 }
                 continuation.resume(returning: oauthToken)
