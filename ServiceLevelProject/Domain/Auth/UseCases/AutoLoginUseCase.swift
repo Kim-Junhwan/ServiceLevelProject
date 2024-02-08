@@ -8,7 +8,7 @@
 import Foundation
 
 protocol AutoLoginUseCase {
-    func excute(_ platform: LoginPlatform) async throws
+    func excute() async throws
 }
 
 class DefaultAutoLoginUseCase {
@@ -22,7 +22,8 @@ class DefaultAutoLoginUseCase {
 }
 
 extension DefaultAutoLoginUseCase: AutoLoginUseCase {
-    func excute(_ platform: LoginPlatform) async throws {
+    func excute() async throws {
+        let platform = appState.loginInfo.loginType
         let userProfile: UserProfile
         switch platform {
         case .kakao(let oauthToken):
