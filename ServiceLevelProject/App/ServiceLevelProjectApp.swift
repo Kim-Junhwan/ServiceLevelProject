@@ -8,10 +8,11 @@
 import SwiftUI
 import KakaoSDKCommon
 import KakaoSDKAuth
+import Swinject
 
 @main
 struct ServiceLevelProjectApp: App {
-    @StateObject var authDIContainer = AuthorizationSceneDIContainer()
+    
     
     init() {
         let kakaokAPIKey = Bundle.main.infoDictionary?["KAKAO_NATIVE_APP_KEY"] ?? ""
@@ -20,9 +21,8 @@ struct ServiceLevelProjectApp: App {
     
     var body: some Scene {
         WindowGroup {
-            authDIContainer.makeContentView()
-            .environmentObject(authDIContainer)
-            .environmentObject(authDIContainer.appState)
+            ContentView()
+                .environmentObject(SharedAssembler.shared.resolve(AppState.self))
                 .onOpenURL(perform: { url in
                     if (AuthApi.isKakaoTalkLoginUrl(url)) {
                         _ = AuthController.handleOpenUrl(url: url)
