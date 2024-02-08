@@ -11,7 +11,7 @@ struct RegisterView: View {
     
     @FocusState var focusFeild: RegisterViewModel.FocusTextField?
     @Binding var isPresenting: Bool
-    @StateObject var viewModel: RegisterViewModel
+    @StateObject var viewModel: RegisterViewModel = SharedAssembler.shared.resolve(RegisterViewModel.self)
     
     var body: some View {
         NavigationStack {
@@ -90,5 +90,5 @@ private final class TestUsecase: RegisterUserUseCase {
 }
 
 #Preview {
-    RegisterView(isPresenting: .constant(true), viewModel: .init(authDIContainer: .init(), checkEmailUseCase: TestAuthRepository(), registerUseCase: TestUsecase()))
+    RegisterView(isPresenting: .constant(true))
 }

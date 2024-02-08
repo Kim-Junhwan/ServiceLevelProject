@@ -8,9 +8,8 @@
 import SwiftUI
 
 struct ContentView: View {
-    @EnvironmentObject var diContainer: AuthorizationSceneDIContainer
     @EnvironmentObject var appState: AppState
-    let viewModel: ContentViewModel
+    var viewModel: ContentViewModel = SharedAssembler.shared.resolve(ContentViewModel.self)
     
     var body: some View {
         content
@@ -29,55 +28,49 @@ struct ContentView: View {
     }
 }
 
-extension ContentView {
-    class ContentViewModel: ViewModel {
-        
-        let loginUseCase: AutoLoginUseCase
-        let container: AuthorizationSceneDIContainer
-        
-        enum FlowInput {
-            case checkLoggedIn
-            case autoLogin
+class ContentViewModel: ViewModel {
+    
+    let loginUseCase: AutoLoginUseCase
+    
+    enum FlowInput {
+        case checkLoggedIn
+        case autoLogin
+    }
+    
+    struct FlowState {
+        var isLoggedIn: Bool = false
+    }
+    
+    @Published var state: FlowState
+    
+    init(loginUseCase: AutoLoginUseCase) {
+        self.loginUseCase = loginUseCase
+        self.state = FlowState()
+    }
+    
+    func trigger(_ input: FlowInput) {
+        switch input {
+        case .checkLoggedIn:
+            break
+        case .autoLogin:
+            autoLogin()
         }
-        
-        struct FlowState {
-            var isLoggedIn: Bool = false
-        }
-        
-        @Published var state: FlowState
-        
-        init(loginUseCase: AutoLoginUseCase, container: AuthorizationSceneDIContainer) {
-            self.loginUseCase = loginUseCase
-            self.container = container
-            self.state = FlowState()
-        }
-        
-        func trigger(_ input: FlowInput) {
-            switch input {
-            case .checkLoggedIn:
-                break
-            case .autoLogin:
-                autoLogin()
-            }
-        }
-        
-        private func autoLogin() {
-            Task {
-                let loginPlatform = container.appState.loginInfo.loginType
-                try await loginUseCase.excute(loginPlatform)
-            }
+    }
+    
+    private func autoLogin() {
+        Task {
+            try await loginUseCase.excute()
         }
     }
 }
 
 final class MockAutoLoginUseCase: AutoLoginUseCase {
-    func excute(_ platform: LoginPlatform) async throws {
+    func excute() async throws {
     }
     
 }
 
 #Preview {
-    ContentView(viewModel: .init(loginUseCase: MockAutoLoginUseCase(), container: .init()))
-        .environmentObject(AuthorizationSceneDIContainer())
+    ContentView()
         .environmentObject(AppState())
 }

@@ -16,7 +16,7 @@ struct EmailLoginView: View {
     
     @FocusState private var focusFeild: FocusTextField?
     @Binding var isPresenting: Bool
-    @ObservedObject var viewModel: EmailLoginViewModel
+    @StateObject var viewModel: EmailLoginViewModel = SharedAssembler.shared.resolve(EmailLoginViewModel.self)
     
     var body: some View {
         NavigationStack {

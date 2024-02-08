@@ -13,8 +13,7 @@ struct LoginView: View {
     
     @State private var showRegisterView: Bool = false
     @State private var showEmailLoginView: Bool = false
-    @ObservedObject var viewModel: SocialLoginViewModel
-    @EnvironmentObject var diContainer: AuthorizationSceneDIContainer
+    @ObservedObject var viewModel: SocialLoginViewModel = SharedAssembler.shared.resolve(SocialLoginViewModel.self)
     
     var appleLoginButton: some View {
         SignInWithAppleButton(onRequest: { request in
@@ -77,10 +76,10 @@ struct LoginView: View {
         .presentationDragIndicator(.visible)
         .font(CustomFont.title2.font)
         .sheet(isPresented: $showRegisterView, content: {
-            diContainer.makeRegisterView(presenting: $showRegisterView)
+            RegisterView(isPresenting: $showRegisterView)
         })
         .sheet(isPresented: $showEmailLoginView, content: {
-            diContainer.makeEmailLoginView(presenting: $showEmailLoginView)
+            EmailLoginView(isPresenting: $showEmailLoginView)
         })
     }
 }
@@ -93,5 +92,5 @@ class MockLoginUseCase: LoginUseCase {
 }
 
 #Preview {
-    LoginView(viewModel: .init(loginUseCase: MockLoginUseCase(), diContainer: .init()))
+    LoginView()
 }
