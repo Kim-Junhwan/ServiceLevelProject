@@ -7,15 +7,15 @@
 
 import Foundation
 
-class BaseState {}
-
-final class AppState: BaseState, ObservableObject {
-    @MainActor @Published var isLoggedIn: Bool = false
+final class AppState: ObservableObject {
+    @Published var isLoggedIn: Bool = false
+    @Published var workspaceList: WorkspaceList = .init(list: [])
+    @Published var userData: UserData = .init(nickname: "")
     var loginInfo: LoginInfo = .init()
-    var userData: UserData = .init(nickname: "")
-    
-    @MainActor func setLoginStatus(_ bool: Bool) {
-        self.isLoggedIn = bool
+    var deviceToken: String {
+        get {
+            return ""
+        }
     }
     
     func setLoginInfo(userProfile: UserProfile) {
@@ -78,7 +78,7 @@ struct LoginInfo {
     }
 }
 
-class Token {
+struct Token {
     static var accessToken: String? {
         get {
             try? KeychainManager.shared.readTokenAtKeyChain(key: "accessToken")
@@ -97,3 +97,5 @@ class Token {
         }
     }
 }
+
+
