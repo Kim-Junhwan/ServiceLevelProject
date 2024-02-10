@@ -11,22 +11,25 @@ struct HomeView: View {
     
     @State var hasChatList: Bool = true
     @State var showWorkspaceList: Bool = false
+    @EnvironmentObject var appState: AppState
+    
+    var dragGesture: some Gesture {
+         DragGesture(minimumDistance: 100)
+            .onChanged { gesture in
+                if gesture.startLocation.x < CGFloat(20) {
+                    showWorkspaceList = true
+                }
+            }
+    }
     
     var body: some View {
         ZStack {
             NavigationStack {
                 VStack {
-                    if hasChatList {
+                    if !appState.workspaceList.list.isEmpty {
                         HomeTabView()
                     } else {
                         EmptyHomeView()
-                    }
-                }
-                .onAppear {
-                    Task {
-                        do {
-                            let value = try await DefaultWorkspaceRepository().fetchComeInWorkspaceList()
-                        }
                     }
                 }
                 .underlineNavigationBar(title: "")
@@ -37,6 +40,7 @@ struct HomeView: View {
                             Button(action: {
                                 showWorkspaceList = true
                             }, label: {
+                                
                                 Image(systemName: "star")
                                     .resizable()
                                     .frame(width: 32, height: 32)
@@ -52,13 +56,38 @@ struct HomeView: View {
                         Button(action: {
                             
                         }, label: {
-                            Image(systemName: "xmark")
+                            userProfileView
+                                .frame(width: 32, height: 32)
+                                .background(.brandGreen)
+                                .clipShape(Circle())
+                                .overlay {
+                                    Circle()
+                                        .stroke(.black, lineWidth: 2)
+                                }
                         })
                     }
                 }
-                
             }
+            
             SideMenu(isPresenting: $showWorkspaceList, content: AnyView(WorkspaceListView(isPresenting: $showWorkspaceList)))
+        }
+        .gesture(dragGesture)
+    }
+    
+    @ViewBuilder
+    var userProfileView: some View {
+        if let profileUrl = appState.userData.profileImagePath {
+            FetchImageFromServerView(url: profileUrl) {
+                Image(.noPhotoGreen)
+                    .resizable()
+                    .scaledToFit()
+                    .foregroundStyle(.white)
+            }
+        } else {
+            Image(.noPhotoGreen)
+                .resizable()
+                .scaledToFit()
+                .foregroundStyle(.white)
         }
     }
 }
