@@ -12,16 +12,18 @@ struct WorkspaceThumbnailModel: Identifiable {
     let title: String
     let createdAt: String
     let imagePath: String
+    let ownerId: Int
 }
 
 struct SideMenuWorkspaceListView: View {
     @Binding var workspaceList: [WorkspaceThumbnailModel]
     @State private var selection: UUID?
+    @EnvironmentObject var appState: AppState
     
     var body: some View {
         
         List(workspaceList) { workspace in
-            WorkspaceSideMenuCell(workspace: workspace, isSelected: workspace.id == selection) {
+            WorkspaceSideMenuCell(workspace: workspace, userId: appState.userData.id, isSelected: workspace.id == selection) {
                 selection = workspace.id
             }
             .listRowInsets(.init(top: 6, leading: 2, bottom: 6, trailing: 2))
@@ -35,8 +37,10 @@ struct SideMenuWorkspaceListView: View {
 struct WorkspaceSideMenuCell: View {
     
     let workspace: WorkspaceThumbnailModel
+    let userId: Int
     var isSelected: Bool
     let action: ()-> Void
+    @State private var isConfirming = false
     
     var body: some View {
         Button {
@@ -65,7 +69,7 @@ struct WorkspaceSideMenuCell: View {
                 Spacer()
                 if isSelected {
                     Button(action: {
-                        print("Hello")
+                        isConfirming = true
                     }, label: {
                         Image(systemName: "ellipsis")
                             .scaledToFit()
@@ -77,6 +81,9 @@ struct WorkspaceSideMenuCell: View {
             .padding(8)
             .frame(maxWidth: .infinity)
             .background(isSelected ? .brandGray : .white, in: RoundedRectangle(cornerRadius: 10))
+            .confirmationDialog("", isPresented: $isConfirming) {
+                WorkspaceActionSheetView(isAdmin: true)
+            }
         }
     }
 }
