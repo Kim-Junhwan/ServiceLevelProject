@@ -17,7 +17,8 @@ final class SharedAssembler {
         self.assembler = Assembler([
             AppStateAssembly(),
             NetworkAssembly(),
-            AuthAssembly()
+            AuthAssembly(),
+            WorkspaceAssembly()
         ])
     }
     
