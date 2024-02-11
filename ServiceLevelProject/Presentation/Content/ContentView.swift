@@ -6,10 +6,10 @@
 //
 
 import SwiftUI
+import Combine
 
 struct ContentView: View {
-    @EnvironmentObject var appState: AppState
-    var viewModel: ContentViewModel = SharedAssembler.shared.resolve(ContentViewModel.self)
+    @StateObject var viewModel: ContentViewModel = SharedAssembler.shared.resolve(ContentViewModel.self)
     
     var body: some View {
         content
@@ -17,7 +17,7 @@ struct ContentView: View {
     
     @ViewBuilder
     private var content: some View {
-        if appState.isLoggedIn {
+        if viewModel.state.isLoggedIn {
             HomeView()
         } else {
             OnBoardingView()
@@ -28,9 +28,8 @@ struct ContentView: View {
     }
 }
 
-class ContentViewModel: ViewModel {
-    
-    let loginUseCase: AutoLoginUseCase
+
+class ContentViewModel: ViewModel, ObservableObject {
     
     enum FlowInput {
         case checkLoggedIn
@@ -42,10 +41,15 @@ class ContentViewModel: ViewModel {
     }
     
     @Published var state: FlowState
+    let loginUseCase: AutoLoginUseCase
+    let appState: AppState
+    private var cancellableBag = Set<AnyCancellable>()
     
-    init(loginUseCase: AutoLoginUseCase) {
+    init(loginUseCase: AutoLoginUseCase, appState: AppState) {
         self.loginUseCase = loginUseCase
         self.state = FlowState()
+        self.appState = appState
+        setUpBinding()
     }
     
     func trigger(_ input: FlowInput) {
@@ -61,6 +65,15 @@ class ContentViewModel: ViewModel {
         Task {
             try await loginUseCase.excute()
         }
+    }
+    
+    private func setUpBinding() {
+        appState.$isLoggedIn
+            .receive(on: RunLoop.main)
+            .sink { value in
+                self.state.isLoggedIn = value
+            }
+            .store(in: &cancellableBag)
     }
 }
 

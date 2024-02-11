@@ -8,8 +8,8 @@
 import Foundation
 
 final class AppState: ObservableObject {
-    @Published var isLoggedIn: Bool = false
-    @Published var workspaceList: WorkspaceList = .init(list: [])
+    @MainActor @Published var isLoggedIn: Bool = false
+    @MainActor @Published var workspaceList: WorkspaceList = .init(list: [])
     @Published var userData: UserData = .init(nickname: "")
     var loginInfo: LoginInfo = .init()
     var deviceToken: String {

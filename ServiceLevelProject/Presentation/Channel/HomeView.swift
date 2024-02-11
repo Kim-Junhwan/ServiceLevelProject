@@ -46,9 +46,10 @@ struct HomeView: View {
                                     .frame(width: 32, height: 32)
                                     .background(.red)
                                     .clipShape(.rect(cornerRadius: 8))
+                                Text("No WorkSpace")
+                                    .font(CustomFont.title1.font)
+                                    .foregroundStyle(.black)
                             })
-                            Text("No WorkSpace")
-                                .font(CustomFont.title1.font)
                         }
                     }
                     
@@ -68,7 +69,6 @@ struct HomeView: View {
                     }
                 }
             }
-            
             SideMenu(isPresenting: $showWorkspaceList, content: AnyView(WorkspaceListView(isPresenting: $showWorkspaceList)))
         }
         .gesture(dragGesture)
