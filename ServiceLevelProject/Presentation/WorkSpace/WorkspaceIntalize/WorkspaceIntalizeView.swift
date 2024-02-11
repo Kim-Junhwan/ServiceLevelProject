@@ -10,12 +10,7 @@ import SwiftUI
 struct WorkspaceIntalizeView: View {
     
     @Binding var presenting: Bool
-    @ObservedObject private var viewModel: WorkspaceInializeViewModel
-    
-    init(presenting: Binding<Bool>, viewModel: WorkspaceInializeViewModel) {
-        self._presenting = presenting
-        self.viewModel = viewModel
-    }
+    @StateObject private var viewModel: WorkspaceInializeViewModel = SharedAssembler.shared.resolve(WorkspaceInializeViewModel.self)
     
     var body: some View {
         NavigationStack {
@@ -51,10 +46,13 @@ struct WorkspaceIntalizeView: View {
                     })
                 }
             }
+            .onReceive(viewModel.$state, perform: { state  in
+                presenting = !state.successCreateWorkspace
+            })
         }
     }
 }
 
 #Preview {
-    WorkspaceIntalizeView(presenting: .constant(true), viewModel: .init())
+    WorkspaceIntalizeView(presenting: .constant(true))
 }

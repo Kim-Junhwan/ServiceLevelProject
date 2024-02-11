@@ -17,6 +17,7 @@ final class WorkspaceInializeViewModel: ViewModel {
     struct WorkSpaceInitalState {
         var isValidTitle: Bool = true
         var canTapCompleteButton: Bool = false
+        var successCreateWorkspace: Bool = false
         var toast: Toast?
     }
     
@@ -26,9 +27,10 @@ final class WorkspaceInializeViewModel: ViewModel {
     @Published var imageModel = ImagePickerModel(maxSize: 70, imageData: nil)
     private var cancellableBag = Set<AnyCancellable>()
     
-    let workspaceRepository: WorkspaceRepository = DefaultWorkspaceRepository()
+    let createWorkspaceUseCase: CreateWorkspaceUseCase
     
-    init() {
+    init(createWorkspaceUseCase: CreateWorkspaceUseCase) {
+        self.createWorkspaceUseCase = createWorkspaceUseCase
         self.state = WorkSpaceInitalState()
         $title
             .receive(on: RunLoop.main)
@@ -57,10 +59,14 @@ final class WorkspaceInializeViewModel: ViewModel {
         
         Task {
             do {
-                let value = try await workspaceRepository.createWorkspace(.init(name: title, description: description, image: imageData))
-                print(value)
+                try await createWorkspaceUseCase.excute(.init(name: title, description: description, image: imageData))
+                DispatchQueue.main.async {
+                    self.state.successCreateWorkspace = true
+                }
             } catch {
-                state.toast = .init(message: error.localizedDescription, duration: 1.0)
+                DispatchQueue.main.async {
+                    self.state.toast = .init(message: error.localizedDescription, duration: 1.0)
+                }
             }
         }
     }
