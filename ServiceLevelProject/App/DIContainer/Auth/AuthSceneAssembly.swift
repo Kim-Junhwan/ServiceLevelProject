@@ -9,6 +9,7 @@ import Swinject
 
 final class AuthSceneAssembly: Assembly {
     func assemble(container: Container) {
+        let appState = container.resolve(AppState.self)!
         container.register(SocialLoginViewModel.self) { resolver in
             return SocialLoginViewModel(loginUseCase: resolver.resolve(LoginUseCase.self)!)
         }
@@ -18,7 +19,7 @@ final class AuthSceneAssembly: Assembly {
         }
         
         container.register(ContentViewModel.self) { resolver in
-            return ContentViewModel(loginUseCase: resolver.resolve(AutoLoginUseCase.self)!)
+            return ContentViewModel(loginUseCase: resolver.resolve(AutoLoginUseCase.self)!, appState: appState)
         }
         
         container.register(RegisterViewModel.self) { resolver in

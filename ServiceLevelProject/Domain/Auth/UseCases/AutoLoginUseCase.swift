@@ -13,10 +13,12 @@ protocol AutoLoginUseCase {
 
 class DefaultAutoLoginUseCase {
     let authRepository: AuthRepository
+    let workspaceRepository: WorkspaceRepository
     let appState: AppState
     
-    init(authRepository: AuthRepository, appState: AppState) {
+    init(authRepository: AuthRepository, workspaceRepository: WorkspaceRepository, appState: AppState) {
         self.authRepository = authRepository
+        self.workspaceRepository = workspaceRepository
         self.appState = appState
     }
 }
@@ -36,6 +38,10 @@ extension DefaultAutoLoginUseCase: AutoLoginUseCase {
             return
         }
         appState.setLoginInfo(userProfile: userProfile)
-        await appState.setLoginStatus(true)
+        let workspaceList = try await workspaceRepository.fetchComeInWorkspaceList()
+        await MainActor.run {
+            appState.workspaceList = workspaceList
+            appState.isLoggedIn = true
+        }
     }
 }
