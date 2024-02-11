@@ -10,7 +10,7 @@ import Foundation
 final class AppState: ObservableObject {
     @MainActor @Published var isLoggedIn: Bool = false
     @MainActor @Published var workspaceList: WorkspaceList = .init(list: [])
-    @Published var userData: UserData = .init(nickname: "")
+    @Published var userData: UserData = .init()
     var loginInfo: LoginInfo = .init()
     var deviceToken: String {
         get {
@@ -21,6 +21,7 @@ final class AppState: ObservableObject {
     func setLoginInfo(userProfile: UserProfile) {
         setToken(accessToken: userProfile.accessToken, refreshToken: userProfile.refreshToken)
         userData.nickname = userProfile.nickName
+        userData.id = userProfile.userId
         userData.profileImagePath = userProfile.profileImage
     }
     
@@ -31,8 +32,9 @@ final class AppState: ObservableObject {
 }
 
 struct UserData {
-    var nickname: String
+    var nickname: String = ""
     var profileImagePath: String?
+    var id: Int = 0
 }
 
 struct LoginInfo {
