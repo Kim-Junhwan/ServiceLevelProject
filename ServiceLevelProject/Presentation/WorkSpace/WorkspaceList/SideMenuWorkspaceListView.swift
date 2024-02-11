@@ -63,15 +63,16 @@ struct WorkspaceSideMenuCell: View {
                         .foregroundStyle(.textSecondary)
                 }
                 Spacer()
-                
-                Button(action: {
-                    print("Hello")
-                }, label: {
-                    Image(systemName: "ellipsis")
-                        .scaledToFit()
-                        .foregroundStyle(.black)
-                        .frame(width: 20, height: 20)
-                })
+                if isSelected {
+                    Button(action: {
+                        print("Hello")
+                    }, label: {
+                        Image(systemName: "ellipsis")
+                            .scaledToFit()
+                            .foregroundStyle(.black)
+                            .frame(width: 20, height: 20)
+                    })
+                }
             }
             .padding(8)
             .frame(maxWidth: .infinity)
