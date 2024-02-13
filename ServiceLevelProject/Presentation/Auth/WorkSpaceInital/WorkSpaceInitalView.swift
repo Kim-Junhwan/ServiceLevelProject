@@ -47,7 +47,7 @@ struct WorkSpaceInitalView: View {
                 }
             }
             .sheet(isPresented: $showCreateWorkspaceView, content: {
-                WorkspaceIntalizeView()
+                WorkspaceInitalizeView(presenting: $showCreateWorkspaceView)
             })
         }
     }
