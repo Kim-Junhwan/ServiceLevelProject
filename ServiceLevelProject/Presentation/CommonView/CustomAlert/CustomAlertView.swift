@@ -9,10 +9,21 @@ import SwiftUI
 
 extension View {
     
-    func customAlert<T: View>(isPresenting: Binding<Bool>, title: String, description: String? = nil, buttonStackView: @escaping () -> T) -> some View {
+    func customAlert(title: String, description: String? = nil, actionTitle: String, isPresenting: Binding<Bool>, action: @escaping ()-> Void) -> some View {
+        let vc = UIHostingController(rootView: CustomAlertView(title: title, description: description, actionTitle: actionTitle, isPresenting: isPresenting, action: action))
+        return presentCustomAlertView(isPresenting: isPresenting, vc: vc)
+    }
+    
+    func customAlert(title: String, description: String? = nil, cancelTitle: String, actionTitle: String, isPresenting: Binding<Bool>, action: @escaping ()-> Void) -> some View {
+        
+        let vc = UIHostingController(rootView: CustomAlertView(title: title, description: description, cancelTitle: cancelTitle, actionTitle: actionTitle, isPresenting: isPresenting, action: action))
+       return presentCustomAlertView(isPresenting: isPresenting, vc: vc)
+    }
+    
+    private func presentCustomAlertView(isPresenting: Binding<Bool>,vc: UIViewController) -> some View {
         let keywindow = UIApplication.shared.connectedScenes.first as! UIWindowScene
         let window = keywindow.windows.first!
-        let vc = UIHostingController(rootView: CustomAlertView(title: title, description: description, buttonStackView: buttonStackView))
+        
         vc.modalPresentationStyle = .overFullScreen
         vc.view.backgroundColor = .clear
         
@@ -26,11 +37,63 @@ extension View {
     }
 }
 
-struct CustomAlertView<AlertButtonView: View>: View {
+struct CustomAlertView: View {
+    
+    enum AlertType {
+        case ok(title: String)
+        case cancelOk(cancelTitle: String, okTitle: String)
+    }
     
     let title: String
     var description: String? = nil
-    let buttonStackView: ()-> AlertButtonView
+    let type: AlertType
+    let action: () -> Void
+    @Binding var isPresenting: Bool
+    
+    init(title: String, description: String? = nil, cancelTitle: String, actionTitle: String, isPresenting: Binding<Bool>, action: @escaping ()-> Void) {
+        self.title = title
+        self._isPresenting = isPresenting
+        self.description = description
+        self.action = action
+        self.type = .cancelOk(cancelTitle: cancelTitle, okTitle: actionTitle)
+    }
+    
+    init(title: String, description: String? = nil, actionTitle: String, isPresenting: Binding<Bool>, action: @escaping ()-> Void) {
+        self.title = title
+        self._isPresenting = isPresenting
+        self.description = description
+        self.action = action
+        self.type = .ok(title: actionTitle)
+    }
+    
+    @ViewBuilder
+    var buttonStackView: some View {
+        switch type {
+        case .ok(let title):
+            HStack {
+                RoundedButton(action: {
+                    isPresenting = false
+                }, label: {
+                    Text(title)
+                }, backgroundColor: .brandGreen)
+                
+            }
+        case .cancelOk(let cancelTitle, let okTitle):
+            HStack(spacing: 8) {
+                RoundedButton(action: {
+                    isPresenting = false
+                }, label: {
+                    Text(cancelTitle)
+                }, backgroundColor: .brandInactive)
+                
+                RoundedButton(action: {
+                    action()
+                }, label: {
+                    Text(okTitle)
+                }, backgroundColor: .brandGreen)
+            }
+        }
+    }
     
     var body: some View {
         ZStack {
@@ -49,7 +112,7 @@ struct CustomAlertView<AlertButtonView: View>: View {
                         .foregroundStyle(.textSecondary)
                 }
                 HStack(spacing: 8) {
-                    buttonStackView()
+                    buttonStackView
                 }
             }
             .padding(16)
@@ -65,20 +128,7 @@ struct CustomAlertView<AlertButtonView: View>: View {
 }
 
 #Preview {
-    CustomAlertView(title: "고양이", description: "강아지는 귀여워강아지는 귀여워강아지는 귀여워강아지는 귀여워강아지는 귀여워강아지는 귀여워강아지는 귀여워강아지는 귀여워강아지는 귀여워강아지는 귀여워강아지는 귀여워강아지는 귀여워강아지는 귀여워강아지는 귀여워강아지는 귀여워강아지는 귀여워강아지는 귀여워강아지는 귀여워강아지는 귀여워강아지는 귀여워강아지는 귀여워강아지는 귀여워강아지는 귀여워강아지는 귀여워") {
-        HStack {
-            RoundedButton(action: {
-                
-            }, label: {
-                Text("Hello")
-            }, backgroundColor: .brandGreen)
-            
-            RoundedButton(action: {
-                
-            }, label: {
-                Text("Hello")
-            }, backgroundColor: .brandGreen)
-        }
-        
+    CustomAlertView(title: "고양이", actionTitle: "확인", isPresenting: .constant(true)) {
+        print("Hello")
     }
 }
