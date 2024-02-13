@@ -13,6 +13,7 @@ struct WorkspaceThumbnailModel: Identifiable {
     let createdAt: String
     let imagePath: String
     let ownerId: Int
+    let description: String?
 }
 
 struct SideMenuWorkspaceListView: View {
@@ -21,33 +22,55 @@ struct SideMenuWorkspaceListView: View {
     @EnvironmentObject var appState: AppState
     
     var body: some View {
-        
-        List(workspaceList) { workspace in
-            WorkspaceSideMenuCell(workspace: workspace, userId: appState.userData.id, isSelected: workspace.id == selection) {
-                selection = workspace.id
+        ScrollView {
+            LazyVStack(spacing: 0) {
+                ForEach(workspaceList) { workspace in
+                    WorkspaceSideMenuCell(workspace: workspace, userId: appState.userData.id, isSelected: workspace.id == selection) {
+                        selection = workspace.id
+                    }
+                    .padding([.leading, .trailing], 6)
+                    .padding([.top, .bottom], 3)
+                }
+                
             }
-            .listRowInsets(.init(top: 6, leading: 2, bottom: 6, trailing: 2))
-            .listRowSeparator(.hidden)
         }
-        .listStyle(PlainListStyle())
-        .scrollIndicators(.hidden)
+//        List(workspaceList) { workspace in
+//            WorkspaceSideMenuCell(workspace: workspace, userId: appState.userData.id, isSelected: workspace.id == selection) {
+//                selection = workspace.id
+//            }
+//            .listRowInsets(.init(top: 6, leading: 2, bottom: 6, trailing: 2))
+//            .listRowSeparator(.hidden)
+//        }
+//        .listStyle(PlainListStyle())
+//        .scrollIndicators(.hidden)
     }
 }
 
 struct WorkspaceSideMenuCell: View {
     
-    let workspace: WorkspaceThumbnailModel
-    let userId: Int
-    var isSelected: Bool
-    let action: ()-> Void
+    private let workspace: WorkspaceThumbnailModel
+    private let userId: Int
+    private let isSelected: Bool
+    private let action: ()-> Void
+    @StateObject private var imageModel: FetchImageModel
     @State private var isConfirming = false
+    @State private var showAlert = false
+    @State private var showEditWorkspace = false
+    
+    init(workspace: WorkspaceThumbnailModel, userId: Int, isSelected: Bool, action: @escaping () -> Void) {
+        self.workspace = workspace
+        self.userId = userId
+        self.isSelected = isSelected
+        self.action = action
+        self._imageModel = StateObject(wrappedValue: FetchImageModel(url: workspace.imagePath))
+    }
     
     var body: some View {
         Button {
             action()
         } label: {
             HStack {
-                FetchImageFromServerView(url: workspace.imagePath, placeHolder: {
+                FetchImageFromServerView(imageModel: imageModel, placeHolder: {
                     Image(.workspaceBallon)
                         .resizable()
                         .aspectRatio(contentMode: .fill)
@@ -62,6 +85,7 @@ struct WorkspaceSideMenuCell: View {
                 VStack(alignment: .leading) {
                     Text(workspace.title)
                         .font(CustomFont.bodyBold.font)
+                        .foregroundStyle(.textPrimary)
                     Text(workspace.createdAt)
                         .font(CustomFont.body.font)
                         .foregroundStyle(.textSecondary)
@@ -82,8 +106,11 @@ struct WorkspaceSideMenuCell: View {
             .frame(maxWidth: .infinity)
             .background(isSelected ? .brandGray : .white, in: RoundedRectangle(cornerRadius: 10))
             .confirmationDialog("", isPresented: $isConfirming) {
-                WorkspaceActionSheetView(isAdmin: true)
+                WorkspaceActionSheetView(isAdmin: userId == workspace.ownerId, editWorkspace: $showEditWorkspace)
             }
+            .sheet(isPresented: $showEditWorkspace, content: {
+                WorkspaceEditView(isPresenting: $showEditWorkspace, title: workspace.title, description: workspace.description, imageData: imageModel.imageData ?? Data())
+            })
         }
     }
 }
