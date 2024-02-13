@@ -40,11 +40,13 @@ class ImagePickerModel: ObservableObject {
         self.maxSize = maxSize
         self.imageData = imageData
         DispatchQueue.main.async {
-            guard let imageData = imageData, let uiImage = UIImage(data: imageData) else {
-                self.imageState = .failure(TransferError.importFail)
-                return
+            if let imageData = imageData {
+                guard let uiImage = UIImage(data: imageData) else {
+                    self.imageState = .failure(TransferError.importFail)
+                    return
+                }
+                self.imageState = .success(Image(uiImage: uiImage))
             }
-            self.imageState = .success(Image(uiImage: uiImage))
         }
     }
     
