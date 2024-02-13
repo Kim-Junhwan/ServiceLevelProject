@@ -52,7 +52,7 @@ struct WorkspaceListView: View {
                     }
                     .ignoresSafeArea()
                     .sheet(isPresented: $showCreateWorkspace, content: {
-                        WorkspaceIntalizeView(presenting: $showCreateWorkspace)
+                        WorkspaceInitalizeView(presenting: $showCreateWorkspace)
                     })
                 }
                 Spacer()
@@ -67,7 +67,7 @@ struct WorkspaceListView: View {
                 .frame(maxHeight: .infinity)
                 .padding(24)
         } else {
-            SideMenuWorkspaceListView(workspaceList: .constant(appState.workspaceList.list.map{ WorkspaceThumbnailModel(title: $0.name, createdAt: DateFormatter.yearMonthDateFormatter.string(from: $0.createAt), imagePath: $0.thumbnailPath, ownerId: $0.ownerId) }))
+            SideMenuWorkspaceListView(workspaceList: .constant(appState.workspaceList.list.map{ WorkspaceThumbnailModel(title: $0.name, createdAt: DateFormatter.yearMonthDateFormatter.string(from: $0.createAt), imagePath: $0.thumbnailPath, ownerId: $0.ownerId, description: $0.description) }))
                 .padding([.leading, .trailing], 6)
         }
     }

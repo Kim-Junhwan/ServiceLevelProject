@@ -9,6 +9,7 @@ import SwiftUI
 
 struct WorkSpaceInitalView: View {
     @EnvironmentObject var appState: AppState
+    @State var showCreateWorkspaceView: Bool = false
     
     var body: some View {
         NavigationStack {
@@ -30,7 +31,7 @@ struct WorkSpaceInitalView: View {
                 }
                 Spacer()
                 KeyboardStickeyButton(isFocus: .constant(false), title: "워크스페이스 생성", isEnable: .constant(true)) {
-                    
+                    showCreateWorkspaceView = true
                 }
             }
             .defaultBackground()
@@ -45,15 +46,11 @@ struct WorkSpaceInitalView: View {
                     })
                 }
             }
+            .sheet(isPresented: $showCreateWorkspaceView, content: {
+                WorkspaceIntalizeView()
+            })
         }
     }
-}
-
-final class MockLoginInfoRepository: LoginInfoRepository {
-    var loginType: LoginType = .kakao
-    var isLoggedIn: Bool = true
-    var nick: String = "고양이"
-    func saveToken(accessToken: String, refreshToken: String?) throws {}
 }
 
 #Preview {

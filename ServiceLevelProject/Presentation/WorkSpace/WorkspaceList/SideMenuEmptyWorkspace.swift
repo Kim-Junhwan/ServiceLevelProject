@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct SideMenuEmptyWorkspace: View {
+    @State private var showWorkspaceInital = false
+    
     var body: some View {
         VStack(spacing: 20) {
             Text("워크스페이스를 찾을 수 없어요.")
@@ -16,12 +18,15 @@ struct SideMenuEmptyWorkspace: View {
                 .font(CustomFont.body.font)
             
             RoundedButton(action: {
-                
+                showWorkspaceInital = true
             }, label: {
                 Text("워크스페이스 생성")
             }, backgroundColor: .brandGreen)
         }
         .multilineTextAlignment(.center)
+        .sheet(isPresented: $showWorkspaceInital, content: {
+            WorkspaceInitalizeView(presenting: $showWorkspaceInital)
+        })
     }
 }
 
