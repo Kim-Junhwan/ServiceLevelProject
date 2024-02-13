@@ -39,6 +39,13 @@ class ImagePickerModel: ObservableObject {
     init(maxSize: CGFloat, imageData: Data?) {
         self.maxSize = maxSize
         self.imageData = imageData
+        DispatchQueue.main.async {
+            guard let imageData = imageData, let uiImage = UIImage(data: imageData) else {
+                self.imageState = .failure(TransferError.importFail)
+                return
+            }
+            self.imageState = .success(Image(uiImage: uiImage))
+        }
     }
     
     private func loadTransferable(from imageSelection: PhotosPickerItem) -> Progress {
