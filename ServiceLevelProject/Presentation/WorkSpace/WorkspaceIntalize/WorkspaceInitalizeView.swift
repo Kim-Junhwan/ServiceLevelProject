@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct WorkspaceIntalizeView: View {
+struct WorkspaceInitalizeView: View {
     
     @Binding var presenting: Bool
     @StateObject private var viewModel: WorkspaceInializeViewModel = SharedAssembler.shared.resolve(WorkspaceInializeViewModel.self)
@@ -54,5 +54,5 @@ struct WorkspaceIntalizeView: View {
 }
 
 #Preview {
-    WorkspaceIntalizeView(presenting: .constant(true))
+    WorkspaceInitalizeView(presenting: .constant(true))
 }
