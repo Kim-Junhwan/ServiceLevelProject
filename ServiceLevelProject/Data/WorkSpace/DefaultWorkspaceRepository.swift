@@ -30,4 +30,16 @@ final class DefaultWorkspaceRepository: WorkspaceRepository {
         
         return .init(id: value.ownerId, name: value.name, description: value.description, thumbnailPath: value.thumbnail, ownerId: value.ownerId, createAt: try value.createdAt.toDate())
     }
+    
+    func editWorkspace(_ query: EditWorkspaceQuery) async throws -> WorkSpaceThumbnail {
+        let value = try await SSAC.upload(multipartFormData: { multipartFormData in
+            multipartFormData.append(Data(query.name.utf8), withName: "name")
+            multipartFormData.append(query.imageData, withName: "image", fileName: "\(query.name).jpeg", mimeType: "image/jpeg")
+            if let description = query.description {
+                multipartFormData.append(Data(description.utf8), withName: "description")
+            }
+        }, with: WorkspaceRouter.editWorkspace(workspaceId: query.workspaceId), interceptor: TokenInterceptor())
+            .slpSerializingDecodable(WorkspaceListResponseDTO.self).value
+        return .init(id: value.ownerId, name: value.name, description: value.description, thumbnailPath: value.thumbnail, ownerId: value.ownerId, createAt: try value.createdAt.toDate())
+    }
 }

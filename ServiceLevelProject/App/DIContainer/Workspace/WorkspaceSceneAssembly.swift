@@ -14,8 +14,9 @@ class WorkspaceSceneAssembly: Assembly {
             return WorkspaceInializeViewModel(createWorkspaceUseCase: createWorkspaceUseCase)
         }
         
-        container.register(WorkspaceEditViewModel.self) { _, title, description, imageData in
-            return WorkspaceEditViewModel(title: title, description: description, imageData: imageData)
+        container.register(WorkspaceEditViewModel.self) { resolver, title, description, imageData, id in
+            let editWorkspaceUseCase = resolver.resolve(EditWorkspaceUseCase.self)!
+            return WorkspaceEditViewModel(editWorkspaceUseCase: editWorkspaceUseCase, title: title, description: description, imageData: imageData, id: id)
         }
     }
 }

@@ -11,6 +11,7 @@ import Alamofire
 enum WorkspaceRouter: URLRequestConvertible {
     case fetchComeInWorkspaceList
     case createWorkspace
+    case editWorkspace(workspaceId: Int)
     
     var method: HTTPMethod {
         switch self {
@@ -18,6 +19,8 @@ enum WorkspaceRouter: URLRequestConvertible {
             return .get
         case .createWorkspace:
             return .post
+        case .editWorkspace:
+            return .put
         }
     }
     
@@ -27,6 +30,8 @@ enum WorkspaceRouter: URLRequestConvertible {
             return "/v1/workspaces"
         case .createWorkspace:
             return "/v1/workspaces"
+        case .editWorkspace(let workspaceId):
+            return "/v1/workspaces/\(workspaceId)"
         }
     }
     

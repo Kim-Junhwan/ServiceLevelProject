@@ -37,4 +37,8 @@ final class SharedAssembler {
     func resolve<T, Arg1, Arg2, Arg3>(_ type: T.Type, argument: Arg1, arg2: Arg2, arg3: Arg3) -> T {
         assembler.resolver.resolve(type, arguments: argument, arg2, arg3)!
     }
+    
+    func resolve<T, Arg1, Arg2, Arg3, Arg4>(_ type: T.Type, argument: Arg1, arg2: Arg2, arg3: Arg3, arg4: Arg4) -> T {
+        assembler.resolver.resolve(type, arguments: argument, arg2, arg3, arg4)!
+    }
 }
