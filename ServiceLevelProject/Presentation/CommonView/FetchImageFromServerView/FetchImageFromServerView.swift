@@ -29,11 +29,16 @@ struct FetchingImage<PlaceHolder: View>: View  {
 }
 
 struct FetchImageFromServerView<PlaceHolder: View>: View {
-    @StateObject private var viewModel: FetchImageModel
+    @ObservedObject private var viewModel: FetchImageModel
     let placeHolder: () -> PlaceHolder
     
     init(url: String, placeHolder: @escaping () -> PlaceHolder) {
         _viewModel = .init(wrappedValue: FetchImageModel(url: url))
+        self.placeHolder = placeHolder
+    }
+    
+    init(imageModel: FetchImageModel, placeHolder: @escaping () -> PlaceHolder) {
+        viewModel = imageModel
         self.placeHolder = placeHolder
     }
     
