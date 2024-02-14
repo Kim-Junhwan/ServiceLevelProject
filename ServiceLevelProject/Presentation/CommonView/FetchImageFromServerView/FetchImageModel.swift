@@ -22,6 +22,7 @@ class FetchImageModel: ObservableObject {
     
     @Published private(set) var imageState: FetchState = .empty
     var url: String
+    var imageData: Data?
     
     init(url: String) {
         self.url = url
@@ -36,6 +37,7 @@ class FetchImageModel: ObservableObject {
                     self.imageState = .empty
                     return
                 }
+                self.imageData = imageData
                 self.imageState = .success(Image(uiImage: image))
             case .failure(let error):
                 self.imageState = .failure(error)
