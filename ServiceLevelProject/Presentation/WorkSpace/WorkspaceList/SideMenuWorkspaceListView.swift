@@ -9,15 +9,25 @@ import SwiftUI
 
 struct WorkspaceThumbnailModel: Identifiable {
     let id = UUID()
+    let workspaceId: Int
     let title: String
     let createdAt: String
     let imagePath: String
     let ownerId: Int
     let description: String?
+    
+    init(workspace: WorkSpaceThumbnail) {
+        self.workspaceId = workspace.id
+        self.title = workspace.name
+        self.description = workspace.description
+        self.ownerId = workspace.ownerId
+        self.createdAt = DateFormatter.yearMonthDateFormatter.string(from: workspace.createAt)
+        self.imagePath = workspace.thumbnailPath
+    }
 }
 
 struct SideMenuWorkspaceListView: View {
-    @Binding var workspaceList: [WorkspaceThumbnailModel]
+    let workspaceList: [WorkspaceThumbnailModel]
     @State private var selection: UUID?
     @EnvironmentObject var appState: AppState
     
@@ -34,15 +44,6 @@ struct SideMenuWorkspaceListView: View {
                 
             }
         }
-//        List(workspaceList) { workspace in
-//            WorkspaceSideMenuCell(workspace: workspace, userId: appState.userData.id, isSelected: workspace.id == selection) {
-//                selection = workspace.id
-//            }
-//            .listRowInsets(.init(top: 6, leading: 2, bottom: 6, trailing: 2))
-//            .listRowSeparator(.hidden)
-//        }
-//        .listStyle(PlainListStyle())
-//        .scrollIndicators(.hidden)
     }
 }
 
@@ -109,13 +110,13 @@ struct WorkspaceSideMenuCell: View {
                 WorkspaceActionSheetView(isAdmin: userId == workspace.ownerId, editWorkspace: $showEditWorkspace)
             }
             .sheet(isPresented: $showEditWorkspace, content: {
-                WorkspaceEditView(isPresenting: $showEditWorkspace, title: workspace.title, description: workspace.description, imageData: imageModel.imageData ?? Data())
+                WorkspaceEditView(isPresenting: $showEditWorkspace, workspace: workspace, imageData: imageModel.imageData ?? Data())
             })
         }
     }
 }
 
 #Preview {
-    SideMenuWorkspaceListView(workspaceList: .constant([]))
+    SideMenuWorkspaceListView(workspaceList: [])
         .environmentObject(AppState())
 }
