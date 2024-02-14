@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct EmptyHomeView: View {
+    @State private var showWorkspaceInital = false
+    
     var body: some View {
         VStack {
             VStack(spacing: 15) {
@@ -26,9 +28,12 @@ struct EmptyHomeView: View {
             }
             Spacer()
             KeyboardStickeyButton(isFocus: .constant(false), title: "워크스페이스 생성", isEnable: .constant(true)) {
-                
+                showWorkspaceInital = true
             }
         }
+        .sheet(isPresented: $showWorkspaceInital, content: {
+            WorkspaceInitalizeView(presenting: $showWorkspaceInital)
+        })
         
     }
 }
