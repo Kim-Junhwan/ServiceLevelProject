@@ -28,7 +28,7 @@ final class DefaultWorkspaceRepository: WorkspaceRepository {
         }, with: WorkspaceRouter.createWorkspace, interceptor: TokenInterceptor())
             .slpSerializingDecodable(WorkspaceListResponseDTO.self).value
         
-        return .init(id: value.ownerId, name: value.name, description: value.description, thumbnailPath: value.thumbnail, ownerId: value.ownerId, createAt: try value.createdAt.toDate())
+        return .init(id: value.workspaceId, name: value.name, description: value.description, thumbnailPath: value.thumbnail, ownerId: value.ownerId, createAt: try value.createdAt.toDate())
     }
     
     func editWorkspace(_ query: EditWorkspaceQuery) async throws -> WorkSpaceThumbnail {
@@ -40,6 +40,6 @@ final class DefaultWorkspaceRepository: WorkspaceRepository {
             }
         }, with: WorkspaceRouter.editWorkspace(workspaceId: query.workspaceId), interceptor: TokenInterceptor())
             .slpSerializingDecodable(WorkspaceListResponseDTO.self).value
-        return .init(id: value.ownerId, name: value.name, description: value.description, thumbnailPath: value.thumbnail, ownerId: value.ownerId, createAt: try value.createdAt.toDate())
+        return .init(id: value.workspaceId, name: value.name, description: value.description, thumbnailPath: value.thumbnail, ownerId: value.ownerId, createAt: try value.createdAt.toDate())
     }
 }
