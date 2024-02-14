@@ -12,9 +12,9 @@ struct WorkspaceEditView: View {
     @Binding var isPresenting: Bool
     @ObservedObject var viewModel: WorkspaceEditViewModel
     
-    init(isPresenting: Binding<Bool>, title: String, description: String?, imageData: Data) {
+    init(isPresenting: Binding<Bool>, workspace: WorkspaceThumbnailModel, imageData: Data) {
         self._isPresenting = isPresenting
-        self.viewModel = SharedAssembler.shared.resolve(WorkspaceEditViewModel.self, argument: title, arg2: description, arg3: imageData)
+        self.viewModel = SharedAssembler.shared.resolve(WorkspaceEditViewModel.self, argument: workspace.title, arg2: workspace.description, arg3: imageData, arg4: workspace.workspaceId)
     }
     
     var body: some View {
@@ -35,7 +35,7 @@ struct WorkspaceEditView: View {
                     Spacer()
                         .toastView(toast: $viewModel.state.toast)
                     KeyboardStickeyButton(isFocus: .constant(false), title: "완료", isEnable: .constant(true)) {
-                        print(viewModel.imageModel.imageData)
+                        viewModel.trigger(.tapCompleteButton)
                     }
                 }
             }
@@ -58,6 +58,3 @@ struct WorkspaceEditView: View {
     }
 }
 
-#Preview {
-    WorkspaceEditView(isPresenting: .constant(true), title: "고양이", description: "귀ㅡ여워", imageData: Data())
-}
