@@ -26,7 +26,7 @@ extension DefaultCreateWorkspaceUseCase: CreateWorkspaceUseCase {
         let _ = try await workspaceRepository.createWorkspace(query)
         let fetchWorkspaceList = try await workspaceRepository.fetchComeInWorkspaceList()
         DispatchQueue.main.async {
-            self.appState.workspaceList = fetchWorkspaceList
+            self.appState.workspaceList = fetchWorkspaceList.list
         }
     }
     

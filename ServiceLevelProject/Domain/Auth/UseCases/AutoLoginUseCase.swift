@@ -40,7 +40,7 @@ extension DefaultAutoLoginUseCase: AutoLoginUseCase {
         appState.setLoginInfo(userProfile: userProfile)
         let workspaceList = try await workspaceRepository.fetchComeInWorkspaceList()
         await MainActor.run {
-            appState.workspaceList = workspaceList
+            appState.workspaceList = workspaceList.list
             appState.isLoggedIn = true
         }
     }

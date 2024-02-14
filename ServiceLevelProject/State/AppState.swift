@@ -9,7 +9,7 @@ import Foundation
 
 final class AppState: ObservableObject {
     @MainActor @Published var isLoggedIn: Bool = false
-    @MainActor @Published var workspaceList: WorkspaceList = .init(list: [])
+    @MainActor @Published var workspaceList: [WorkSpaceThumbnail] = []
     @Published var userData: UserData = .init()
     var loginInfo: LoginInfo = .init()
     var deviceToken: String {

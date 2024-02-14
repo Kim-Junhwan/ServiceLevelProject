@@ -8,7 +8,7 @@
 import Foundation
 
 struct WorkspaceList {
-    let list: [WorkSpaceThumbnail]
+    var list: [WorkSpaceThumbnail]
 }
 
 struct WorkSpaceThumbnail {

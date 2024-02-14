@@ -26,7 +26,7 @@ struct HomeView: View {
         ZStack {
             NavigationStack {
                 VStack {
-                    if !appState.workspaceList.list.isEmpty {
+                    if !appState.workspaceList.isEmpty {
                         HomeTabView()
                     } else {
                         EmptyHomeView()

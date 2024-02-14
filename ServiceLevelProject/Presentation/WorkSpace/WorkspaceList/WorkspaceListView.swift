@@ -62,12 +62,12 @@ struct WorkspaceListView: View {
     
     @ViewBuilder
     var workspaceContent: some View {
-        if appState.workspaceList.list.isEmpty {
+        if appState.workspaceList.isEmpty {
             SideMenuEmptyWorkspace()
                 .frame(maxHeight: .infinity)
                 .padding(24)
         } else {
-            SideMenuWorkspaceListView(workspaceList: .constant(appState.workspaceList.list.map{ WorkspaceThumbnailModel(title: $0.name, createdAt: DateFormatter.yearMonthDateFormatter.string(from: $0.createAt), imagePath: $0.thumbnailPath, ownerId: $0.ownerId, description: $0.description) }))
+            SideMenuWorkspaceListView(workspaceList: appState.workspaceList.map{ WorkspaceThumbnailModel(workspace: $0)})
                 .padding([.leading, .trailing], 6)
         }
     }

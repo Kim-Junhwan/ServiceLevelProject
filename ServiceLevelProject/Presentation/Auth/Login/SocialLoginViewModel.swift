@@ -29,7 +29,7 @@ final class SocialLoginViewModel: ViewModel {
     }
     
     func trigger(_ input: SocialLoginInput) {
-        Task { @MainActor in
+        Task {
             do {
                 switch input {
                 case .appleLogin(let idToken, let nickName):

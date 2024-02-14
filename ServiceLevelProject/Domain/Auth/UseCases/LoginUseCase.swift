@@ -33,7 +33,7 @@ extension DefaultLoginUseCase: LoginUseCase {
     
     @MainActor
     private func updateAppstate(workspaceList: WorkspaceList) async {
-        appState.workspaceList = workspaceList
+        appState.workspaceList = workspaceList.list
         appState.isLoggedIn = true
     }
     
