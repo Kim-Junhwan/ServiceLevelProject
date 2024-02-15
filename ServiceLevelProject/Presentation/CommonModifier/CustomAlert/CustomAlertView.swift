@@ -12,10 +12,19 @@ struct AlertMessage {
     var description: String? = nil
     let type: CustomAlertView.AlertType
     let action: () -> Void
+    let dismissAction: (() -> Void)? 
+    
+    init(title: String, description: String? = nil, type: CustomAlertView.AlertType, action: @escaping () -> Void,  dismissAction: (() -> Void)? = nil) {
+        self.title = title
+        self.description = description
+        self.type = type
+        self.action = action
+        self.dismissAction = dismissAction
+    }
 }
 
 extension View {
-    func customAlertDelta(alertMessage: Binding<AlertMessage?>) -> some View {
+    func customAlert(alertMessage: Binding<AlertMessage?>) -> some View {
         modifier(CustomAlertViewModifier(alertMessage: alertMessage))
     }
 }
@@ -27,7 +36,7 @@ private struct CustomAlertViewModifier: ViewModifier {
     @ViewBuilder
     func contentView() -> some View {
         if let alertMessage {
-            CustomAlertView(title: alertMessage.title, description: alertMessage.description, type: alertMessage.type, action: alertMessage.action, alertMessage: $alertMessage)
+            CustomAlertView(title: alertMessage.title, description: alertMessage.description, type: alertMessage.type, action: alertMessage.action, dismissAction: alertMessage.dismissAction, alertMessage: $alertMessage)
         }
     }
     
@@ -38,9 +47,9 @@ private struct CustomAlertViewModifier: ViewModifier {
                     .background(FullScreenCoverBackgroundRemovalView())
                 
             })
-            .transaction { transaction in
-                transaction.disablesAnimations = true
-            }
+//            .transaction { transaction in
+//                transaction.disablesAnimations = true
+//            }
     }
 }
 
@@ -73,13 +82,15 @@ struct CustomAlertView: View {
     var description: String? = nil
     let type: AlertType
     let action: () -> Void
+    let dismissAction: (() -> Void)?
     @Binding var alertMessage: AlertMessage?
     
-    init(title: String, description: String? = nil, type: AlertType, action: @escaping () -> Void, alertMessage: Binding<AlertMessage?>) {
+    init(title: String, description: String? = nil, type: AlertType, action: @escaping () -> Void, dismissAction: (() -> Void)? = nil, alertMessage: Binding<AlertMessage?>) {
         self.title = title
         self.description = description
         self.type = type
         self.action = action
+        self.dismissAction = dismissAction
         self._alertMessage = alertMessage
     }
     
@@ -122,6 +133,7 @@ struct CustomAlertView: View {
                 VStack(spacing: 8) {
                     Text(title)
                         .font(CustomFont.title2.font)
+                        .foregroundStyle(.textPrimary)
                     Text(description ?? "")
                         .multilineTextAlignment(.center)
                         .padding([.leading, .trailing], 10)
@@ -140,6 +152,9 @@ struct CustomAlertView: View {
             }
             .frame(width: 344)
             .background(.clear)
+        }
+        .onDisappear {
+            dismissAction?()
         }
     }
 }
