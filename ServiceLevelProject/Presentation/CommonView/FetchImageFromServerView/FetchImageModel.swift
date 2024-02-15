@@ -21,14 +21,18 @@ class FetchImageModel: ObservableObject {
     }
     
     @Published private(set) var imageState: FetchState = .empty
-    var url: String
+    let url: String?
     var imageData: Data?
     
-    init(url: String) {
+    init(url: String?) {
         self.url = url
     }
     
     func fetchImage() {
+        guard let url else {
+            self.imageState = .empty
+            return
+        }
         let imageURL = "/v1"+url
         SSAC.request(imageURL, interceptor: TokenInterceptor()).response { result in
             switch result.result {

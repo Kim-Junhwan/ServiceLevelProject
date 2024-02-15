@@ -32,7 +32,7 @@ struct FetchImageFromServerView<PlaceHolder: View>: View {
     @ObservedObject private var viewModel: FetchImageModel
     let placeHolder: () -> PlaceHolder
     
-    init(url: String, placeHolder: @escaping () -> PlaceHolder) {
+    init(url: String?, placeHolder: @escaping () -> PlaceHolder) {
         _viewModel = .init(wrappedValue: FetchImageModel(url: url))
         self.placeHolder = placeHolder
     }
