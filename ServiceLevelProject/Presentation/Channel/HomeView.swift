@@ -70,7 +70,9 @@ struct HomeView: View {
                     }
                 }
             }
-            SideMenu(isPresenting: $showWorkspaceList, content: AnyView(WorkspaceListView(isPresenting: $showWorkspaceList)))
+            SideMenu(isPresenting: $showWorkspaceList) {
+                WorkspaceListView(isPresenting: $showWorkspaceList)
+            }
         }
         .toastView(toast: $toast)
         .gesture(dragGesture)

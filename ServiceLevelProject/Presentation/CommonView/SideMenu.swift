@@ -7,11 +7,11 @@
 
 import SwiftUI
 
-struct SideMenu: View {
+struct SideMenu<ContentView: View>: View {
     
     @Binding var isPresenting: Bool
-    var content: AnyView
     var edgeTransition: AnyTransition = .move(edge: .leading)
+    var content: ()-> ContentView
     
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -22,7 +22,7 @@ struct SideMenu: View {
                     .onTapGesture {
                         isPresenting = false
                     }
-                content
+                content()
                     .transition(edgeTransition)
                     .background(.clear)
             }
