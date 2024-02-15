@@ -63,11 +63,10 @@ struct WorkspaceListView: View {
                     .sheet(isPresented: $state.showCreateWorkspace, content: {
                         WorkspaceInitalizeView(presenting: $state.showCreateWorkspace)
                     })
-                    .customAlertDelta(alertMessage: $state.showAlert)
+                    .customAlert(alertMessage: $state.showAlert)
                 }
                 Spacer()
             }
-        
     }
     
     @ViewBuilder

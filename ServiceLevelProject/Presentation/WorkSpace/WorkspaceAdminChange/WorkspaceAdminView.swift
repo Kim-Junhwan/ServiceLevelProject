@@ -10,7 +10,7 @@ import SwiftUI
 struct WorkspaceChangeAdminView: View {
     @Binding var isPresenting: Bool
     @StateObject var viewModel: WorkspaceAdminChangeViewModel
-    @State var showAlert: Bool = false
+    @State var showAlert: AlertMessage? = nil
     
     init(isPresenting: Binding<Bool>, workspaceId: Int) {
         self._isPresenting = isPresenting
@@ -45,14 +45,13 @@ struct WorkspaceChangeAdminView: View {
                 viewModel.trigger(.appearView)
             }
             .onChange(of: viewModel.state.canChangeWorkspaceAdmin) { value in
-                showAlert = !value
-            }
-            .fullScreenCover(isPresented: $showAlert, content: {
-                CustomAlertView(title: "워크스페이스 관리자 변경 불가", description: "워크스페이스 멤버가 없어 관리자 변경을 할 수 없습니다. 새로운 멤버를 워크스페이스에 포대해보세요.", actionTitle: "확인", isPresenting: $showAlert) {
-                    showAlert = false
-                    isPresenting = false
+                if !value {
+                    showAlert = .init(title: "워크스페이스 관리자 변경 불가", description: "워크스페이스 멤버가 없어 관리자 변경을 할 수 없습니다. 새로운 멤버를 워크스페이스에 초대해보세요.", type: .ok(title: "확인"), action: {}, dismissAction: {
+                        isPresenting = false
+                    })
                 }
-            })
+            }
+            .customAlert(alertMessage: $showAlert)
         }
         
     }

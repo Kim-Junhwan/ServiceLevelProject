@@ -41,7 +41,6 @@ struct SideMenuWorkspaceListView: View {
                     .padding([.leading, .trailing], 6)
                     .padding([.top, .bottom], 3)
                 }
-                
             }
         }
     }
@@ -107,10 +106,13 @@ struct WorkspaceSideMenuCell: View {
             .frame(maxWidth: .infinity)
             .background(isSelected ? .brandGray : .white, in: RoundedRectangle(cornerRadius: 10))
             .confirmationDialog("", isPresented: $state.showActionSheet) {
-                WorkspaceActionSheetView(isAdmin: userId == workspace.ownerId, editWorkspace: $state.showEditWorkspace)
+                WorkspaceActionSheetView(isAdmin: userId == workspace.ownerId)
             }
             .sheet(isPresented: $state.showEditWorkspace, content: {
                 WorkspaceEditView(workspace: workspace, imageData: imageModel.imageData ?? Data())
+            })
+            .sheet(isPresented: $state.changeWorkspaceAdmin, content: {
+                WorkspaceChangeAdminView(isPresenting: $state.changeWorkspaceAdmin, workspaceId: workspace.workspaceId)
             })
         }
     }
