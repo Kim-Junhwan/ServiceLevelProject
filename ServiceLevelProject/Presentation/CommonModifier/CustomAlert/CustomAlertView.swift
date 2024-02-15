@@ -34,10 +34,9 @@ private struct CustomAlertViewModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .fullScreenCover(isPresented: .constant(alertMessage != nil), content: {
-                ZStack {
-                    contentView()
-                }
-                .background(FullScreenCoverBackgroundRemovalView())
+                contentView()
+                    .background(FullScreenCoverBackgroundRemovalView())
+                
             })
             .transaction { transaction in
                 transaction.disablesAnimations = true

@@ -63,6 +63,7 @@ struct WorkspaceListView: View {
                     .sheet(isPresented: $state.showCreateWorkspace, content: {
                         WorkspaceInitalizeView(presenting: $state.showCreateWorkspace)
                     })
+                    .customAlertDelta(alertMessage: $state.showAlert)
                 }
                 Spacer()
             }
@@ -86,7 +87,8 @@ final class WorkspaceListViewState: ObservableObject {
     @Published var showCreateWorkspace: Bool = false
     @Published var showActionSheet: Bool = false
     @Published var showEditWorkspace: Bool = false
-    @Published var showAlert: Bool = false
+    @Published var changeWorkspaceAdmin: Bool = false
+    @Published var showAlert: AlertMessage? = nil
 }
 
 struct SideMenuOptionButton: View {
