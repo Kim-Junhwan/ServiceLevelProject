@@ -48,15 +48,15 @@ struct SideMenuWorkspaceListView: View {
 }
 
 struct WorkspaceSideMenuCell: View {
-    
+    // MARK: - Properties
     private let workspace: WorkspaceThumbnailModel
     private let userId: Int
     private let isSelected: Bool
     private let action: ()-> Void
+    
+    // MARK: - State
     @StateObject private var imageModel: FetchImageModel
-    @State private var isConfirming = false
-    @State private var showAlert = false
-    @State private var showEditWorkspace = false
+    @EnvironmentObject var state: WorkspaceListViewState
     
     init(workspace: WorkspaceThumbnailModel, userId: Int, isSelected: Bool, action: @escaping () -> Void) {
         self.workspace = workspace
@@ -94,7 +94,7 @@ struct WorkspaceSideMenuCell: View {
                 Spacer()
                 if isSelected {
                     Button(action: {
-                        isConfirming = true
+                        state.showActionSheet = true
                     }, label: {
                         Image(systemName: "ellipsis")
                             .scaledToFit()
@@ -106,11 +106,11 @@ struct WorkspaceSideMenuCell: View {
             .padding(8)
             .frame(maxWidth: .infinity)
             .background(isSelected ? .brandGray : .white, in: RoundedRectangle(cornerRadius: 10))
-            .confirmationDialog("", isPresented: $isConfirming) {
-                WorkspaceActionSheetView(isAdmin: userId == workspace.ownerId, editWorkspace: $showEditWorkspace)
+            .confirmationDialog("", isPresented: $state.showActionSheet) {
+                WorkspaceActionSheetView(isAdmin: userId == workspace.ownerId, editWorkspace: $state.showEditWorkspace)
             }
-            .sheet(isPresented: $showEditWorkspace, content: {
-                WorkspaceEditView(isPresenting: $showEditWorkspace, workspace: workspace, imageData: imageModel.imageData ?? Data())
+            .sheet(isPresented: $state.showEditWorkspace, content: {
+                WorkspaceEditView(workspace: workspace, imageData: imageModel.imageData ?? Data())
             })
         }
     }
