@@ -11,6 +11,7 @@ struct HomeView: View {
     
     @State var hasChatList: Bool = true
     @State var showWorkspaceList: Bool = false
+    @State var toast: Toast? = nil
     @EnvironmentObject var appState: AppState
     
     var dragGesture: some Gesture {
@@ -71,6 +72,7 @@ struct HomeView: View {
             }
             SideMenu(isPresenting: $showWorkspaceList, content: AnyView(WorkspaceListView(isPresenting: $showWorkspaceList)))
         }
+        .toastView(toast: $toast)
         .gesture(dragGesture)
     }
     

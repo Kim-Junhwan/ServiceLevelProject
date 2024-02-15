@@ -16,7 +16,7 @@ class WorkspaceEditViewModel: ViewModel {
     struct WorkSpaceEditState {
         var isValidTitle: Bool = true
         var canTapCompleteButton: Bool = false
-        var successCreateWorkspace: Bool = false
+        var successEditWorkspace: Bool = false
         var toast: Toast?
     }
     
@@ -46,6 +46,10 @@ class WorkspaceEditViewModel: ViewModel {
         Task {
             do {
                 try await editWorkspaceUseCase.excute(.init(workspaceId: id, name: title, description: description, imageData: imageData))
+                DispatchQueue.main.async {
+                    self.state.toast = Toast(message: "워크스페이스가 편집되었습니다.", duration: 1.0)
+                    self.state.successEditWorkspace = true
+                }
             }
         }
     }
