@@ -12,6 +12,7 @@ enum WorkspaceRouter: URLRequestConvertible {
     case fetchComeInWorkspaceList
     case createWorkspace
     case editWorkspace(workspaceId: Int)
+    case fetchWorkspaceMembers(workspaceId: Int)
     
     var method: HTTPMethod {
         switch self {
@@ -21,6 +22,8 @@ enum WorkspaceRouter: URLRequestConvertible {
             return .post
         case .editWorkspace:
             return .put
+        case .fetchWorkspaceMembers:
+            return .get
         }
     }
     
@@ -32,6 +35,8 @@ enum WorkspaceRouter: URLRequestConvertible {
             return "/v1/workspaces"
         case .editWorkspace(let workspaceId):
             return "/v1/workspaces/\(workspaceId)"
+        case .fetchWorkspaceMembers(let workspaceId):
+            return "/v1/workspaces/\(workspaceId)/members"
         }
     }
     
@@ -39,7 +44,6 @@ enum WorkspaceRouter: URLRequestConvertible {
         guard let url = URL(string: path) else { throw DefaultNetworkingError.failCreateURL }
         var request = URLRequest(url: url)
         request.method = method
-        
         switch self {
         default:
             break

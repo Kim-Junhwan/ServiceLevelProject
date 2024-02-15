@@ -18,5 +18,10 @@ class WorkspaceSceneAssembly: Assembly {
             let editWorkspaceUseCase = resolver.resolve(EditWorkspaceUseCase.self)!
             return WorkspaceEditViewModel(editWorkspaceUseCase: editWorkspaceUseCase, title: title, description: description, imageData: imageData, id: id)
         }
+        
+        container.register(WorkspaceAdminChangeViewModel.self) { resolver, workspaceId in
+            let changeWorkspaceUseCase = resolver.resolve(ChangeWorkspaceAdminUseCase.self)!
+            return WorkspaceAdminChangeViewModel(workspaceId: workspaceId, changeWorkspaceAdminUseCase: changeWorkspaceUseCase)
+        }
     }
 }
