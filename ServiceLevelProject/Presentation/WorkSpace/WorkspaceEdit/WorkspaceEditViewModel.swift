@@ -29,11 +29,11 @@ class WorkspaceEditViewModel: ViewModel {
     
     private let editWorkspaceUseCase: EditWorkspaceUseCase
     
-    init(editWorkspaceUseCase: EditWorkspaceUseCase, title: String, description: String?, imageData: Data, id: Int) {
+    init(editWorkspaceUseCase: EditWorkspaceUseCase, title: String, description: String?, imageUrl: String, id: Int) {
         self.editWorkspaceUseCase = editWorkspaceUseCase
         self.title = title
         self.description = description ?? ""
-        self.imageModel = .init(maxSize: 70, imageData: imageData)
+        self.imageModel = .init(maxSize: 70, url: imageUrl)
         self.id = id
     }
     

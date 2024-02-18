@@ -12,8 +12,8 @@ struct WorkspaceEditView: View {
     @ObservedObject var viewModel: WorkspaceEditViewModel
     @EnvironmentObject var state: WorkspaceListViewState
     
-    init( workspace: WorkspaceThumbnailModel, imageData: Data) {
-        self.viewModel = SharedAssembler.shared.resolve(WorkspaceEditViewModel.self, argument: workspace.title, arg2: workspace.description, arg3: imageData, arg4: workspace.workspaceId)
+    init(workspace: WorkspaceThumbnailModel) {
+        self.viewModel = SharedAssembler.shared.resolve(WorkspaceEditViewModel.self, argument: workspace.title, arg2: workspace.description, arg3: workspace.imagePath, arg4: workspace.workspaceId)
     }
     
     var body: some View {
@@ -40,8 +40,7 @@ struct WorkspaceEditView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button(action: {
-                        state.showEditWorkspace = false
-                        //isPresenting = false
+                        state.showEditWorkspace = nil
                     }, label: {
                         Image(systemName: "xmark")
                             .foregroundStyle(.black)
