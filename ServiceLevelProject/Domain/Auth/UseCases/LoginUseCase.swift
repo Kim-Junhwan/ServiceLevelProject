@@ -37,7 +37,7 @@ extension DefaultLoginUseCase: LoginUseCase {
         appState.isLoggedIn = true
     }
     
-    private func platformLogin(_ platform: LoginType) async throws -> UserProfile {
+    private func platformLogin(_ platform: LoginType) async throws -> RegistUserProfile {
         let deviceToken = appState.deviceToken
         switch platform {
         case .apple(let idToken, let nickName):

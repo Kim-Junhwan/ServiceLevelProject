@@ -26,7 +26,7 @@ class DefaultAutoLoginUseCase {
 extension DefaultAutoLoginUseCase: AutoLoginUseCase {
     func excute() async throws {
         let platform = appState.loginInfo.loginType
-        let userProfile: UserProfile
+        let userProfile: RegistUserProfile
         switch platform {
         case .kakao(let oauthToken):
             userProfile = try await authRepository.kakaoLogin(.init(oauthToken: oauthToken, deviceToken: nil))
