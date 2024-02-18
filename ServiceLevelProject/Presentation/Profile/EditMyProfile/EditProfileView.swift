@@ -10,6 +10,7 @@ import SwiftUI
 struct EditProfileView: View {
     
     @StateObject private var viewModel: EditProfileViewModel
+    @State private var alert: AlertMessage? = nil
     
     init(imageData: Data?) {
         self._viewModel = StateObject(wrappedValue: SharedAssembler.shared.resolve(EditProfileViewModel.self))
@@ -31,6 +32,7 @@ struct EditProfileView: View {
         .padding(.top, 24)
         .background(.backgroundPrimary)
         .underlineNavigationBar(title: "내 정보 수정")
+        .customAlert(alertMessage: $alert)
         .onAppear {
             viewModel.trigger(.onAppear)
         }
@@ -79,11 +81,14 @@ struct EditProfileView: View {
             }
             .disabled(true)
             socialCell()
+                .disabled(true)
             ProfileCell(title: "로그아웃", decoratorType: .none) {EmptyView()
             }subView: {
                 EmptyView()
             }  action:  {
-                viewModel.trigger(.logout)
+                alert = .init(title: "로그아웃", description: "정말 로그아웃 할까요?", type: .cancelOk(cancelTitle: "취소", okTitle: "로그아웃"), action: {
+                    viewModel.trigger(.logout)
+                })
             }
         }
         .background(.white)
