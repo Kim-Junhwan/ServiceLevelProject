@@ -35,7 +35,7 @@ final class EditProfileViewModel: ViewModel {
         self.state = EditProfileViewState(sesacCoin: userData.sesacCoin, nickname: userData.nickname, phoneNumber: userData.phone, email: userData.email, vendor: appState.loginInfo.loginType)
         self.appState = appState
         self.profileRepository = profileRepository
-        print(state.vendor)
+        appStateBind()
     }
     
     func trigger(_ input: EditProfileInput) {
