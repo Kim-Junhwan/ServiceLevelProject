@@ -14,14 +14,19 @@ class WorkspaceSceneAssembly: Assembly {
             return WorkspaceInializeViewModel(createWorkspaceUseCase: createWorkspaceUseCase)
         }
         
-        container.register(WorkspaceEditViewModel.self) { resolver, title, description, imageData, id in
+        container.register(WorkspaceEditViewModel.self) { resolver, title, description, imageUrl, id in
             let editWorkspaceUseCase = resolver.resolve(EditWorkspaceUseCase.self)!
-            return WorkspaceEditViewModel(editWorkspaceUseCase: editWorkspaceUseCase, title: title, description: description, imageData: imageData, id: id)
+            return WorkspaceEditViewModel(editWorkspaceUseCase: editWorkspaceUseCase, title: title, description: description, imageUrl: imageUrl, id: id)
         }
         
         container.register(WorkspaceAdminChangeViewModel.self) { resolver, workspaceId in
             let changeWorkspaceUseCase = resolver.resolve(ChangeWorkspaceAdminUseCase.self)!
             return WorkspaceAdminChangeViewModel(workspaceId: workspaceId, changeWorkspaceAdminUseCase: changeWorkspaceUseCase)
+        }
+        
+        container.register(WorkspaceSideMenuViewModel.self) { resolver in
+            let appState = resolver.resolve(AppState.self)!
+            return WorkspaceSideMenuViewModel(appState: appState)
         }
     }
 }
