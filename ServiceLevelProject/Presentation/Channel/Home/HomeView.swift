@@ -9,13 +9,13 @@ import SwiftUI
 
 struct HomeView: View {
     
-    @State var hasChatList: Bool = true
     @State var showWorkspaceList: Bool = false
     @State var toast: Toast? = nil
-    @EnvironmentObject var appState: AppState
+    @State var showEditProfile: Bool = false
+    @StateObject var viewModel: HomeViewModel = SharedAssembler.shared.resolve(HomeViewModel.self)
     
     var dragGesture: some Gesture {
-         DragGesture(minimumDistance: 100)
+        DragGesture(minimumDistance: 100)
             .onChanged { gesture in
                 if gesture.startLocation.x < CGFloat(20) {
                     showWorkspaceList = true
@@ -27,7 +27,7 @@ struct HomeView: View {
         ZStack {
             NavigationStack {
                 VStack {
-                    if !appState.workspaceList.isEmpty {
+                    if !viewModel.state.workspaceIsEmpty {
                         HomeTabView()
                     } else {
                         EmptyHomeView()
@@ -41,13 +41,8 @@ struct HomeView: View {
                             Button(action: {
                                 showWorkspaceList = true
                             }, label: {
-                                
-                                Image(systemName: "star")
-                                    .resizable()
-                                    .frame(width: 32, height: 32)
-                                    .background(.red)
-                                    .clipShape(.rect(cornerRadius: 8))
-                                Text("No WorkSpace")
+                                workspaceImageView
+                                Text(viewModel.state.currentWorkspace?.name ?? "No Workspace")
                                     .font(CustomFont.title1.font)
                                     .foregroundStyle(.black)
                             })
@@ -55,20 +50,16 @@ struct HomeView: View {
                     }
                     
                     ToolbarItem(placement: .topBarTrailing) {
-                        Button(action: {
-                            
-                        }, label: {
+                        NavigationLink {
+                            EditProfileView(imageData: viewModel.userProfileImage.imageData)
+                        } label: {
                             userProfileView
-                                .frame(width: 32, height: 32)
-                                .background(.brandGreen)
-                                .clipShape(Circle())
-                                .overlay {
-                                    Circle()
-                                        .stroke(.black, lineWidth: 2)
-                                }
-                        })
+                        }
                     }
                 }
+            }
+            .onAppear {
+                viewModel.trigger(.appearView)
             }
             SideMenu(isPresenting: $showWorkspaceList) {
                 WorkspaceListView(isPresenting: $showWorkspaceList)
@@ -80,22 +71,37 @@ struct HomeView: View {
     
     @ViewBuilder
     var userProfileView: some View {
-        if let profileUrl = appState.userData.profileImagePath {
-            FetchImageFromServerView(url: profileUrl) {
-                Image(.noPhotoGreen)
-                    .resizable()
-                    .scaledToFit()
-                    .foregroundStyle(.white)
-            }
-        } else {
+        FetchImageFromServerView(imageModel: viewModel.userProfileImage) {
             Image(.noPhotoGreen)
                 .resizable()
                 .scaledToFit()
                 .foregroundStyle(.white)
         }
+        .frame(width: 32, height: 32)
+        .background(.brandGreen)
+        .clipShape(Circle())
+        .overlay {
+            Circle()
+                .stroke(.black, lineWidth: 2)
+        }
+    }
+    
+    @ViewBuilder
+    var workspaceImageView: some View {
+        FetchImageFromServerView(imageModel: viewModel.workspaceImage) {
+            Image(.workspaceBallon)
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .offset(y: 5)
+                .background(.brandGreen)
+                .frame(width: 30, height: 30)
+        }
+        .frame(width: 32, height: 32)
+        .clipShape(.rect(cornerRadius: 8))
     }
 }
 
 #Preview {
     HomeView()
+        .environmentObject(AppState())
 }
