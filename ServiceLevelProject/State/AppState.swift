@@ -34,7 +34,12 @@ final class AppState: ObservableObject {
         currentWorkspaceId = workspaceId
     }
     
-     func setLoginInfo(userProfile: UserProfile) {
+    func setUserData(_ userData: UserProfile) {
+        let newUserData = UserData(nickname: userData.nickname, profileImagePath: userData.profileImage, id: userData.userId, email: userData.email, phone: userData.phone, sesacCoin: userData.sesacCoin, createdAt: userData.createdAt)
+        self.userData = newUserData
+    }
+    
+     func setLoginInfo(userProfile: RegistUserProfile) {
         setToken(accessToken: userProfile.accessToken, refreshToken: userProfile.refreshToken)
         userData.nickname = userProfile.nickName
         userData.id = userProfile.userId
@@ -62,6 +67,8 @@ struct UserData {
     var id: Int = 0
     var email: String = ""
     var phone: String?
+    var sesacCoin: Int = 0
+    var createdAt: Date = Date()
 }
 
 struct LoginInfo {
