@@ -50,6 +50,12 @@ class ImagePickerModel: ObservableObject {
         }
     }
     
+    init(maxSize: CGFloat, url: String?) {
+        self.maxSize = maxSize
+        self.imageData = nil
+        fetchImage(url: url)
+    }
+    
     private func loadTransferable(from imageSelection: PhotosPickerItem) -> Progress {
         return imageSelection.loadTransferable(type: FetchedImage.self) { result in
             DispatchQueue.main.async {
@@ -64,6 +70,35 @@ class ImagePickerModel: ObservableObject {
                 case .success(nil):
                     self.imageState = .empty
                 case .failure(let error):
+                    self.imageState = .failure(error)
+                }
+            }
+        }
+    }
+    
+    func fetchImage(url: String?) {
+        guard let url else {
+            DispatchQueue.main.async {
+                self.imageState = .empty
+            }
+            return
+        }
+        let imageURL = "/v1"+url
+        SSAC.request(imageURL, interceptor: TokenInterceptor()).response { result in
+            switch result.result {
+            case .success(let fetchImageData):
+                guard let imageData = fetchImageData, let image = UIImage(data: imageData) else {
+                    DispatchQueue.main.async {
+                        self.imageState = .empty
+                    }
+                    return
+                }
+                self.imageData = imageData
+                DispatchQueue.main.async {
+                    self.imageState = .success(Image(uiImage: image))
+                }
+            case .failure(let error):
+                DispatchQueue.main.async {
                     self.imageState = .failure(error)
                 }
             }
