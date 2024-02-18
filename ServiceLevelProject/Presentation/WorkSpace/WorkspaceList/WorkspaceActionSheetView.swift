@@ -9,12 +9,13 @@ import SwiftUI
 
 struct WorkspaceActionSheetView: View {
     let isAdmin: Bool
+    let workspaceModel: WorkspaceThumbnailModel
     @EnvironmentObject var state: WorkspaceListViewState
     
     var body: some View {
         if isAdmin {
             Button("워크스페이스 편집") {
-                state.showEditWorkspace = true
+                state.showEditWorkspace = workspaceModel
             }
             
             Button("워크스페이스 나가기") {

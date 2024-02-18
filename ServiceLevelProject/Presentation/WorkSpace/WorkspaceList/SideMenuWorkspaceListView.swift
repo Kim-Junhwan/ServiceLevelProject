@@ -7,41 +7,32 @@
 
 import SwiftUI
 
-struct WorkspaceThumbnailModel: Identifiable {
-    let id = UUID()
-    let workspaceId: Int
-    let title: String
-    let createdAt: String
-    let imagePath: String
-    let ownerId: Int
-    let description: String?
-    
-    init(workspace: WorkSpaceThumbnail) {
-        self.workspaceId = workspace.id
-        self.title = workspace.name
-        self.description = workspace.description
-        self.ownerId = workspace.ownerId
-        self.createdAt = DateFormatter.yearMonthDateFormatter.string(from: workspace.createAt)
-        self.imagePath = workspace.thumbnailPath
-    }
-}
-
 struct SideMenuWorkspaceListView: View {
     let workspaceList: [WorkspaceThumbnailModel]
-    @State private var selection: UUID?
-    @EnvironmentObject var appState: AppState
+    @EnvironmentObject var state: WorkspaceListViewState
+    @EnvironmentObject var viewModel: WorkspaceSideMenuViewModel
     
     var body: some View {
         ScrollView {
             LazyVStack(spacing: 0) {
-                ForEach(workspaceList) { workspace in
-                    WorkspaceSideMenuCell(workspace: workspace, userId: appState.userData.id, isSelected: workspace.id == selection) {
-                        selection = workspace.id
+                ForEach(workspaceList, id: \.workspaceId) { workspace in
+                    WorkspaceSideMenuCell(workspace: workspace, isAdmin: viewModel.state.selectWorkspaceOwner, isSelected: viewModel.state.selectedWorkspace?.workspaceId == workspace.workspaceId) {
+                        viewModel.trigger(.tapWorkspace(workspace))
                     }
                     .padding([.leading, .trailing], 6)
                     .padding([.top, .bottom], 3)
                 }
             }
+            .confirmationDialog("", isPresented: $state.showActionSheet) {
+                workspaceActionSheet()
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private func workspaceActionSheet() -> some View {
+        if let selectedWorkspace = viewModel.state.selectedWorkspace {
+            WorkspaceActionSheetView(isAdmin: viewModel.state.selectWorkspaceOwner, workspaceModel: selectedWorkspace)
         }
     }
 }
@@ -49,19 +40,19 @@ struct SideMenuWorkspaceListView: View {
 struct WorkspaceSideMenuCell: View {
     // MARK: - Properties
     private let workspace: WorkspaceThumbnailModel
-    private let userId: Int
     private let isSelected: Bool
     private let action: ()-> Void
+    private let isAdmin: Bool
     
     // MARK: - State
     @StateObject private var imageModel: FetchImageModel
     @EnvironmentObject var state: WorkspaceListViewState
     
-    init(workspace: WorkspaceThumbnailModel, userId: Int, isSelected: Bool, action: @escaping () -> Void) {
+    init(workspace: WorkspaceThumbnailModel, isAdmin: Bool, isSelected: Bool, action: @escaping () -> Void) {
         self.workspace = workspace
-        self.userId = userId
         self.isSelected = isSelected
         self.action = action
+        self.isAdmin = isAdmin
         self._imageModel = StateObject(wrappedValue: FetchImageModel(url: workspace.imagePath))
     }
     
@@ -105,12 +96,6 @@ struct WorkspaceSideMenuCell: View {
             .padding(8)
             .frame(maxWidth: .infinity)
             .background(isSelected ? .brandGray : .white, in: RoundedRectangle(cornerRadius: 10))
-            .confirmationDialog("", isPresented: $state.showActionSheet) {
-                WorkspaceActionSheetView(isAdmin: userId == workspace.ownerId)
-            }
-            .sheet(isPresented: $state.showEditWorkspace, content: {
-                WorkspaceEditView(workspace: workspace, imageData: imageModel.imageData ?? Data())
-            })
             .sheet(isPresented: $state.changeWorkspaceAdmin, content: {
                 WorkspaceChangeAdminView(isPresenting: $state.changeWorkspaceAdmin, workspaceId: workspace.workspaceId)
             })

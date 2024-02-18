@@ -10,10 +10,10 @@ import SwiftUI
 struct WorkspaceListView: View {
     
     @Binding var isPresenting: Bool
-    @EnvironmentObject var appState: AppState
     
     //MARK: - WorkspaceListView State
     @StateObject private var state: WorkspaceListViewState
+    @StateObject private var viewModel: WorkspaceSideMenuViewModel = SharedAssembler.shared.resolve(WorkspaceSideMenuViewModel.self)
     
     init(isPresenting: Binding<Bool>) {
         self._isPresenting = isPresenting
@@ -44,6 +44,7 @@ struct WorkspaceListView: View {
                             .navigationTitle("워크스페이스")
                             .toolbar(.visible, for: .navigationBar)
                             .environmentObject(state)
+                            .environmentObject(viewModel)
                             
                             VStack(alignment: .leading) {
                                 SideMenuOptionButton(title: "워크스페이스 추가", image: Image(systemName: "plus")) {
@@ -63,6 +64,12 @@ struct WorkspaceListView: View {
                     .sheet(isPresented: $state.showCreateWorkspace, content: {
                         WorkspaceInitalizeView(presenting: $state.showCreateWorkspace)
                     })
+                    .sheet(isPresented: .constant(state.showEditWorkspace != nil), onDismiss: {
+                        state.showEditWorkspace = nil
+                    }, content: {
+                        workspaceEditView()
+                            .environmentObject(state)
+                    })
                     .customAlert(alertMessage: $state.showAlert)
                 }
                 Spacer()
@@ -70,13 +77,20 @@ struct WorkspaceListView: View {
     }
     
     @ViewBuilder
+    func workspaceEditView() -> some View {
+        if let editingWorkspace = state.showEditWorkspace {
+            WorkspaceEditView(workspace: editingWorkspace)
+        }
+    }
+    
+    @ViewBuilder
     var workspaceContent: some View {
-        if appState.workspaceList.isEmpty {
+        if viewModel.state.workspaceIsEmpty {
             SideMenuEmptyWorkspace()
                 .frame(maxHeight: .infinity)
                 .padding(24)
         } else {
-            SideMenuWorkspaceListView(workspaceList: appState.workspaceList.map{ WorkspaceThumbnailModel(workspace: $0)})
+            SideMenuWorkspaceListView(workspaceList: viewModel.state.workspaceList)
                 .padding([.leading, .trailing], 6)
         }
     }
@@ -85,7 +99,7 @@ struct WorkspaceListView: View {
 final class WorkspaceListViewState: ObservableObject {
     @Published var showCreateWorkspace: Bool = false
     @Published var showActionSheet: Bool = false
-    @Published var showEditWorkspace: Bool = false
+    @Published var showEditWorkspace: WorkspaceThumbnailModel? = nil
     @Published var changeWorkspaceAdmin: Bool = false
     @Published var showAlert: AlertMessage? = nil
 }
