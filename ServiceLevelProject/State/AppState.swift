@@ -6,23 +6,37 @@
 //
 
 import Foundation
+import Combine
 
 final class AppState: ObservableObject {
-    @MainActor @Published var isLoggedIn: Bool = false
-    @MainActor @Published var workspaceList: [WorkSpaceThumbnail] = []
+    @Published var isLoggedIn: Bool = false
+    @Published var workspaceList: [WorkSpaceThumbnail] = []
     @Published var userData: UserData = .init()
+    @Published var selectWorkspace: WorkSpaceThumbnail?
     var loginInfo: LoginInfo = .init()
+    
+    @UserDefault(key: "currentWorkspaceId", defaultValue: nil)
+    private var currentWorkspaceId: Int?
+    
     var deviceToken: String {
         get {
             return ""
         }
     }
     
-    func setLoginInfo(userProfile: UserProfile) {
+    func selectWorkspace(workspaceId: Int) {
+        let selectedWorkspace = workspaceList.first { $0.id == workspaceId }
+        selectWorkspace = selectedWorkspace
+        currentWorkspaceId = workspaceId
+    }
+    
+     func setLoginInfo(userProfile: UserProfile) {
         setToken(accessToken: userProfile.accessToken, refreshToken: userProfile.refreshToken)
         userData.nickname = userProfile.nickName
         userData.id = userProfile.userId
         userData.profileImagePath = userProfile.profileImage
+        userData.phone = userProfile.phone
+        userData.email = userProfile.email
     }
     
     func setToken(accessToken: String, refreshToken: String?) {
@@ -35,6 +49,8 @@ struct UserData {
     var nickname: String = ""
     var profileImagePath: String?
     var id: Int = 0
+    var email: String = ""
+    var phone: String?
 }
 
 struct LoginInfo {
