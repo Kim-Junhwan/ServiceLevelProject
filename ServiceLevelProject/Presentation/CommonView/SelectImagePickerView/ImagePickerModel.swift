@@ -35,6 +35,11 @@ class ImagePickerModel: ObservableObject {
     
     let maxSize: CGFloat
     var imageData: Data?
+    var url: String? {
+        didSet {
+            fetchImage(url: url)
+        }
+    }
     
     init(maxSize: CGFloat, imageData: Data?) {
         self.maxSize = maxSize
