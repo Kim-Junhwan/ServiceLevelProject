@@ -21,10 +21,15 @@ class FetchImageModel: ObservableObject {
     }
     
     @Published private(set) var imageState: FetchState = .empty
-    let url: String?
+    var url: String? {
+        didSet {
+            fetchImage()
+        }
+    }
     var imageData: Data?
     
     init(url: String?) {
+        print("FetchModel Reinit")
         self.url = url
     }
     
