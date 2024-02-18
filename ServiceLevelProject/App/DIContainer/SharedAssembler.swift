@@ -18,7 +18,9 @@ final class SharedAssembler {
             AppStateAssembly(),
             NetworkAssembly(),
             AuthAssembly(),
-            WorkspaceAssembly()
+            WorkspaceAssembly(),
+            ChatAssembly(),
+            EditProfileAssembly()
         ])
     }
     
