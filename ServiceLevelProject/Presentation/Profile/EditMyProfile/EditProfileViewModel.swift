@@ -11,6 +11,7 @@ final class EditProfileViewModel: ViewModel {
     
     enum EditProfileInput {
         case logout
+        case onAppear
     }
     
     struct EditProfileViewState {
@@ -32,5 +33,15 @@ final class EditProfileViewModel: ViewModel {
     }
     
     func trigger(_ input: EditProfileInput) {
+        switch input {
+        case .logout:
+            appState.logout()
+        case .onAppear:
+            fetchMyProfile()
+        }
+    }
+    
+    private func fetchMyProfile() {
+        
     }
 }
