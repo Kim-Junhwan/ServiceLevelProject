@@ -19,5 +19,10 @@ final class NetworkAssembly: Assembly {
             return DefaultWorkspaceRepository()
         }
         .inObjectScope(.container)
+        
+        container.register(ProfileRepository.self) { _ in
+            return DefaultProfileRepository()
+        }
+        .inObjectScope(.container)
     }
 }
