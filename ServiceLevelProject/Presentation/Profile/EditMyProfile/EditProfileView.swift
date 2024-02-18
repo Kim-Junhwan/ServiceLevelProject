@@ -12,7 +12,7 @@ struct EditProfileView: View {
     @StateObject private var viewModel: EditProfileViewModel
     
     init(imageData: Data?) {
-        self._viewModel = StateObject(wrappedValue: SharedAssembler.shared.resolve(EditProfileViewModel.self, argument: imageData))
+        self._viewModel = StateObject(wrappedValue: SharedAssembler.shared.resolve(EditProfileViewModel.self))
     }
     
     var body: some View {
@@ -32,7 +32,7 @@ struct EditProfileView: View {
         .background(.backgroundPrimary)
         .underlineNavigationBar(title: "내 정보 수정")
         .onAppear {
-            viewModel.
+            viewModel.trigger(.onAppear)
         }
     }
     
@@ -40,7 +40,7 @@ struct EditProfileView: View {
     var editableProfileView: some View {
         VStack {
             ProfileCell(title: "내 새싹 코인", subTitle: "충전하기", decoratorType: .indicator) {
-                Text("\(viewModel.state.sessacCoin)")
+                Text("\(viewModel.state.sesacCoin)")
                     .font(CustomFont.bodyBold.font)
                     .foregroundStyle(.brandGreen)
             } subView: {
@@ -55,7 +55,6 @@ struct EditProfileView: View {
             } action: {
                 
             }
-            
             ProfileCell(title: "연락처", subTitle: viewModel.state.phoneNumber, decoratorType: .indicator) {
                 EmptyView()
             } subView: {
@@ -78,14 +77,8 @@ struct EditProfileView: View {
             }  action:  {
                 
             }
-            
-            ProfileCell(title: "연결된 소셜 계정", subTitle: viewModel.state.email, decoratorType: .none) {EmptyView()
-            }subView: {
-                EmptyView()
-            }  action:  {
-                
-            }
-            
+            .disabled(true)
+            socialCell()
             ProfileCell(title: "로그아웃", decoratorType: .none) {EmptyView()
             }subView: {
                 EmptyView()
@@ -95,6 +88,39 @@ struct EditProfileView: View {
         }
         .background(.white)
         .clipShape(.rect(cornerRadius: 8))
+    }
+    
+    func socialCell() -> some View {
+        if viewModel.state.vendor == .apple(idToken: "") || viewModel.state.vendor == .kakao(oauthToken: "") {
+            return AnyView(ProfileCell(title: "연결된 소셜 계정", subTitle: nil, decoratorType: .none) {EmptyView()
+            }subView: {
+                socialImageView()
+                    .clipShape(.circle)
+            }  action:  {})
+        }
+        return AnyView(EmptyView())
+    }
+    
+    func socialImageView() -> some View {
+        switch viewModel.state.vendor {
+        case .kakao:
+            return AnyView(Image(.kakaoLogo)
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .frame(width: 10, height: 10)
+                .frame(width: 20, height: 20)
+                .background(.kakaoYellow)
+            )
+        case .apple:
+            return AnyView(Image(.appleLogo)
+                .resizable().aspectRatio(contentMode: .fill)
+                .frame(width: 9, height: 11)
+                .frame(width: 20, height: 20)
+                .background(.appleBlack)
+            )
+        default:
+            return AnyView(EmptyView())
+        }
     }
 }
 
@@ -131,7 +157,7 @@ struct ProfileCell<Content: View, SideView: View>: View {
     }
     
     @ViewBuilder
-    var decoratorView: some View {
+    func decoratorView() -> some View {
         switch decoratorType {
         case .none:
             EmptyView()
@@ -146,12 +172,14 @@ struct ProfileCell<Content: View, SideView: View>: View {
     
     @ViewBuilder
     var rightView: some View {
-        HStack {subView()
-            Text(subTitle ?? "")
-                .font(CustomFont.body.font)
-                .foregroundStyle(.textSecondary)
-            decoratorView
-            
+        HStack {
+            subView()
+            if let subTitle {
+                Text(subTitle)
+                    .font(CustomFont.body.font)
+                    .foregroundStyle(.textSecondary)
+            }
+            decoratorView()
         }
     }
 }
