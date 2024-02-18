@@ -20,60 +20,8 @@ struct EditProfileView: View {
             ImagePickerView(viewModel: viewModel.imageModel)
                 .padding(.top, 24)
             VStack {
-                VStack {
-                    ProfileCell(title: "내 새싹 코인", subTitle: "충전하기", decoratorType: .indicator) {
-                        Text("\(viewModel.state.sessacCoin)")
-                            .font(CustomFont.bodyBold.font)
-                            .foregroundStyle(.brandGreen)
-                    } subView: {
-                        EmptyView()
-                    } action: {
-                        
-                    }
-                    
-                    ProfileCell(title: "닉네임", subTitle: viewModel.state.nickname, decoratorType: .indicator) {
-                        EmptyView()
-                    } subView: {EmptyView()
-                    } action: {
-                        
-                    }
-                    
-                    ProfileCell(title: "연락처", subTitle: viewModel.state.phoneNumber, decoratorType: .indicator) {
-                        EmptyView()
-                    } subView: {
-                        EmptyView()
-                    } action:  {
-                        
-                    }
-                }
-                .background(.white)
-                .clipShape(.rect(cornerRadius: 8))
-                .padding(.bottom, 16)
-                
-                VStack {
-                    ProfileCell(title: "이메일", subTitle: viewModel.state.email, decoratorType: .none) {EmptyView()
-                    }subView: {
-                        EmptyView()
-                    }  action:  {
-                        
-                    }
-                    
-                    ProfileCell(title: "연결된 소셜 계정", subTitle: viewModel.state.email, decoratorType: .none) {EmptyView()
-                    }subView: {
-                        EmptyView()
-                    }  action:  {
-                        
-                    }
-                    
-                    ProfileCell(title: "로그아웃", decoratorType: .none) {EmptyView()
-                    }subView: {
-                        EmptyView()
-                    }  action:  {
-                        
-                    }
-                }
-                .background(.white)
-                .clipShape(.rect(cornerRadius: 8))
+                editableProfileView
+                userInfoView
             }
             .padding([.leading, .trailing], 23)
             .padding(.top, 35)
@@ -83,9 +31,71 @@ struct EditProfileView: View {
         .padding(.top, 24)
         .background(.backgroundPrimary)
         .underlineNavigationBar(title: "내 정보 수정")
+        .onAppear {
+            viewModel.
+        }
     }
     
+    @ViewBuilder
+    var editableProfileView: some View {
+        VStack {
+            ProfileCell(title: "내 새싹 코인", subTitle: "충전하기", decoratorType: .indicator) {
+                Text("\(viewModel.state.sessacCoin)")
+                    .font(CustomFont.bodyBold.font)
+                    .foregroundStyle(.brandGreen)
+            } subView: {
+                EmptyView()
+            } action: {
+                
+            }
+            
+            ProfileCell(title: "닉네임", subTitle: viewModel.state.nickname, decoratorType: .indicator) {
+                EmptyView()
+            } subView: {EmptyView()
+            } action: {
+                
+            }
+            
+            ProfileCell(title: "연락처", subTitle: viewModel.state.phoneNumber, decoratorType: .indicator) {
+                EmptyView()
+            } subView: {
+                EmptyView()
+            } action:  {
+                
+            }
+        }
+        .background(.white)
+        .clipShape(.rect(cornerRadius: 8))
+        .padding(.bottom, 16)
+    }
     
+    @ViewBuilder
+    var userInfoView: some View {
+        VStack {
+            ProfileCell(title: "이메일", subTitle: viewModel.state.email, decoratorType: .none) {EmptyView()
+            }subView: {
+                EmptyView()
+            }  action:  {
+                
+            }
+            
+            ProfileCell(title: "연결된 소셜 계정", subTitle: viewModel.state.email, decoratorType: .none) {EmptyView()
+            }subView: {
+                EmptyView()
+            }  action:  {
+                
+            }
+            
+            ProfileCell(title: "로그아웃", decoratorType: .none) {EmptyView()
+            }subView: {
+                EmptyView()
+            }  action:  {
+                viewModel.trigger(.logout)
+            }
+        }
+        .background(.white)
+        .clipShape(.rect(cornerRadius: 8))
+    }
 }
 
 struct ProfileCell<Content: View, SideView: View>: View {
