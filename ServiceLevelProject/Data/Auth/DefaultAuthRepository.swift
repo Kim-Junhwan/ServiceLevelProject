@@ -20,7 +20,7 @@ final class DefaultAuthRepository: AuthRepository {
     }
     
     func registerUser(_ query: RegisterUserRequestQuery) async throws -> RegistUserProfile {
-        let requestDTO = RegisterUserRequestDTO(email: query.email, password: query.password, nickname: query.nickName, phone: query.password, deviceToken: query.deviceToken)
+        let requestDTO = RegisterUserRequestDTO(email: query.email, password: query.password, nickname: query.nickName, phone: query.phoneNumber, deviceToken: query.deviceToken)
         do {
             let response = try await SSAC.request(AuthRouter.registerUser(requestDTO)).slpSerializingDecodable(UserInfoResponseDTO.self, responseErrorMapper: RegisterUserErrorMapper()).value
             return .init(userId: response.userId, email: response.email, nickName: response.nickName, profileImage: response.profileImage, phone: response.phone, vendor: response.vendor, createdAt: response.createdAt, accessToken: response.token.accessToken, refreshToken: response.token.refreshToken)
