@@ -65,8 +65,8 @@ final class HomeViewModel: ViewModel {
         switch input {
         case .appearView:
             //가장 최근에 선택된 worspace로 상태 변경
-            if let currentWorkspaceId = appState.currentWorkspaceId {
-                appState.selectWorkspace(workspaceId: currentWorkspaceId)
+            if let currentWorkspace = appState.currentWorkspace {
+                appState.selectWorkspace(workspaceId: currentWorkspace.id)
             }
         }
     }

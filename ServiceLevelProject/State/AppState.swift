@@ -18,6 +18,10 @@ final class AppState: ObservableObject {
     @UserDefault(key: "currentWorkspaceId", defaultValue: nil)
     private var currentWorkspaceId: Int?
     
+    var currentWorkspace: WorkSpaceThumbnail? {
+        return workspaceList.first {$0.id == currentWorkspaceId}
+    }
+    
     var deviceToken: String {
         get {
             return ""
@@ -42,6 +46,13 @@ final class AppState: ObservableObject {
     func setToken(accessToken: String, refreshToken: String?) {
         Token.accessToken = accessToken
         Token.refreshToken = refreshToken
+    }
+    
+    func logout() {
+        isLoggedIn = false
+        loginInfo.loginType = .none
+        Token.accessToken = nil
+        Token.refreshToken = nil
     }
 }
 
