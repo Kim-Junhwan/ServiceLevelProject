@@ -32,7 +32,6 @@ struct Validator {
     
     static func isValid(category: ValidateCase, _ value: String) -> Bool {
         let result = value.range(of: category.regex, options: .regularExpression) != nil
-        print(result)
         return result
     }
 }

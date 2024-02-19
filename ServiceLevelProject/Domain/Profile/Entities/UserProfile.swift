@@ -14,6 +14,6 @@ struct UserProfile {
     let profileImage: String?
     let phone: String?
     let vendor: LoginType
-    let sesacCoin: Int
+    let sesacCoin: Int?
     let createdAt: Date
 }

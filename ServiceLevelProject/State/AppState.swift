@@ -35,7 +35,7 @@ final class AppState: ObservableObject {
     }
     
     func setUserData(_ userData: UserProfile) {
-        let newUserData = UserData(nickname: userData.nickname, profileImagePath: userData.profileImage, id: userData.userId, email: userData.email, phone: userData.phone, sesacCoin: userData.sesacCoin, createdAt: userData.createdAt)
+        let newUserData = UserData(nickname: userData.nickname, profileImagePath: userData.profileImage, id: userData.userId, email: userData.email, phone: userData.phone, sesacCoin: userData.sesacCoin ?? self.userData.sesacCoin, createdAt: userData.createdAt)
         self.userData = newUserData
     }
     
