@@ -10,7 +10,6 @@ import SwiftUI
 struct SideMenu<ContentView: View>: View {
     
     @Binding var isPresenting: Bool
-    var edgeTransition: AnyTransition = .move(edge: .leading)
     var content: ()-> ContentView
     
     var body: some View {
@@ -23,7 +22,7 @@ struct SideMenu<ContentView: View>: View {
                         isPresenting = false
                     }
                 content()
-                    .transition(edgeTransition)
+                    .transition(.move(edge: .leading))
                     .background(.clear)
             }
         }

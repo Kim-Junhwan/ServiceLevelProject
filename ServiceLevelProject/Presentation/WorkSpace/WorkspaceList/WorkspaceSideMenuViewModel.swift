@@ -33,8 +33,8 @@ final class WorkspaceSideMenuViewModel: ViewModel {
     
     struct WorkspaceSideMenuState {
         var selectedWorkspace: WorkspaceThumbnailModel?
-        var workspaceList: [WorkspaceThumbnailModel] = []
-        var workspaceIsEmpty: Bool = false
+        var workspaceList: [WorkspaceThumbnailModel]
+        var workspaceIsEmpty: Bool
         var selectWorkspaceOwner: Bool = false
     }
     
@@ -43,7 +43,7 @@ final class WorkspaceSideMenuViewModel: ViewModel {
     private var cancellableBag = Set<AnyCancellable>()
     
     init(appState: AppState) {
-        self.state = .init()
+        self.state = .init(workspaceList: appState.workspaceList.map{.init(workspace: $0)}, workspaceIsEmpty: appState.workspaceList.isEmpty)
         self.appState = appState
         appStateBind()
     }
