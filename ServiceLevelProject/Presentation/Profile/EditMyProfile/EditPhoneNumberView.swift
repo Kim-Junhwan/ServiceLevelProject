@@ -8,12 +8,14 @@
 import SwiftUI
 
 struct EditPhoneNumberView: View {
-    @State var phoneNumber: String = ""
-    @State private var originPhoneNumber: String = ""
+    @State var phoneNumber: String
+    @State private var originPhoneNumber: String
     @ObservedObject var viewModel: EditProfileViewModel
+    @Environment(\.dismiss) private var dismiss
     
     init(phoneNumber: String?, viewModel: EditProfileViewModel) {
-        self.phoneNumber = phoneNumber ?? ""
+        self._phoneNumber = State(initialValue: phoneNumber ?? "")
+        self._originPhoneNumber = State(initialValue: phoneNumber ?? "")
         self.viewModel = viewModel
     }
     
@@ -46,9 +48,15 @@ struct EditPhoneNumberView: View {
                     viewModel.trigger(.editPhoneNumber(phoneNumber))
                 }
             }
+            .onChange(of: viewModel.state.phoneEditingSuccess) { value in
+                if value {
+                    dismiss()
+                }
+            }
         }
         .underlineNavigationBar(title: "연락처")
         .defaultBackground()
+        
     }
 }
 
