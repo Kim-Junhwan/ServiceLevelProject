@@ -21,6 +21,8 @@ class ImagePickerModel: ObservableObject {
         case importFail
     }
     
+    typealias ImagePickerResult = (Result<Data?, Error>) -> Void
+    
     @MainActor @Published private(set) var imageState: ImageState = .empty
     @MainActor @Published var imageSelection: PhotosPickerItem? = nil {
         didSet {
@@ -40,8 +42,9 @@ class ImagePickerModel: ObservableObject {
             fetchImage(url: url)
         }
     }
+    var action: ImagePickerResult?
     
-    init(maxSize: CGFloat, imageData: Data?) {
+    init(maxSize: CGFloat, imageData: Data?, action: ImagePickerResult? = nil) {
         self.maxSize = maxSize
         self.imageData = imageData
         DispatchQueue.main.async {
@@ -55,7 +58,7 @@ class ImagePickerModel: ObservableObject {
         }
     }
     
-    init(maxSize: CGFloat, url: String?) {
+    init(maxSize: CGFloat, url: String?, action: ImagePickerResult? = nil) {
         self.maxSize = maxSize
         self.imageData = nil
         fetchImage(url: url)
@@ -70,12 +73,15 @@ class ImagePickerModel: ObservableObject {
                 switch result {
                 case .success(let fetchImage?):
                     let downSamplingImage = fetchImage.image.downSamplingImage(maxSize: self.maxSize)
-                    self.imageData = downSamplingImage.jpegData(compressionQuality: 1.0)
+                    let downSmaplignImageData = downSamplingImage.jpegData(compressionQuality: 1.0)
+                    self.imageData = downSmaplignImageData
                     self.imageState = .success(Image(uiImage: downSamplingImage))
+                    self.action?(.success(downSmaplignImageData))
                 case .success(nil):
                     self.imageState = .empty
                 case .failure(let error):
                     self.imageState = .failure(error)
+                    self.action?(.failure(error))
                 }
             }
         }
