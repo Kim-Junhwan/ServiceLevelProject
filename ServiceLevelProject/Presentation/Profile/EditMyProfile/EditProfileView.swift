@@ -11,6 +11,8 @@ struct EditProfileView: View {
     
     @StateObject private var viewModel: EditProfileViewModel
     @State private var alert: AlertMessage? = nil
+    @State private var showEditNickname: Bool = false
+    @State private var showEditPhoneNumber: Bool = false
     
     init(imageData: Data?) {
         self._viewModel = StateObject(wrappedValue: SharedAssembler.shared.resolve(EditProfileViewModel.self))
@@ -28,11 +30,18 @@ struct EditProfileView: View {
             .padding(.top, 35)
             Spacer()
         }
+        .toastView(toast: $viewModel.state.toast)
         .frame(maxHeight: .infinity)
         .padding(.top, 24)
         .background(.backgroundPrimary)
         .underlineNavigationBar(title: "내 정보 수정")
         .customAlert(alertMessage: $alert)
+        .navigationDestination(isPresented: $showEditNickname, destination: {
+            EditNicknameView(nickname: viewModel.state.nickname, viewModel: viewModel)
+        })
+        .navigationDestination(isPresented: $showEditPhoneNumber, destination: {
+            EditPhoneNumberView(phoneNumber: viewModel.state.phoneNumber, viewModel: viewModel)
+        })
         .onAppear {
             viewModel.trigger(.onAppear)
         }
@@ -55,14 +64,14 @@ struct EditProfileView: View {
                 EmptyView()
             } subView: {EmptyView()
             } action: {
-                
+                showEditNickname = true
             }
             ProfileCell(title: "연락처", subTitle: viewModel.state.phoneNumber, decoratorType: .indicator) {
                 EmptyView()
             } subView: {
                 EmptyView()
             } action:  {
-                
+                showEditPhoneNumber = true
             }
         }
         .background(.white)
