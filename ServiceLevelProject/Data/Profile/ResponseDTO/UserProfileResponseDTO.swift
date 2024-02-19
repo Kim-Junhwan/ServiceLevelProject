@@ -14,7 +14,7 @@ struct UserProfileResponseDTO: Decodable {
     let profileImage: String?
     let phone: String?
     let vendor: String?
-    let sesacCoin: Int
+    let sesacCoin: Int?
     let createdAt: String
     
     enum CodingKeys: String, CodingKey {
