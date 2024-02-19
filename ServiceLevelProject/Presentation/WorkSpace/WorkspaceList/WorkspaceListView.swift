@@ -27,7 +27,7 @@ struct WorkspaceListView: View {
                         Rectangle()
                             .fill(.white)
                             .frame(width: proxy.size.width * 0.8)
-                            .clipShape(.rect(cornerRadius: 20))
+                            .clipShape(.rect(bottomTrailingRadius: 20, topTrailingRadius: 20))
                         VStack(alignment: .leading, spacing: 0) {
                             Spacer()
                                 .frame(height: proxy.safeAreaInsets.bottom)
