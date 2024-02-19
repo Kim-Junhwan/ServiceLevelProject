@@ -21,7 +21,7 @@ struct Validator {
             case .email:
                 return "^[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.com$"
             case .nick, .workspaceName:
-                return "[A-Z0-9a-z가-힣]{1,30}"
+                return #"^[\w\d가-힣]{1,30}$"#
             case .phoneNumber:
                 return "^01[0-9]-([0-9]{3,4})-([0-9]{4})$"
             case .password:
@@ -31,6 +31,8 @@ struct Validator {
     }
     
     static func isValid(category: ValidateCase, _ value: String) -> Bool {
-        return value.range(of: category.regex, options: .regularExpression) != nil
+        let result = value.range(of: category.regex, options: .regularExpression) != nil
+        print(result)
+        return result
     }
 }
