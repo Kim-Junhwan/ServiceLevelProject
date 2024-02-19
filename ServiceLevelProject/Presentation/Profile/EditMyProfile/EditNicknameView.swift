@@ -8,12 +8,12 @@
 import SwiftUI
 
 struct EditNicknameView: View {
-    
-    @State var nickname: String = ""
+    @State var nickname: String
     @ObservedObject var viewModel: EditProfileViewModel
+    @Environment(\.dismiss) private var dismiss
     
     init(nickname: String, viewModel: EditProfileViewModel) {
-        self.nickname = nickname
+        self._nickname = State(initialValue: nickname)
         self.viewModel = viewModel
     }
     
@@ -41,6 +41,11 @@ struct EditNicknameView: View {
         }
         .underlineNavigationBar(title: "닉네임")
         .defaultBackground()
+        .onChange(of: viewModel.state.nicknameEditingSuccess) { value in
+            if value {
+                dismiss()
+            }
+        }
     }
 }
 
