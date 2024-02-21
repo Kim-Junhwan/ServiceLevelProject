@@ -13,5 +13,6 @@ struct WorkspaceDetailInfo {
     let description: String?
     let ownerId: Int
     let createdAt: Date
-    
+    let channels: [ChannelThumbnail]
+    let workspaceMembers: [UserThumbnail]
 }
