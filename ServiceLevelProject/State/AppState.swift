@@ -12,7 +12,7 @@ final class AppState: ObservableObject {
     @Published var isLoggedIn: Bool = false
     @Published var workspaceList: [WorkSpaceThumbnail] = []
     @Published var userData: UserData = .init()
-    @Published var selectWorkspace: WorkSpaceThumbnail?
+    @Published var selectWorkspace: WorkspaceDetailInfo?
     var loginInfo: LoginInfo = .init()
     
     @UserDefault(key: "currentWorkspaceId", defaultValue: nil)
@@ -28,9 +28,9 @@ final class AppState: ObservableObject {
         }
     }
     
-    func selectWorkspace(workspaceId: Int) {
+    func selectWorkspace(workspaceId: Int, detailWorkspaceInfo: WorkspaceDetailInfo) {
         let selectedWorkspace = workspaceList.first { $0.id == workspaceId }
-        selectWorkspace = selectedWorkspace
+        selectWorkspace = detailWorkspaceInfo
         currentWorkspaceId = workspaceId
     }
     
