@@ -19,4 +19,8 @@ struct UserThumbnailResponseDTO: Decodable {
         case nickname
         case profileImage
     }
+    
+    func toDomain() -> UserThumbnail {
+        return .init(id: userId, email: email, nickname: nickname, profileImagePath: profileImage)
+    }
 }
