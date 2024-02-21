@@ -20,5 +20,8 @@ final class WorkspaceDomainAssembly: Assembly {
         container.register(ChangeWorkspaceAdminUseCase.self) { _ in
             return DefaultChangeWorkspaceAdminUseCase(workspaceRepository: workspaceRepository, appState: appState)
         }
+        container.register(SelectWorkspaceUseCase.self) { _ in
+            return DefaultSelectWorkspaceUseCase(appState: appState, workspaceRespotory: workspaceRepository)
+        }
     }
 }
