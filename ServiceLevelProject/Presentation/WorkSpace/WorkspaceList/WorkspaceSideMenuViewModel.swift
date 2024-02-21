@@ -32,10 +32,13 @@ final class WorkspaceSideMenuViewModel: ViewModel {
     }
     
     struct WorkspaceSideMenuState {
-        var selectedWorkspace: WorkspaceThumbnailModel?
+        var selectedWorkspaceId: Int?
         var workspaceList: [WorkspaceThumbnailModel]
         var workspaceIsEmpty: Bool
         var selectWorkspaceOwner: Bool = false
+        var selectedWorkspace: WorkspaceThumbnailModel? {
+            workspaceList.first{ $0.workspaceId == selectedWorkspaceId }
+        }
     }
     
     @Published var state: WorkspaceSideMenuState
@@ -61,7 +64,7 @@ final class WorkspaceSideMenuViewModel: ViewModel {
             .receive(on: RunLoop.main)
             .sink { selectWorkspaceDomainModel in
                 guard let selectWorkspace = selectWorkspaceDomainModel else { return }
-                self.state.selectedWorkspace = .init(workspace: selectWorkspace)
+                self.state.selectedWorkspaceId = selectWorkspaceDomainModel?.workspaceId
                 self.state.selectWorkspaceOwner = selectWorkspace.ownerId == self.appState.userData.id
             }
             .store(in: &cancellableBag)
@@ -70,7 +73,7 @@ final class WorkspaceSideMenuViewModel: ViewModel {
     func trigger(_ input: WorkSpaceSideMenuInput) {
         switch input {
         case .tapWorkspace(let workspaceThumbnailModel):
-            appState.selectWorkspace(workspaceId: workspaceThumbnailModel.workspaceId)
+            print("")
         }
     }
 }
