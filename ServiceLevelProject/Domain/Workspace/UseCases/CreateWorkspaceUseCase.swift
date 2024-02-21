@@ -8,7 +8,7 @@
 import Foundation
 
 protocol CreateWorkspaceUseCase {
-    func excute(_ query: CreateWorkspaceQuery) async throws
+    func excute(_ query: CreateWorkspaceQuery) async throws -> WorkSpaceThumbnail
 }
 
 final class DefaultCreateWorkspaceUseCase {
@@ -22,12 +22,13 @@ final class DefaultCreateWorkspaceUseCase {
 }
 
 extension DefaultCreateWorkspaceUseCase: CreateWorkspaceUseCase {
-    func excute(_ query: CreateWorkspaceQuery) async throws {
-        let _ = try await workspaceRepository.createWorkspace(query)
+    func excute(_ query: CreateWorkspaceQuery) async throws -> WorkSpaceThumbnail {
+        let workspaceThumbnail = try await workspaceRepository.createWorkspace(query)
         let fetchWorkspaceList = try await workspaceRepository.fetchComeInWorkspaceList()
         DispatchQueue.main.async {
             self.appState.workspaceList = fetchWorkspaceList.list
         }
+        return workspaceThumbnail
     }
     
 }
