@@ -15,7 +15,7 @@ final class HomeViewModel: ViewModel {
     
     struct HomeViewModelState {
         var navigationTitle: String = ""
-        var currentWorkspace: WorkSpaceThumbnail?
+        var currentWorkspace: WorkspaceDetailInfo?
         var workspaceIsEmpty: Bool = false
     }
     
@@ -23,12 +23,14 @@ final class HomeViewModel: ViewModel {
     @Published var userProfileImage: FetchImageModel
     @Published var state: HomeViewModelState = .init()
     private let appState: AppState
+    private let selectWorkspaceUseCase: SelectWorkspaceUseCase
     private var cancellableBag = Set<AnyCancellable>()
     
-    init(appState: AppState) {
+    init(appState: AppState, selectWorkspaceUseCase: SelectWorkspaceUseCase) {
         self.appState = appState
         self.workspaceImage = .init(url: nil)
         self.userProfileImage = .init(url: appState.userData.profileImagePath)
+        self.selectWorkspaceUseCase = selectWorkspaceUseCase
         bindAppState()
     }
     
@@ -56,7 +58,7 @@ final class HomeViewModel: ViewModel {
             .receive(on: RunLoop.main)
             .sink { selectWorkspace in
                 self.state.currentWorkspace = selectWorkspace
-                self.workspaceImage.url = selectWorkspace?.thumbnailPath
+                self.workspaceImage.url = selectWorkspace?.thumbnail
             }
             .store(in: &cancellableBag )
     }
@@ -66,7 +68,15 @@ final class HomeViewModel: ViewModel {
         case .appearView:
             //가장 최근에 선택된 worspace로 상태 변경
             if let currentWorkspace = appState.currentWorkspace {
-                appState.selectWorkspace(workspaceId: currentWorkspace.id)
+                selectWorkspace(workspaceId: currentWorkspace.id)
+            }
+        }
+    }
+    
+    private func selectWorkspace(workspaceId: Int) {
+        Task {
+            do {
+                try await selectWorkspaceUseCase.excute(workspaceId: workspaceId)
             }
         }
     }

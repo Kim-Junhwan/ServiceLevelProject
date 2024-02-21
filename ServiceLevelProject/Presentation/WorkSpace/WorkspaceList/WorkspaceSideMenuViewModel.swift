@@ -43,11 +43,13 @@ final class WorkspaceSideMenuViewModel: ViewModel {
     
     @Published var state: WorkspaceSideMenuState
     private let appState: AppState
+    private let selectWorkspaceUseCase: SelectWorkspaceUseCase
     private var cancellableBag = Set<AnyCancellable>()
     
-    init(appState: AppState) {
+    init(appState: AppState, selectWorkspaceUseCase: SelectWorkspaceUseCase) {
         self.state = .init(workspaceList: appState.workspaceList.map{.init(workspace: $0)}, workspaceIsEmpty: appState.workspaceList.isEmpty)
         self.appState = appState
+        self.selectWorkspaceUseCase = selectWorkspaceUseCase
         appStateBind()
     }
     
@@ -73,7 +75,15 @@ final class WorkspaceSideMenuViewModel: ViewModel {
     func trigger(_ input: WorkSpaceSideMenuInput) {
         switch input {
         case .tapWorkspace(let workspaceThumbnailModel):
-            print("")
+            selectWorkspace(workspaceId: workspaceThumbnailModel.workspaceId)
+        }
+    }
+    
+    private func selectWorkspace(workspaceId: Int) {
+        Task {
+            do {
+                try await selectWorkspaceUseCase.excute(workspaceId: workspaceId)
+            }
         }
     }
 }

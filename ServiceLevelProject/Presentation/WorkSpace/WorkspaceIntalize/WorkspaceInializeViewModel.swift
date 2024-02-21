@@ -28,9 +28,11 @@ final class WorkspaceInializeViewModel: ViewModel {
     private var cancellableBag = Set<AnyCancellable>()
     
     let createWorkspaceUseCase: CreateWorkspaceUseCase
+    let selectWorkspaceUseCase: SelectWorkspaceUseCase
     
-    init(createWorkspaceUseCase: CreateWorkspaceUseCase) {
+    init(createWorkspaceUseCase: CreateWorkspaceUseCase, selectWorkspaceUseCase: SelectWorkspaceUseCase) {
         self.createWorkspaceUseCase = createWorkspaceUseCase
+        self.selectWorkspaceUseCase = selectWorkspaceUseCase
         self.state = WorkSpaceInitalState()
         $title
             .receive(on: RunLoop.main)
@@ -59,7 +61,8 @@ final class WorkspaceInializeViewModel: ViewModel {
         
         Task {
             do {
-                try await createWorkspaceUseCase.excute(.init(name: title, description: description, image: imageData))
+                let createdWorkspace = try await createWorkspaceUseCase.excute(.init(name: title, description: description, image: imageData))
+                try await selectWorkspaceUseCase.excute(workspaceId: createdWorkspace.id)
                 DispatchQueue.main.async {
                     self.state.successCreateWorkspace = true
                 }

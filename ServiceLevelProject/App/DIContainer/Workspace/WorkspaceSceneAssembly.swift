@@ -11,7 +11,8 @@ class WorkspaceSceneAssembly: Assembly {
     func assemble(container: Swinject.Container) {
         container.register(WorkspaceInializeViewModel.self) { resolver in
             let createWorkspaceUseCase = container.resolve(CreateWorkspaceUseCase.self)!
-            return WorkspaceInializeViewModel(createWorkspaceUseCase: createWorkspaceUseCase)
+            let selectWorkspaceUseCase = container.resolve(SelectWorkspaceUseCase.self)!
+            return WorkspaceInializeViewModel(createWorkspaceUseCase: createWorkspaceUseCase, selectWorkspaceUseCase: selectWorkspaceUseCase)
         }
         
         container.register(WorkspaceEditViewModel.self) { resolver, title, description, imageUrl, id in
@@ -26,7 +27,8 @@ class WorkspaceSceneAssembly: Assembly {
         
         container.register(WorkspaceSideMenuViewModel.self) { resolver in
             let appState = resolver.resolve(AppState.self)!
-            return WorkspaceSideMenuViewModel(appState: appState)
+            let selectWorkspaceUsecase = resolver.resolve(SelectWorkspaceUseCase.self)!
+            return WorkspaceSideMenuViewModel(appState: appState, selectWorkspaceUseCase: selectWorkspaceUsecase)
         }
     }
 }
