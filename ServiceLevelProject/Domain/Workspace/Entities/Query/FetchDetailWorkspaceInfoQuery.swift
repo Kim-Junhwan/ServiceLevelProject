@@ -7,6 +7,6 @@
 
 import Foundation
 
-struct FetchWorkspaceMembersQuery {
+struct FetchDetailWorkspaceInfoQuery {
     let workspaceId: Int
 }
