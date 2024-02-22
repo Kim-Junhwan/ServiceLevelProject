@@ -48,6 +48,7 @@ class ChannelTableViewCell: UITableViewCell {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .horizontal
         stackView.distribution = .fill
+        stackView.alignment = .center
         stackView.spacing = 16
         return stackView
     }()
@@ -67,9 +68,15 @@ class ChannelTableViewCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        iconImageView.image =  UIImage(systemName: "number")
+        titleLabel.text = nil
+    }
 
     private func configureView() {
-        addSubview(contentStackView)
+        contentView.addSubview(contentStackView)
     }
     
     private func setConstraints() {
