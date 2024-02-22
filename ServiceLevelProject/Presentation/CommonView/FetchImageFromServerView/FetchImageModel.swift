@@ -12,7 +12,7 @@ class FetchImageModel: ObservableObject {
     enum FetchState {
         case empty
         case loading
-        case success(Image)
+        case success(Image, UIImage)
         case failure(Error)
     }
     
@@ -47,7 +47,7 @@ class FetchImageModel: ObservableObject {
                     return
                 }
                 self.imageData = imageData
-                self.imageState = .success(Image(uiImage: image))
+                self.imageState = .success(Image(uiImage: image), image)
             case .failure(let error):
                 self.imageState = .failure(error)
             }
