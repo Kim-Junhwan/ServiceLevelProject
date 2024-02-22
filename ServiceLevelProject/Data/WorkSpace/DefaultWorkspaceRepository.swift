@@ -9,6 +9,7 @@ import Alamofire
 import Foundation
 
 final class DefaultWorkspaceRepository: WorkspaceRepository {
+    
     func fetchWorkspaceMembers(_ query: FetchWorkspaceMembersQuery) async throws -> [UserThumbnail] {
         let fetchMembers = try await SSAC.accessTokenRequest(WorkspaceRouter.fetchWorkspaceMembers(workspaceId: query.workspaceId)).slpSerializingDecodable([UserThumbnailResponseDTO].self, responseErrorMapper: MissingDataErrorMapper()).value
         return fetchMembers.map { .init(id: $0.userId, email: $0.email, nickname: $0.nickname, profileImagePath: $0.profileImage) }
@@ -45,5 +46,10 @@ final class DefaultWorkspaceRepository: WorkspaceRepository {
         }, with: WorkspaceRouter.editWorkspace(workspaceId: query.workspaceId), interceptor: TokenInterceptor())
             .slpSerializingDecodable(WorkspaceListResponseDTO.self).value
         return .init(id: value.workspaceId, name: value.name, description: value.description, thumbnailPath: value.thumbnail, ownerId: value.ownerId, createAt: try value.createdAt.toDate())
+    }
+    
+    func fetchDetailWorkspace(_ query: FetchDetailWorkspaceInfoQuery) async throws -> WorkspaceDetailInfo {
+        let value = try await SSAC.accessTokenRequest(WorkspaceRouter.fetchDetailWorkspace(workspaceId: query.workspaceId)).slpSerializingDecodable(DetailWorkspaceInfoResponseDTO.self, responseErrorMapper: MissingDataErrorMapper()).value
+        return try value.toDomain()
     }
 }
