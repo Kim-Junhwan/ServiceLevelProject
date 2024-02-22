@@ -18,7 +18,7 @@ struct FetchingImage<PlaceHolder: View>: View  {
             placeHolder()
         case .loading:
             ProgressView()
-        case .success(let image):
+        case .success(let image, _):
             image
                 .resizable()
                 .scaledToFill()
