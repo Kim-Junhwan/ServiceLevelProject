@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ChannelCell: View {
     let title: String
-    @Binding var newChatCount: Int
+    let newChatCount: Int
     
     var body: some View {
         ChatListDefaultcell(title: title, leftImage: {
@@ -64,6 +64,7 @@ struct ChatListDefaultcell<IconImage: View>: View {
     @ViewBuilder
     var newChatCounter: some View {
         Text("\(newChatCount)")
+            .font(CustomFont.caption.font)
             .padding([.leading, .trailing], 8)
             .padding([.top, .bottom], 2)
             .foregroundStyle(.white)
