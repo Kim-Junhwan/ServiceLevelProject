@@ -11,7 +11,7 @@ struct DMRoomResonseDTO: Decodable {
     let workspaceId: Int
     let roomId: Int
     let createdAt: String
-    let user: [UserThumbnailResponseDTO]
+    let user: UserThumbnailResponseDTO
     
     enum CodingKeys: String, CodingKey {
         case workspaceId = "user_id"
@@ -21,6 +21,6 @@ struct DMRoomResonseDTO: Decodable {
     }
     
     func toDomain() throws -> DirectMessageRoom {
-        return .init(workspaceId: workspaceId, roomId: roomId, createdAt: try createdAt.toDate(), user: user.map{$0.toDomain()})
+        return .init(workspaceId: workspaceId, roomId: roomId, createdAt: try createdAt.toDate(), user: user.toDomain())
     }
 }

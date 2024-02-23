@@ -21,8 +21,7 @@ class DefaultSelectWorkspaceUseCase: SelectWorkspaceUseCase {
     }
     
     func excute(workspaceId: Int) async throws {
-        let fetchWorkspaceInfo = try await workspaceRespotory.fetchDetailWorkspace(.init(workspaceId: workspaceId))
-        print(fetchWorkspaceInfo)
-        appState.selectWorkspace(workspaceId: workspaceId, detailWorkspaceInfo: fetchWorkspaceInfo)
+         let fetchWorkspaceInfo = try await workspaceRespotory.fetchDetailWorkspace(.init(workspaceId: workspaceId))
+         appState.selectWorkspace(workspaceId: workspaceId, detailWorkspaceInfo: fetchWorkspaceInfo)
     }
 }
