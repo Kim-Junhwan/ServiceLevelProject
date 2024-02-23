@@ -24,5 +24,15 @@ final class NetworkAssembly: Assembly {
             return DefaultProfileRepository()
         }
         .inObjectScope(.container)
+        
+        container.register(ChannelRepository.self) { _ in
+            return DefaultChannelRepository()
+        }
+        .inObjectScope(.container)
+        
+        container.register(DirectMessageRepository.self) { _ in
+            return DefaultDMRepository()
+        }
+        .inObjectScope(.container)
     }
 }
