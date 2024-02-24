@@ -9,4 +9,5 @@ import Foundation
 
 protocol ChannelRepository {
     func fetchComeInChannel(_ query: FetchComInChannelQuery) async throws -> [ChannelThumbnail]
+    func createChannel(_ query: CreateChannelQuery) async throws -> ChannelThumbnail
 }

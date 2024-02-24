@@ -17,7 +17,8 @@ class ChatSceneAssembly: Assembly {
         
         container.register(ChatListViewModel.self) { resolver in
             let fetchChatListUsecase = resolver.resolve(FetchWorkspaceComeInChannelDMListUseCase.self)!
-            return ChatListViewModel(fetchWorkspaceChatUsecase: fetchChatListUsecase, appState: appState)
+            let createChannelUsecase = resolver.resolve(CreateChannelUseCase.self)!
+            return ChatListViewModel(fetchWorkspaceChatUsecase: fetchChatListUsecase, createChannelUsecase: createChannelUsecase, appState: appState)
         }
     }
 }
