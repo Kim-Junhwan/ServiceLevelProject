@@ -16,7 +16,7 @@ final class HomeViewModel: ViewModel {
     struct HomeViewModelState {
         var navigationTitle: String = ""
         var currentWorkspace: WorkspaceDetailInfo?
-        var workspaceIsEmpty: Bool = false
+        var workspaceIsEmpty: Bool = true
     }
     
     @Published var workspaceImage: FetchImageModel
