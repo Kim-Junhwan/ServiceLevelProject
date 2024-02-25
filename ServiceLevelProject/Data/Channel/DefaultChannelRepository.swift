@@ -17,7 +17,11 @@ final class DefaultChannelRepository: ChannelRepository {
     
     func createChannel(_ query: CreateChannelQuery) async throws -> ChannelThumbnail {
         let value = try await SSAC.accessTokenRequest(ChannelRouter.createChannel(workspaceId: query.workspaceId, query: .init(name: query.channelName, description: query.channelDescription))).slpSerializingDecodable(ChannelThumbnailResponseDTO.self, responseErrorMapper: CreateChannelErrorMapper()).value
-        
         return try value.toDomain()
+    }
+    
+    func fetchWorkspaceChannel(_ query: FetchWorkspaceChannelQuery) async throws -> [ChannelThumbnail] {
+        let value = try await SSAC.accessTokenRequest(ChannelRouter.fetchWorkspaceChannel(workspaceId: query.workspaceId)).slpSerializingDecodable([ChannelThumbnailResponseDTO].self, responseErrorMapper: MissingDataErrorMapper()).value
+        return try value.map{ try $0.toDomain() }
     }
 }

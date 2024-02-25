@@ -11,6 +11,7 @@ import Alamofire
 enum ChannelRouter: URLRequestConvertible {
     case fetchComeInChannel(Int)
     case createChannel(workspaceId: Int, query: CreateChannelRequestDTO)
+    case fetchWorkspaceChannel(workspaceId: Int)
     
     var method: HTTPMethod {
         switch self {
@@ -18,6 +19,8 @@ enum ChannelRouter: URLRequestConvertible {
             return .get
         case .createChannel:
             return .post
+        case .fetchWorkspaceChannel:
+            return .get
         }
     }
     
@@ -26,6 +29,8 @@ enum ChannelRouter: URLRequestConvertible {
         case .fetchComeInChannel(let workspaceId):
             return "/v1/workspaces/\(workspaceId)/channels/my"
         case .createChannel(let workspaceId, _):
+            return "/v1/workspaces/\(workspaceId)/channels"
+        case .fetchWorkspaceChannel(let workspaceId):
             return "/v1/workspaces/\(workspaceId)/channels"
         }
     }
