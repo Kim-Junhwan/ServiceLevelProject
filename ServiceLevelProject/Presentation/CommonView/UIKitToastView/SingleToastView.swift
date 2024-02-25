@@ -62,10 +62,6 @@ public class SingleToastView {
         self._toast = toast
     }
     
-    deinit {
-        print("singleToastViewDeinit")
-    }
-    
     let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene
     
     func show(message: String, bottomPadding: CGFloat = 0) {
