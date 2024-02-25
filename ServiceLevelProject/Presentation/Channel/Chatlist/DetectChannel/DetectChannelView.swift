@@ -9,15 +9,19 @@ import SwiftUI
 
 struct DetectChannelView: View {
     @Binding var isPresenting: Bool
-    
+    @StateObject var viewModel: DetectChannelViewModel = SharedAssembler.shared.resolve(DetectChannelViewModel.self)
     
     var body: some View {
         NavigationStack {
             List {
-                ForEach(channelList) { channelItem in
-                    channelListCell(title: channelItem.name)
-                        .listRowInsets(.init())
-                        .listRowSeparator(.hidden)
+                ForEach(viewModel.state.channelList) { channelItem in
+                    Button(action: {
+                        
+                    }, label: {
+                        channelListCell(title: channelItem.name)
+                    })
+                    .listRowInsets(.init())
+                    .listRowSeparator(.hidden)
                 }
                 .foregroundStyle(.textPrimary)
             }
@@ -37,6 +41,9 @@ struct DetectChannelView: View {
             }
         }
         .background(.secondary)
+        .onAppear {
+            viewModel.trigger(.appearView)
+        }
     }
     
     @ViewBuilder
