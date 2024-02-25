@@ -20,5 +20,10 @@ class ChatSceneAssembly: Assembly {
             let createChannelUsecase = resolver.resolve(CreateChannelUseCase.self)!
             return ChatListViewModel(fetchWorkspaceChatUsecase: fetchChatListUsecase, createChannelUsecase: createChannelUsecase, appState: appState)
         }
+        
+        container.register(DetectChannelViewModel.self) { resolver in
+            let channelRepository = resolver.resolve(ChannelRepository.self)!
+            return DetectChannelViewModel(appState: appState, channelRepository: channelRepository)
+        }
     }
 }
