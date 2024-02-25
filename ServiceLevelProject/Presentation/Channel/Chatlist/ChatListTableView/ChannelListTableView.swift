@@ -18,7 +18,7 @@ struct ChatListSection {
 struct ChannelListTableView: UIViewRepresentable {
     @Binding var directMessage: [DMRoomItemModel]
     @Binding var channelList: [ChannelListItemModel]
-    @Binding var showCreateChannel: Bool
+    @Binding var showChannelActionSheet: Bool
     @Binding var channelOpen: Bool
     @Binding var dmOpen: Bool
     
@@ -33,23 +33,23 @@ struct ChannelListTableView: UIViewRepresentable {
     }
     
     func makeCoordinator() -> Coordinator {
-        return Coordinator(directMessage: $directMessage, channelList: $channelList, showCreateChannel: $showCreateChannel, channelOpen: $channelOpen, dmOpen: $dmOpen)
+        return Coordinator(directMessage: $directMessage, channelList: $channelList, showChannelActionSheet: $showChannelActionSheet, channelOpen: $channelOpen, dmOpen: $dmOpen)
     }
     
     class Coordinator: NSObject, UITableViewDelegate, ChatListHeaderViewDelegate {
         
         @Binding var directMessage: [DMRoomItemModel]
         @Binding var channelList: [ChannelListItemModel]
-        @Binding var showCreateChannel: Bool
+        @Binding var showChannelActionSheet: Bool
         @Binding var channelOpen: Bool
         @Binding var dmOpen: Bool
         
         let headers: [String] = ["채널", "다이렉트 메시지"]
         
-        init(directMessage: Binding<[DMRoomItemModel]>, channelList: Binding<[ChannelListItemModel]>, showCreateChannel: Binding<Bool>, channelOpen: Binding<Bool>, dmOpen: Binding<Bool>) {
+        init(directMessage: Binding<[DMRoomItemModel]>, channelList: Binding<[ChannelListItemModel]>, showChannelActionSheet: Binding<Bool>, channelOpen: Binding<Bool>, dmOpen: Binding<Bool>) {
             self._directMessage = directMessage
             self._channelList = channelList
-            self._showCreateChannel = showCreateChannel
+            self._showChannelActionSheet = showChannelActionSheet
             self._dmOpen = dmOpen
             self._channelOpen = channelOpen
             super.init()
@@ -134,7 +134,7 @@ struct ChannelListTableView: UIViewRepresentable {
         func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
             if indexPath.section == 0 {
                 if indexPath.row == channelList.count {
-                    showCreateChannel = true
+                    showChannelActionSheet = true
                 }
             }
         }
