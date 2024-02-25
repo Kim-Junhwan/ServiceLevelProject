@@ -8,7 +8,6 @@
 import Foundation
 import SwiftUI
 import UIKit
-import Combine
 
 struct ChatListSection {
     let title: String
@@ -44,7 +43,6 @@ struct ChannelListTableView: UIViewRepresentable {
         @Binding var showCreateChannel: Bool
         @Binding var channelOpen: Bool
         @Binding var dmOpen: Bool
-        private var cancellableBag = Set<AnyCancellable>()
         
         let headers: [String] = ["채널", "다이렉트 메시지"]
         

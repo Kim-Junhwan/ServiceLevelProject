@@ -56,12 +56,7 @@ class ChatListHeaderView: UITableViewHeaderFooterView {
     
     override func draw(_ rect: CGRect) {
         super.draw(rect)
-        self.indicatorImageView.transform = .init()
-        //self.indicatorImageView.transform = self.indicatorImageView.transform.rotated(by: .pi/(self.isOpened ? -2 : 2))
-        UIView.animate(withDuration: 0.2, delay: 0, options: .curveLinear) {
-            self.indicatorImageView.transform = self.indicatorImageView.transform.rotated(by: .pi/(self.isOpened ? 2 : -2))
-            self.contentStackView.layoutIfNeeded()
-        }
+//       self.indicatorImageView.transform = self.indicatorImageView.transform.rotated(by: .pi/(self.isOpened ? -2 : 2))
     }
     
     required init?(coder: NSCoder) {
@@ -99,6 +94,11 @@ class ChatListHeaderView: UITableViewHeaderFooterView {
    @objc private func toggleOpen() {
         guard let delegate, let tableView else { return }
         delegate.tapHeader(section: section, tableView)
+        isOpened = delegate.getToggleStatus(section: section)
+       UIView.animate(withDuration: 0.2, delay: 0, options: .curveLinear) {
+           self.indicatorImageView.transform = self.indicatorImageView.transform.rotated(by: .pi/(self.isOpened ? 2 : -2))
+           self.contentStackView.layoutIfNeeded()
+       }
     }
 }
 
