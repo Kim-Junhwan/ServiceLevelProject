@@ -8,8 +8,19 @@
 import SwiftUI
 
 struct DMView: View {
+    @StateObject var viewModel: DMViewModel = SharedAssembler.shared.resolve(DMViewModel.self)
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        contentView
+    }
+    
+    @ViewBuilder
+    var contentView: some View {
+        if viewModel.state.workspaceMembers.isEmpty {
+            EmptyMemberDMView()
+        } else {
+            Text("Hello")
+        }
     }
 }
 
