@@ -20,7 +20,8 @@ final class SharedAssembler {
             AuthAssembly(),
             WorkspaceAssembly(),
             ChatAssembly(),
-            EditProfileAssembly()
+            EditProfileAssembly(),
+            DMAssembly()
         ])
     }
     
