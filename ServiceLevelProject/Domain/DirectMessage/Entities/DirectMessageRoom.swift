@@ -11,5 +11,5 @@ struct DirectMessageRoom {
     let workspaceId: Int
     let roomId: Int
     let createdAt: Date
-    let user: [UserThumbnail]
+    let user: UserThumbnail
 }
