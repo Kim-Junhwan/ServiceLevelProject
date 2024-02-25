@@ -8,62 +8,59 @@
 import Foundation
 import SwiftUI
 import UIKit
+import Combine
 
 struct ChatListSection {
     let title: String
     var isOpened: Bool
 }
 
-struct ChannelModel {
-    let title: String
-    let newMessageCount: Int
-}
-
 
 struct ChannelListTableView: UIViewRepresentable {
-    let directMessage: [DirectMessage]
-    let channelList: [Channel]
+    @Binding var directMessage: [DMRoomItemModel]
+    @Binding var channelList: [ChannelListItemModel]
+    @Binding var showCreateChannel: Bool
+    @Binding var channelOpen: Bool
+    @Binding var dmOpen: Bool
     
-    func makeUIView(context: Context) -> UITableView {
-        let tableView = UITableView()
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.register(ChatListHeaderView.self, forHeaderFooterViewReuseIdentifier: ChatListHeaderView.identifier)
-        tableView.register(ChatListFooterView.self, forHeaderFooterViewReuseIdentifier: ChatListFooterView.identifier)
-        tableView.register(ChannelTableViewCell.self, forCellReuseIdentifier: ChannelTableViewCell.identifier)
-        tableView.register(DirectMessageTableViewCell.self, forCellReuseIdentifier: DirectMessageTableViewCell.identifier)
-        tableView.sectionHeaderTopPadding = 1
-        tableView.separatorStyle = .none
-        tableView.dataSource = context.coordinator
-        tableView.delegate = context.coordinator
-        return tableView
+    func makeUIView(context: Context) -> ExpandableTableView {
+        let expandableTableView = ExpandableTableView()
+        expandableTableView.tableView.delegate = context.coordinator
+        return expandableTableView
     }
     
-    func updateUIView(_ uiView: UITableView, context: Context) {}
+    func updateUIView(_ uiView: ExpandableTableView, context: Context) {
+        uiView.updateTableView(channelOpen: channelOpen, channelList: channelList, dmOpen: dmOpen, dmList: directMessage)
+    }
     
     func makeCoordinator() -> Coordinator {
-        return Coordinator(directMessage: directMessage, channelList: channelList)
+        return Coordinator(directMessage: $directMessage, channelList: $channelList, showCreateChannel: $showCreateChannel, channelOpen: $channelOpen, dmOpen: $dmOpen)
     }
     
-    class Coordinator: NSObject, UITableViewDelegate, UITableViewDataSource, ChatListHeaderViewDelegate {
+    class Coordinator: NSObject, UITableViewDelegate, ChatListHeaderViewDelegate {
         
-        let directMessage: [DirectMessage]
-        let channelList: [Channel]
+        @Binding var directMessage: [DMRoomItemModel]
+        @Binding var channelList: [ChannelListItemModel]
+        @Binding var showCreateChannel: Bool
+        @Binding var channelOpen: Bool
+        @Binding var dmOpen: Bool
+        private var cancellableBag = Set<AnyCancellable>()
         
-        init(directMessage: [DirectMessage], channelList: [Channel]) {
-            self.directMessage = directMessage
-            self.channelList = channelList
-        }
+        let headers: [String] = ["채널", "다이렉트 메시지"]
         
-        var headers: [ChatListSection] = [.init(title: "채널", isOpened: false), .init(title: "다이렉트 메시지", isOpened: false)]
-        
-        func numberOfSections(in tableView: UITableView) -> Int {
-            3
+        init(directMessage: Binding<[DMRoomItemModel]>, channelList: Binding<[ChannelListItemModel]>, showCreateChannel: Binding<Bool>, channelOpen: Binding<Bool>, dmOpen: Binding<Bool>) {
+            self._directMessage = directMessage
+            self._channelList = channelList
+            self._showCreateChannel = showCreateChannel
+            self._dmOpen = dmOpen
+            self._channelOpen = channelOpen
+            super.init()
         }
         
         func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
             if section != 2 {
                 guard let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: ChatListHeaderView.identifier) as? ChatListHeaderView else { return .init() }
-                header.configHeader(title: headers[section].title, section: section, tableView: tableView, isOpened: headers[section].isOpened)
+                header.configHeader(title: headers[section], section: section, tableView: tableView, isOpened: false)
                 header.delegate = self
                 return header
             }
@@ -71,12 +68,19 @@ struct ChannelListTableView: UIViewRepresentable {
         }
         
         func tapHeader(section: Int, _ tableView: UITableView) {
-            headers[section].isOpened.toggle()
-            tableView.reloadSections([section], with: .none)
+            if section == 0 {
+                channelOpen.toggle()
+            } else {
+                dmOpen.toggle()
+            }
         }
         
         func getToggleStatus(section: Int) -> Bool {
-            return headers[section].isOpened
+            if section == 0 {
+                return channelOpen
+            } else {
+                return dmOpen
+            }
         }
         
         func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
@@ -87,16 +91,6 @@ struct ChannelListTableView: UIViewRepresentable {
             return footer
         }
         
-        func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-            if section == 0 {
-                return headers[section].isOpened ? channelList.count+1 : 0
-            } else if section == 1 {
-                return headers[section].isOpened ? directMessage.count+1 : 0
-            } else {
-                return 1
-            }
-        }
-        
         func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
             if indexPath.section == 0 {
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: ChannelTableViewCell.identifier, for: indexPath) as? ChannelTableViewCell else { return .init() }
@@ -105,7 +99,7 @@ struct ChannelListTableView: UIViewRepresentable {
                     return cell
                 }
                 let channel = channelList[indexPath.row]
-                cell.config(title: channel.title, newMessageCount: channel.newMessageCount)
+                cell.config(title: channel.name, newMessageCount: channel.newMessageCount)
                 return cell
             } else if indexPath.section == 1 {
                 if indexPath.row == directMessage.count {
@@ -114,8 +108,8 @@ struct ChannelListTableView: UIViewRepresentable {
                     return cell
                 }
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: DirectMessageTableViewCell.identifier, for: indexPath) as? DirectMessageTableViewCell else { return .init() }
-                let profile = directMessage[indexPath.row]
-                cell.config(profile: profile.profileImage, name: profile.nickname, newMessageCount: profile.newMessageCount)
+                let dm = directMessage[indexPath.row]
+                cell.config(profile: dm.user.profileImagePath, name: dm.user.nickname, newMessageCount: dm.newMessageCount)
                 return cell
             } else {
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: ChannelTableViewCell.identifier, for: indexPath) as? ChannelTableViewCell else { return .init() }
@@ -137,6 +131,14 @@ struct ChannelListTableView: UIViewRepresentable {
         
         func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
             1
+        }
+        
+        func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+            if indexPath.section == 0 {
+                if indexPath.row == channelList.count {
+                    showCreateChannel = true
+                }
+            }
         }
     }
 }
