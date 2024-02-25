@@ -8,8 +8,10 @@
 import SwiftUI
 
 struct HomeTabView: View {
+    @Binding var selectedTabIndex: Int
+    
     var body: some View {
-        TabView {
+        TabView(selection: $selectedTabIndex) {
             Group {
                 ChatListView()
                     .tabItem {
@@ -21,6 +23,7 @@ struct HomeTabView: View {
                             }
                         )
                 }
+                    .tag(0)
                 
                 DMView()
                     .tabItem {
@@ -32,6 +35,7 @@ struct HomeTabView: View {
                             }
                         )
                     }
+                    .tag(1)
                 
                 SearchView()
                     .tabItem {
@@ -43,6 +47,7 @@ struct HomeTabView: View {
                             }
                         )
                     }
+                    .tag(2)
                 
                 OptionView()
                     .tabItem {
@@ -54,6 +59,7 @@ struct HomeTabView: View {
                             }
                         )
                     }
+                    .tag(3)
             }
             .toolbarBackground(.visible, for: .tabBar)
             .toolbarBackground(.red, for: .tabBar)
@@ -63,5 +69,5 @@ struct HomeTabView: View {
 }
 
 #Preview {
-    HomeTabView()
+    HomeTabView(selectedTabIndex: .constant(0))
 }

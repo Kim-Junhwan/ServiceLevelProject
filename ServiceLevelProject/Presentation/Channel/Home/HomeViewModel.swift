@@ -14,20 +14,21 @@ final class HomeViewModel: ViewModel {
     }
     
     struct HomeViewModelState {
-        var navigationTitle: String = ""
+        var navigationTitle: String
         var currentWorkspace: WorkspaceDetailInfo?
         var workspaceIsEmpty: Bool = true
     }
     
     @Published var workspaceImage: FetchImageModel
     @Published var userProfileImage: FetchImageModel
-    @Published var state: HomeViewModelState = .init()
+    @Published var state: HomeViewModelState
     private let appState: AppState
     private let selectWorkspaceUseCase: SelectWorkspaceUseCase
     private var cancellableBag = Set<AnyCancellable>()
     
     init(appState: AppState, selectWorkspaceUseCase: SelectWorkspaceUseCase) {
         self.appState = appState
+        self.state = .init(navigationTitle: appState.currentWorkspace?.name ?? "No Workspace")
         self.workspaceImage = .init(url: nil)
         self.userProfileImage = .init(url: appState.userData.profileImagePath)
         self.selectWorkspaceUseCase = selectWorkspaceUseCase
@@ -49,7 +50,7 @@ final class HomeViewModel: ViewModel {
                 if workspaceList.isEmpty {
                     self.state.currentWorkspace = nil
                 } else {
-                    self.state.navigationTitle = "Workspace"
+                    self.state.navigationTitle = self.appState.currentWorkspace?.name ?? "No Workspace"
                 }
             })
             .store(in: &cancellableBag)
