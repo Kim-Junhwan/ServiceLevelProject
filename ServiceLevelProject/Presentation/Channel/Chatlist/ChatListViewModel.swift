@@ -7,7 +7,7 @@
 
 import Combine
 
-final class ChatListViewModel: ViewModel {
+final class ChatListViewModel: ViewModel, ObservableObject {
     enum ChatListViewModelInput {
         case createChannel(name: String, description: String?)
     }

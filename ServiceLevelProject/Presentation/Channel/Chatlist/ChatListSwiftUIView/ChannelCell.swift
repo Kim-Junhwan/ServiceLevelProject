@@ -51,7 +51,6 @@ struct ChatListDefaultcell<IconImage: View>: View {
             leftImage()
                 
             Text(title)
-                .font(newChatCount != 0 ? CustomFont.bodyBold.font : CustomFont.body.font)
             Spacer()
             if newChatCount != 0 {
                 newChatCounter
