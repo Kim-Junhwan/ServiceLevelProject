@@ -58,7 +58,7 @@ struct WorkspaceChangeAdminView: View {
 }
 
 struct WorkspaceChangeAdminMemberCell: View {
-    let member: WorkspaceMemberModel
+    let member: UserThumbnailModel
     
     var body: some View {
         Button(action: {

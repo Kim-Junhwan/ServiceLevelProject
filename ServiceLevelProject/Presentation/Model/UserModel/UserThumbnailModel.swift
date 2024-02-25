@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct UserThumbnailModel: Hashable {
+struct UserThumbnailModel: Hashable, Identifiable {
     let id: Int
     let email: String
     let nickname: String
