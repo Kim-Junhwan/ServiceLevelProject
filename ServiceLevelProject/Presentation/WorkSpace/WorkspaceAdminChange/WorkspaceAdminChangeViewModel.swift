@@ -7,14 +7,6 @@
 import Foundation
 import Combine
 
-struct WorkspaceMemberModel: Identifiable {
-    let id: UUID = .init()
-    let userId: Int
-    let email: String
-    let nickname: String
-    let profileImagePath: String?
-}
-
 class WorkspaceAdminChangeViewModel: ViewModel {
     enum WorkSpaceAdminChangeInput {
         case appearView
@@ -26,7 +18,7 @@ class WorkspaceAdminChangeViewModel: ViewModel {
     }
     
     @Published var state: WorkSpaceAdminChangeState = .init()
-    @Published var members: [WorkspaceMemberModel] = []
+    @Published var members: [UserThumbnailModel] = []
     private var cancellableBag = Set<AnyCancellable>()
     private let workspaceId: Int
     private let changeWorkspaceAdminUseCase: ChangeWorkspaceAdminUseCase
@@ -53,7 +45,7 @@ class WorkspaceAdminChangeViewModel: ViewModel {
                     if value.isEmpty {
                         self.state.canChangeWorkspaceAdmin = false
                     } else {
-                        self.members = value.map{ .init(userId: $0.id, email: $0.email, nickname: $0.nickname, profileImagePath: $0.profileImagePath) }
+                        self.members = value.map{ .init(userThumnail: $0) }
                     }
                 }
             } catch {
