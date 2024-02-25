@@ -23,19 +23,28 @@ struct ChatListView: View {
     
     @StateObject var viewModel: ChatListViewModel = SharedAssembler.shared.resolve(ChatListViewModel.self)
     @State private var showCreateChannel = false
+    @State private var showDetectChannel = false
     @State private var openChannelList = false
     @State private var openDMList = false
+    @State private var showChannelActionSheet: Bool = false
     
     var body: some View {
         ZStack {
             VStack {
-                ChannelListTableView(directMessage: $viewModel.state.dmList, channelList: $viewModel.state.channelList, showCreateChannel: $showCreateChannel, channelOpen: $openChannelList, dmOpen: $openDMList)
+                ChannelListTableView(directMessage: $viewModel.state.dmList, channelList: $viewModel.state.channelList, showChannelActionSheet: $showChannelActionSheet, channelOpen: $openChannelList, dmOpen: $openDMList)
             }
             floatingButtonView
         }
         .sheet(isPresented: $showCreateChannel, content: {
             CreateChannelView(isPresenting: $showCreateChannel, viewModel: viewModel)
         })
+        .fullScreenCover(isPresented: $showDetectChannel, content: {
+            DetectChannelView(isPresenting: $showDetectChannel)
+        })
+        .confirmationDialog("", isPresented: $showChannelActionSheet) {
+            channelActionSheet
+        }
+        
     }
     
     @ViewBuilder
@@ -68,8 +77,21 @@ struct ChatListView: View {
         }
         
     }
+    
+    @ViewBuilder
+    var channelActionSheet: some View {
+        VStack {
+            Button("채널 생성") {
+                showCreateChannel = true
+            }
+            Button("채널 탐색") {
+                showDetectChannel = true
+            }
+            Button("취소", role: .cancel) {}
+        }
+    }
 }
 
-#Preview {
-    ChatListView()
-}
+//#Preview {
+//    ChatListView()
+//}
