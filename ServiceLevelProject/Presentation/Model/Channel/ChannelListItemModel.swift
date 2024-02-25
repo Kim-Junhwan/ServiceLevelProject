@@ -7,9 +7,10 @@
 
 import Foundation
 
-struct ChannelListItemModel: Hashable {
+struct ChannelListItemModel: Hashable, Identifiable {
+    
     let workspaceId: Int
-    let channelId: Int
+    let id: Int
     var name: String
     var description: String?
     var ownerId: Int
@@ -19,7 +20,7 @@ struct ChannelListItemModel: Hashable {
     
     init(channelList: ChannelThumbnail) {
         workspaceId = channelList.workspaceId
-        channelId = channelList.channelId
+        id = channelList.channelId
         name = channelList.name
         description = channelList.description
         ownerId = channelList.ownerId
