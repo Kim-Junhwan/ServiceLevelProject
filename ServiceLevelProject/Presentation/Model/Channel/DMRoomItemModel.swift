@@ -6,17 +6,17 @@
 //
 
 import Foundation
-struct DMRoomItemModel: Hashable {
+struct DMRoomItemModel: Hashable, Identifiable {
     
     let workspaceId: Int
-    let roomId: Int
+    let id: Int
     let createdAt: Date
     let user: UserThumbnailModel
     var newMessageCount: Int
     
     init(dm: DirectMessageRoom) {
         workspaceId = dm.workspaceId
-        roomId = dm.roomId
+        id = dm.roomId
         createdAt = dm.createdAt
         user = .init(userThumnail: dm.user)
         newMessageCount = 0
