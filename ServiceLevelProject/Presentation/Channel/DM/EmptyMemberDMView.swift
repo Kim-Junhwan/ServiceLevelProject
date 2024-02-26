@@ -21,7 +21,7 @@ struct EmptyMemberDMView: View {
                 Text("팀원 초대하기")
             }, backgroundColor: .brandGreen)
         }
-        .padding([.leading, .trailing], 62)
+        .frame(width: 260)
         .multilineTextAlignment(.center)
     }
 }
