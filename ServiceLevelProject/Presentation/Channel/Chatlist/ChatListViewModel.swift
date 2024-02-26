@@ -23,14 +23,12 @@ final class ChatListViewModel: ViewModel, ObservableObject {
     private let fetchWorkspaceChatListUsecase: FetchWorkspaceComeInChannelDMListUseCase
     private let createChannelUsecase: CreateChannelUseCase
     private var cancellableBag = Set<AnyCancellable>()
-    private var workSpace: WorkspaceDetailInfo
     private let appState: AppState
     
     init(fetchWorkspaceChatUsecase: FetchWorkspaceComeInChannelDMListUseCase, createChannelUsecase: CreateChannelUseCase, appState: AppState) {
         self.fetchWorkspaceChatListUsecase = fetchWorkspaceChatUsecase
         self.createChannelUsecase = createChannelUsecase
         self.appState = appState
-        self.workSpace = appState.selectWorkspace!
         appStateBind()
     }
     
@@ -61,9 +59,10 @@ final class ChatListViewModel: ViewModel, ObservableObject {
     }
     
     private func createChannel(name: String, description: String?) {
+        guard let workspaceId = appState.selectWorkspace?.workspaceId else { return }
         Task {
             do {
-                state.channelList = try await createChannelUsecase.excute(workspaceId: workSpace.workspaceId, channelName: name, channelDescription: description).map{ .init(channelList: $0) }
+                state.channelList = try await createChannelUsecase.excute(workspaceId: workspaceId, channelName: name, channelDescription: description).map{ .init(channelList: $0) }
             }
         }
     }
