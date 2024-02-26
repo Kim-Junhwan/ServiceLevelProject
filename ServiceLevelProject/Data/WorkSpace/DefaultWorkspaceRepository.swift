@@ -52,4 +52,10 @@ final class DefaultWorkspaceRepository: WorkspaceRepository {
         let value = try await SSAC.accessTokenRequest(WorkspaceRouter.fetchDetailWorkspace(workspaceId: query.workspaceId)).slpSerializingDecodable(DetailWorkspaceInfoResponseDTO.self, responseErrorMapper: MissingDataErrorMapper()).value
         return try value.toDomain()
     }
+    
+    func inviteMember(_ query: InviteMemberQuery) async throws -> UserThumbnail {
+        let requestDTO = InviteMemberRequestDTO(email: query.inviteMemberEmail)
+        let value = try await SSAC.accessTokenRequest(WorkspaceRouter.inviteMember(requestDTO, workspaceId: query.workspaceId)).slpSerializingDecodable(UserThumbnailResponseDTO.self, responseErrorMapper: InviteMemberError()).value
+        return value.toDomain()
+    }
 }

@@ -14,6 +14,7 @@ enum WorkspaceRouter: URLRequestConvertible {
     case editWorkspace(workspaceId: Int)
     case fetchWorkspaceMembers(workspaceId: Int)
     case fetchDetailWorkspace(workspaceId: Int)
+    case inviteMember(InviteMemberRequestDTO, workspaceId: Int)
     
     var method: HTTPMethod {
         switch self {
@@ -27,6 +28,8 @@ enum WorkspaceRouter: URLRequestConvertible {
             return .get
         case .fetchDetailWorkspace:
             return .get
+        case .inviteMember:
+            return .post
         }
     }
     
@@ -42,6 +45,8 @@ enum WorkspaceRouter: URLRequestConvertible {
             return "/v1/workspaces/\(workspaceId)/members"
         case .fetchDetailWorkspace(workspaceId: let workspaceId):
             return "/v1/workspaces/\(workspaceId)"
+        case .inviteMember(_, let workspaceId):
+            return "/v1/workspaces/\(workspaceId)/members"
         }
     }
     
@@ -50,6 +55,8 @@ enum WorkspaceRouter: URLRequestConvertible {
         var request = URLRequest(url: url)
         request.method = method
         switch self {
+        case .inviteMember(let query, _):
+            request = try JSONParameterEncoder().encode(query, into: request)
         default:
             break
         }
