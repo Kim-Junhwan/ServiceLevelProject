@@ -9,17 +9,21 @@ import SwiftUI
 
 struct DMBaseView: View {
     @StateObject var viewModel: DMViewModel = SharedAssembler.shared.resolve(DMViewModel.self)
+    @State var showInviteMember: Bool = false
     
     var body: some View {
         contentView
+            .sheet(isPresented: $showInviteMember, content: {
+                InviteMemberView(isPresenting: $showInviteMember)
+            })
     }
     
     @ViewBuilder
     var contentView: some View {
         if viewModel.state.workspaceMembers.isEmpty {
-            EmptyMemberDMView()
+            EmptyMemberDMView(showInviteMember: $showInviteMember)
         } else {
-            Text("Hello")
+            DirectMessageView(memberList: $viewModel.state.workspaceMembers, dmList: $viewModel.state.dmRooms)
         }
     }
 }

@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct EmptyMemberDMView: View {
+    @Binding var showInviteMember: Bool
+    
     var body: some View {
         VStack(spacing: 20) {
             Text("워크스페이스에 멤버가 없어요.")
@@ -16,7 +18,7 @@ struct EmptyMemberDMView: View {
                 .font(CustomFont.body.font)
             
             RoundedButton(action: {
-                
+                showInviteMember = true
             }, label: {
                 Text("팀원 초대하기")
             }, backgroundColor: .brandGreen)
@@ -27,5 +29,5 @@ struct EmptyMemberDMView: View {
 }
 
 #Preview {
-    EmptyMemberDMView()
+    EmptyMemberDMView(showInviteMember: .constant(false))
 }
