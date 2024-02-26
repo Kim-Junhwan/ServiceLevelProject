@@ -30,5 +30,11 @@ class WorkspaceSceneAssembly: Assembly {
             let selectWorkspaceUsecase = resolver.resolve(SelectWorkspaceUseCase.self)!
             return WorkspaceSideMenuViewModel(appState: appState, selectWorkspaceUseCase: selectWorkspaceUsecase)
         }
+        
+        container.register(InviteMemberViewModel.self) { resolver in
+            let inviteMemberUsecase = resolver.resolve(InviteMemberUsecase.self)!
+            let appState = resolver.resolve(AppState.self)!
+            return InviteMemberViewModel(inviteMemberUsecase: inviteMemberUsecase, appState: appState)
+        }
     }
 }

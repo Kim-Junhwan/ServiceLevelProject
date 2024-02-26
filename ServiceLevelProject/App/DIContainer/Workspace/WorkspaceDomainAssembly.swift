@@ -23,5 +23,8 @@ final class WorkspaceDomainAssembly: Assembly {
         container.register(SelectWorkspaceUseCase.self) { resolver in
             return DefaultSelectWorkspaceUseCase(appState: appState, workspaceRespotory: workspaceRepository)
         }
+        container.register(InviteMemberUsecase.self) { _ in
+            return DefaultInviteMemberUsecase(appState: appState, workspaceRepository: workspaceRepository)
+        }
     }
 }

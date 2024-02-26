@@ -12,7 +12,6 @@ final class DefaultProfileRepository: ProfileRepository {
     
     func fetchMyProfile() async throws -> UserProfile {
         let value = try await SSAC.accessTokenRequest(ProfileRouter.fetchMyProfile).slpSerializingDecodable(UserProfileResponseDTO.self).value
-        
         return .init(userId: value.userId, email: value.email, nickname: value.nickname, profileImage: value.profileImage, phone: value.phone, vendor: mappingVendor(vendorStr: value.vendor), sesacCoin: value.sesacCoin, createdAt: try value.createdAt.toDate())
     }
     
