@@ -27,16 +27,20 @@ struct ChatListView: View {
     @State private var openChannelList = false
     @State private var openDMList = false
     @State private var showChannelActionSheet: Bool = false
+    @State private var showInviteMember = false
     
     var body: some View {
         ZStack {
             VStack {
-                ChannelListTableView(directMessage: $viewModel.state.dmList, channelList: $viewModel.state.channelList, showChannelActionSheet: $showChannelActionSheet, channelOpen: $openChannelList, dmOpen: $openDMList)
+                ChannelListTableView(directMessage: $viewModel.state.dmList, channelList: $viewModel.state.channelList, showChannelActionSheet: $showChannelActionSheet, channelOpen: $openChannelList, showInviteMember: $showInviteMember, dmOpen: $openDMList)
             }
             floatingButtonView
         }
         .sheet(isPresented: $showCreateChannel, content: {
             CreateChannelView(isPresenting: $showCreateChannel, viewModel: viewModel)
+        })
+        .sheet(isPresented: $showInviteMember, content: {
+            InviteMemberView(isPresenting: $showInviteMember)
         })
         .fullScreenCover(isPresented: $showDetectChannel, content: {
             DetectChannelView(isPresenting: $showDetectChannel)

@@ -20,6 +20,7 @@ struct ChannelListTableView: UIViewRepresentable {
     @Binding var channelList: [ChannelListItemModel]
     @Binding var showChannelActionSheet: Bool
     @Binding var channelOpen: Bool
+    @Binding var showInviteMember: Bool
     @Binding var dmOpen: Bool
     
     func makeUIView(context: Context) -> ExpandableTableView {
@@ -33,7 +34,7 @@ struct ChannelListTableView: UIViewRepresentable {
     }
     
     func makeCoordinator() -> Coordinator {
-        return Coordinator(directMessage: $directMessage, channelList: $channelList, showChannelActionSheet: $showChannelActionSheet, channelOpen: $channelOpen, dmOpen: $dmOpen)
+        return Coordinator(directMessage: $directMessage, channelList: $channelList, showChannelActionSheet: $showChannelActionSheet, channelOpen: $channelOpen, dmOpen: $dmOpen, showInviteMember: $showInviteMember)
     }
     
     class Coordinator: NSObject, UITableViewDelegate, ChatListHeaderViewDelegate {
@@ -43,15 +44,17 @@ struct ChannelListTableView: UIViewRepresentable {
         @Binding var showChannelActionSheet: Bool
         @Binding var channelOpen: Bool
         @Binding var dmOpen: Bool
+        @Binding var showInviteMember: Bool
         
         let headers: [String] = ["채널", "다이렉트 메시지"]
         
-        init(directMessage: Binding<[DMRoomItemModel]>, channelList: Binding<[ChannelListItemModel]>, showChannelActionSheet: Binding<Bool>, channelOpen: Binding<Bool>, dmOpen: Binding<Bool>) {
+        init(directMessage: Binding<[DMRoomItemModel]>, channelList: Binding<[ChannelListItemModel]>, showChannelActionSheet: Binding<Bool>, channelOpen: Binding<Bool>, dmOpen: Binding<Bool>, showInviteMember: Binding<Bool>) {
             self._directMessage = directMessage
             self._channelList = channelList
             self._showChannelActionSheet = showChannelActionSheet
             self._dmOpen = dmOpen
             self._channelOpen = channelOpen
+            self._showInviteMember = showInviteMember
             super.init()
         }
         
@@ -136,6 +139,10 @@ struct ChannelListTableView: UIViewRepresentable {
                 if indexPath.row == channelList.count {
                     showChannelActionSheet = true
                 }
+            } else if indexPath.section == 1 {
+                
+            } else {
+                showInviteMember = true
             }
         }
     }
