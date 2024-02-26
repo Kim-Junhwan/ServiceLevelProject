@@ -25,7 +25,7 @@ struct HomeTabView: View {
                 }
                     .tag(0)
                 
-                DMView()
+                DMBaseView()
                     .tabItem {
                         Label(
                             title: { Text("DM") },

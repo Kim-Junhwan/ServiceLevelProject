@@ -1,5 +1,5 @@
 //
-//  DMView.swift
+//  DMBaseView.swift
 //  ServiceLevelProject
 //
 //  Created by JunHwan Kim on 2024/01/19.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct DMView: View {
+struct DMBaseView: View {
     @StateObject var viewModel: DMViewModel = SharedAssembler.shared.resolve(DMViewModel.self)
     
     var body: some View {
@@ -25,5 +25,5 @@ struct DMView: View {
 }
 
 #Preview {
-    DMView()
+    DMBaseView()
 }
