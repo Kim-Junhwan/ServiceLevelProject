@@ -24,8 +24,6 @@ final class DMViewModel: ViewModel, ObservableObject {
     
     init(appState: AppState) {
         self.appState = appState
-        //guard let members = appState.selectWorkspace?.workspaceMembers.filter({ $0.id != appState.userData.id }) else { fatalError() }
-        //self.state = .init(workspaceMembers: members.map{ .init(userThumnail: $0) })
         appStateBind()
     }
     
@@ -33,7 +31,7 @@ final class DMViewModel: ViewModel, ObservableObject {
         appState.$selectWorkspace
             .receive(on: RunLoop.main)
             .sink { detailInfo in
-            self.state.workspaceMembers = detailInfo?.workspaceMembers.map{ UserThumbnailModel(userThumnail: $0) } ?? []
+                self.state.workspaceMembers = detailInfo?.workspaceMembers.filter{ $0.id != self.appState.userData.id }.map{ UserThumbnailModel(userThumnail: $0) } ?? []
         }
         .store(in: &cancellableBag)
     }
