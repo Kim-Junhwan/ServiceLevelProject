@@ -6,6 +6,7 @@
 //
 
 import Combine
+import Foundation
 
 final class ChatListViewModel: ViewModel, ObservableObject {
     enum ChatListViewModelInput {
@@ -52,8 +53,10 @@ final class ChatListViewModel: ViewModel, ObservableObject {
         guard let workspaceId else { return }
         Task {
             let fetchChatList = try await fetchWorkspaceChatListUsecase.excute(workspaceId: workspaceId)
-            self.state.channelList = fetchChatList.comeInChannelList.map{ .init(channelList: $0) }
-            self.state.dmList = fetchChatList.dmList.map{ .init(dm: $0) }
+            DispatchQueue.main.async {
+                self.state.channelList = fetchChatList.comeInChannelList.map{ .init(channelList: $0) }
+                self.state.dmList = fetchChatList.dmList.map{ .init(dm: $0) }
+            }
         }
     }
     
@@ -64,4 +67,5 @@ final class ChatListViewModel: ViewModel, ObservableObject {
             }
         }
     }
+    
 }
