@@ -62,7 +62,7 @@ struct HomeTabView: View {
                     .tag(3)
             }
             .toolbarBackground(.visible, for: .tabBar)
-            .toolbarBackground(.red, for: .tabBar)
+            .toolbarBackground(.white, for: .tabBar)
         }
         .accentColor(.black)
     }
