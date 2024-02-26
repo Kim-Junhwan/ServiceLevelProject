@@ -16,7 +16,7 @@ struct DetectChannelView: View {
             List {
                 ForEach(viewModel.state.channelList) { channelItem in
                     Button(action: {
-                        
+                        viewModel.trigger(.tapChannel(channelItem))
                     }, label: {
                         channelListCell(title: channelItem.name)
                     })
@@ -39,6 +39,7 @@ struct DetectChannelView: View {
                     })
                 }
             }
+            .customAlert(alertMessage: $viewModel.state.alertEnterChannel)
         }
         .background(.secondary)
         .onAppear {
