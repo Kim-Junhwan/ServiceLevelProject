@@ -13,12 +13,15 @@ struct ChattingBarView: View {
     @State private var textViewHeight: CGFloat = 32
     @State private var showPhotosPicker: Bool = false
     @ObservedObject var imagePickerModel: MultipleImagePickerModel
+    var isFocus: FocusState<Bool>.Binding
+    let sendAction: (Message) -> Void
     
     var body: some View {
         HStack(alignment: .bottom) {
             galleryButton
             VStack {
                 chattingTextField
+                    .focused(isFocus)
                 if !imagePickerModel.imageData.isEmpty {
                     ScrollView(.horizontal) {
                         LazyHStack(spacing: 6) {
@@ -34,7 +37,7 @@ struct ChattingBarView: View {
             sendButton
         }
         .padding([.leading, .trailing], 12)
-        .padding([.top, .bottom], 8)
+        .padding([.top, .bottom], 4)
         .background(.backgroundPrimary)
         .background(in: .rect(cornerRadius: 8))
         .padding([.leading, .trailing], 16)
@@ -71,7 +74,7 @@ struct ChattingBarView: View {
                         .clipShape(Circle())
                         .overlay {
                             Circle()
-                                .stroke(.black, lineWidth: 2)
+                                .stroke(.black, lineWidth: 1)
                         }
                 })
                 .offset(x: 4, y: -4)
@@ -106,16 +109,27 @@ struct ChattingBarView: View {
     
     var sendButton: some View {
         Button(action: {
-            print(imagePickerModel.imageData)
+            sendAction(.init(message: text, photo: ["",""], profilePath: nil, myMsg: false, time: Date(), username: "123"))
         }, label: {
-            Image(.send)
+            sendButtonImage
                 .resizable()
                 .frame(width: 26, height: 26)
         })
         .frame(width: 32, height: 32)
+        .disabled(text.isEmpty && imagePickerModel.imageData.isEmpty)
+    }
+    
+    var sendButtonImage: Image {
+        if !text.isEmpty || !imagePickerModel.imageData.isEmpty {
+            Image(.fillSend)
+        } else {
+            Image(.send)
+        }
     }
 }
 
-#Preview {
-    ChattingBarView(text: .constant(""), imagePickerModel: .init(maxSize: 44, imageData: []))
-}
+//#Preview {
+//    ChattingBarView(text: .constant(""), imagePickerModel: .init(maxSize: 44, imageData: []), isFocus: .init(<#T##Bool#>)) { _ in
+//        
+//    }
+//}
