@@ -15,7 +15,7 @@ final class DMViewModel: ViewModel, ObservableObject {
     
     struct DMViewModelState {
         var workspaceMembers: [UserThumbnailModel] = []
-        
+        var dmRooms: [DMRoomItemModel] = []
     }
     
     @Published var state: DMViewModelState = .init()
