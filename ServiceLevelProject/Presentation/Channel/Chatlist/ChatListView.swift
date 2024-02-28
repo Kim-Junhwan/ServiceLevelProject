@@ -7,18 +7,6 @@
 
 import SwiftUI
 
-struct Channel: Identifiable {
-    let id: Int
-    let title: String
-    let newMessageCount: Int
-}
-
-struct DirectMessage {
-    let profileImage: String?
-    let nickname: String
-    let newMessageCount: Int
-}
-
 struct ChatListView: View {
     
     @StateObject var viewModel: ChatListViewModel = SharedAssembler.shared.resolve(ChatListViewModel.self)
@@ -28,14 +16,27 @@ struct ChatListView: View {
     @State private var openDMList = false
     @State private var showChannelActionSheet: Bool = false
     @State private var showInviteMember = false
+    @State private var showChannelChatting = false
+    @State private var selectedChannel: ChannelListItemModel?
     
     var body: some View {
         ZStack {
             VStack {
-                ChannelListTableView(directMessage: $viewModel.state.dmList, channelList: $viewModel.state.channelList, showChannelActionSheet: $showChannelActionSheet, channelOpen: $openChannelList, showInviteMember: $showInviteMember, dmOpen: $openDMList)
+                ChannelListTableView(directMessage: $viewModel.state.dmList, channelList: $viewModel.state.channelList, showChannelActionSheet: $showChannelActionSheet, channelOpen: $openChannelList, showInviteMember: $showInviteMember, dmOpen: $openDMList) { channel in
+                    selectedChannel = channel
+                    showChannelChatting = true
+                } dmCellSelect: { dm in
+                    print(dm)
+                }
+
             }
             floatingButtonView
         }
+        .navigationDestination(isPresented: $showChannelChatting, destination: {
+            if let selectedChannel {
+                ChannelChattingView(channelThumnailModel: selectedChannel)
+            }
+        })
         .sheet(isPresented: $showCreateChannel, content: {
             CreateChannelView(isPresenting: $showCreateChannel, viewModel: viewModel)
         })
