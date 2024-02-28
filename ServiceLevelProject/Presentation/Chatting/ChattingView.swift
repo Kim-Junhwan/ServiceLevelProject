@@ -8,26 +8,28 @@
 import SwiftUI
 
 struct ChattingView: View {
-    @State var inputText: String = ""
-    @StateObject var imagePickerModel: MultipleImagePickerModel = .init(maxSize: 44, imageData: [])
-    @StateObject var msgMoel: MessageViewModel = .init()
+    @Binding var inputText: String
+    let chatList: [ChattingMessageModel]
+    @ObservedObject var imagePickerModel: MultipleImagePickerModel
     @FocusState private var isFocus: Bool
+    let sendButtonAction: () -> Void
     
     var body: some View {
         NavigationStack {
             VStack {
                 ScrollView {
-                    LazyVStack {
-                        ForEach(msgMoel.messages) { msg in
+                    LazyVStack(alignment: .leading) {
+                        ForEach(chatList) { msg in
                             ChatBubble(message: msg)
                         }
                     }
+                    .padding(.top, 16)
                     .padding([.leading, .trailing], 16)
                 }.onTapGesture {
                     isFocus = false
                 }
-                ChattingBarView(text: $inputText, imagePickerModel: imagePickerModel, isFocus: $isFocus) { message in
-                    msgMoel.writeMessage(message: message)
+                ChattingBarView(text: $inputText, imagePickerModel: imagePickerModel, isFocus: $isFocus) {
+                    sendButtonAction()
                 }
             }
             
@@ -35,24 +37,8 @@ struct ChattingView: View {
     }
 }
 
-struct Message: Identifiable {
-    let id: UUID = UUID()
-    var message: String?
-    var photo: [String]
-    var profilePath: String?
-    var myMsg: Bool
-    var time: Date
-    var username: String
-}
-
-class MessageViewModel: ObservableObject {
-    @Published var messages: [Message] = []
-    
-    func writeMessage(message: Message) {
-        messages.append(message)
-    }
-}
-
 #Preview {
-    ChattingView()
+    ChattingView(inputText: .constant(""), chatList: [], imagePickerModel: .init(maxSize: 44, imageData: [])) {
+        
+    }
 }
