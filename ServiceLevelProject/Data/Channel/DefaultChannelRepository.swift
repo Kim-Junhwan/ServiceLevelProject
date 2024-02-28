@@ -29,4 +29,18 @@ final class DefaultChannelRepository: ChannelRepository {
         let value = try await SSAC.accessTokenRequest(ChannelRouter.fetchDetailChannelInfo(workspaceId: query.workspaceId, channelName: query.channelName)).slpSerializingDecodable(DetailChannelInfoResponseDTO.self, responseErrorMapper: MissingDataErrorMapper()).value
         return try value.toDomain()
     }
+    
+    
+    func postChatting(_ query: PostChattingQuery) async throws -> ChannelChatting {
+        let value = try await SSAC.upload(multipartFormData: { multipartFormData in
+            if let content = query.content {
+                multipartFormData.append(Data(content.utf8), withName: "content")
+            }
+            for imageData in query.files.enumerated() {
+                multipartFormData.append(imageData.element, withName: "files", fileName: "\(imageData.offset).jpeg", mimeType: "image/jpeg")
+            }
+        }, with: ChannelRouter.postChatting(workspaceId: query.workspaceId, channelName: query.name), interceptor: TokenInterceptor())
+            .slpSerializingDecodable(ChannelChattingResponseDTO.self, responseErrorMapper: PostChattingErrorMapper()).value
+        return try value.toDomain()
+    }
 }
