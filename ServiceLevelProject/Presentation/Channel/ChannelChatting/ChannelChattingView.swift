@@ -15,34 +15,36 @@ struct ChannelChattingView: View {
     }
     
     var body: some View {
-        ChattingView()
-            .underlineNavigationBar(title: "")
-            .toolbarBackground(.white, for: .navigationBar)
-            .toolbar {
-                ToolbarItem(placement: .principal) {
-                    HStack(spacing: 5) {
-                        if let channel = viewModel.state.detailChannelInfo {
-                            Text("#\(channel.name)")
-                            Text("\(channel.channelMembers.count)")
-                                .foregroundStyle(.textSecondary)
-                        }
+        ChattingView(inputText: $viewModel.state.chattingBarText, chatList: viewModel.state.chattingList, imagePickerModel: viewModel.imageModel, sendButtonAction: {
+            viewModel.trigger(.sendChatting)
+        })
+        .underlineNavigationBar(title: "")
+        .toolbarBackground(.white, for: .navigationBar)
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                HStack(spacing: 5) {
+                    if let channel = viewModel.state.detailChannelInfo {
+                        Text("#\(channel.name)")
+                        Text("\(channel.channelMembers.count)")
+                            .foregroundStyle(.textSecondary)
                     }
-                    .font(.system(size: 17, weight: .bold))
                 }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: {
-                        
-                    }, label: {
-                        Image(systemName: "list.bullet")
-                            .resizable()
-                            .fontWeight(.bold)
-                            .frame(width: 18, height: 16)
-                    })
-                }
+                .font(.system(size: 17, weight: .bold))
             }
-            .onAppear {
-                viewModel.trigger(.onAppear)
+            ToolbarItem(placement: .topBarTrailing) {
+                Button(action: {
+                    
+                }, label: {
+                    Image(systemName: "list.bullet")
+                        .resizable()
+                        .fontWeight(.bold)
+                        .frame(width: 18, height: 16)
+                })
             }
+        }
+        .onAppear {
+            viewModel.trigger(.onAppear)
+        }
     }
 }
 
