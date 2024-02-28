@@ -12,6 +12,7 @@ enum ChannelRouter: URLRequestConvertible {
     case fetchComeInChannel(Int)
     case createChannel(workspaceId: Int, query: CreateChannelRequestDTO)
     case fetchWorkspaceChannel(workspaceId: Int)
+    case fetchDetailChannelInfo(workspaceId: Int, channelName: String)
     
     var method: HTTPMethod {
         switch self {
@@ -20,6 +21,8 @@ enum ChannelRouter: URLRequestConvertible {
         case .createChannel:
             return .post
         case .fetchWorkspaceChannel:
+            return .get
+        case .fetchDetailChannelInfo:
             return .get
         }
     }
@@ -32,6 +35,8 @@ enum ChannelRouter: URLRequestConvertible {
             return "/v1/workspaces/\(workspaceId)/channels"
         case .fetchWorkspaceChannel(let workspaceId):
             return "/v1/workspaces/\(workspaceId)/channels"
+        case .fetchDetailChannelInfo(let workspaceId, let channelName):
+            return "/v1/workspaces/\(workspaceId)/channels/\(channelName)"
         }
     }
     
