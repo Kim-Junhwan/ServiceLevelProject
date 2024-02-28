@@ -13,7 +13,6 @@ import Swinject
 @main
 struct ServiceLevelProjectApp: App {
     
-    
     init() {
         let kakaokAPIKey = Bundle.main.infoDictionary?["KAKAO_NATIVE_APP_KEY"] ?? ""
         KakaoSDK.initSDK(appKey: kakaokAPIKey as! String)
