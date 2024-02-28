@@ -58,7 +58,9 @@ struct HomeView: View {
                         }
                     }
                 }
+                .gesture(dragGesture)
             }
+            .accentColor(.black)
             .onAppear {
                 viewModel.trigger(.appearView)
             }
@@ -74,7 +76,6 @@ struct HomeView: View {
             }
         }
         .toastView(toast: $toast)
-        .gesture(dragGesture)
     }
     
     @ViewBuilder
