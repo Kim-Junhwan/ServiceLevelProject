@@ -14,7 +14,7 @@ struct ChattingBarView: View {
     @State private var showPhotosPicker: Bool = false
     @ObservedObject var imagePickerModel: MultipleImagePickerModel
     var isFocus: FocusState<Bool>.Binding
-    let sendAction: (Message) -> Void
+    let sendAction: () -> Void
     
     var body: some View {
         HStack(alignment: .bottom) {
@@ -109,7 +109,7 @@ struct ChattingBarView: View {
     
     var sendButton: some View {
         Button(action: {
-            sendAction(.init(message: text, photo: ["",""], profilePath: nil, myMsg: false, time: Date(), username: "123"))
+            sendAction()
         }, label: {
             sendButtonImage
                 .resizable()
