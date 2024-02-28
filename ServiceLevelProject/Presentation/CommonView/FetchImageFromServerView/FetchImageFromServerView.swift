@@ -21,8 +21,7 @@ struct FetchingImage<PlaceHolder: View>: View  {
         case .success(let image, _):
             image
                 .resizable()
-                .scaledToFill()
-        case .failure(let error):
+        case .failure(_):
             placeHolder()
         }
     }
