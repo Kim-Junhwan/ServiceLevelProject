@@ -89,6 +89,13 @@ class MultipleImagePickerModel: ObservableObject {
         imageSelection.remove(at: removedIndex)
     }
     
+    @MainActor
+    func removeAll() {
+        imageData.removeAll()
+        imageState.removeAll()
+        imageSelection.removeAll()
+    }
+    
     struct FetchedImage: Transferable {
         let image: Data
         
