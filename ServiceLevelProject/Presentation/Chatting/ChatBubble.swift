@@ -8,35 +8,38 @@
 import SwiftUI
 
 struct ChatBubble: View {
-    let message: Message
+    let message: ChattingMessageModel
     
     var body: some View {
         HStack(alignment: .top, spacing: 8) {
             profileImageView
             HStack(alignment: .bottom) {
                 VStack(alignment: .leading) {
-                    Text(message.username)
+                    
+                    Text(message.user.nickname)
                         .font(CustomFont.caption.font)
-                    if let messageText = message.message {
-                        Text(messageText)
-                            .font(CustomFont.body.font)
-                            .padding(8)
-                            .background {
-                                RoundedRectangle(cornerRadius: 12)
-                                    .stroke(.brandInactive,lineWidth: 1.0)
-                            }
+                    
+                    if let messageText = message.content {
+                        if !messageText.isEmpty {
+                            Text(messageText)
+                                .font(CustomFont.body.font)
+                                .padding(8)
+                                .background {
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .stroke(.brandInactive,lineWidth: 1.0)
+                                }
+                        }
                     }
-                    if !message.photo.isEmpty {
-                        ChatBubbleImageView(imagepathList: message.photo)
+                    
+                    if !message.files.isEmpty {
+                        ChatBubbleImageView(imagepathList: message.files)
                             .clipShape(.rect(cornerRadius: 12))
                     }
                 }
-                .layoutPriority(1)
                 
-                Text(DateFormatter.todatStandardFormatting(message.time))
+                Text(DateFormatter.todatStandardFormatting(message.createdAt))
                     .foregroundStyle(.textSecondary)
                     .font(CustomFont.caption.font)
-                    .frame(minWidth: 60)
             }
             
             
@@ -45,7 +48,7 @@ struct ChatBubble: View {
     }
     
     var profileImageView: some View {
-        FetchImageFromServerView(url: message.profilePath) {
+        FetchImageFromServerView(url: message.user.profileImagePath) {
             Image(.noPhotoGreen)
                 .resizable()
                 .scaledToFit()
@@ -72,8 +75,11 @@ struct ChatBubbleImageView: View {
         } else if imagepathList.count == 3 {
             HStack(spacing: 2) {
                 serverImageView(url: imagepathList[0])
+                    .frame(width: 80)
                 serverImageView(url: imagepathList[1])
+                    .frame(width: 80)
                 serverImageView(url: imagepathList[2])
+                    .frame(width: 80)
             }
             .frame(height: 80)
         } else if imagepathList.count == 4 {
@@ -107,10 +113,11 @@ struct ChatBubbleImageView: View {
         FetchImageFromServerView(url: url) {
             Color.brandGreen
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .clipShape(.rect(cornerRadius: 4))
     }
 }
 
 #Preview {
-    ChatBubble(message: .init(message: "나는 낭만고양이", photo: [""], profilePath: nil, myMsg: true, time: Date(), username: "고양이"))
+    ChatBubble(message: .init(chatId: 1, content: "반가워요", createdAt: Date(), files: ["", "nil", "nil"], user: .init(userThumnail: .init(id: 123, email: "", nickname: "냥찡", profileImagePath: nil))))
 }
