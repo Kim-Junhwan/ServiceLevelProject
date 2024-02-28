@@ -22,6 +22,8 @@ struct ChannelListTableView: UIViewRepresentable {
     @Binding var channelOpen: Bool
     @Binding var showInviteMember: Bool
     @Binding var dmOpen: Bool
+    let channelCellSelect: (ChannelListItemModel) -> Void
+    let dmCellSelect: (DMRoomItemModel) -> Void
     
     func makeUIView(context: Context) -> ExpandableTableView {
         let expandableTableView = ExpandableTableView()
@@ -34,7 +36,7 @@ struct ChannelListTableView: UIViewRepresentable {
     }
     
     func makeCoordinator() -> Coordinator {
-        return Coordinator(directMessage: $directMessage, channelList: $channelList, showChannelActionSheet: $showChannelActionSheet, channelOpen: $channelOpen, dmOpen: $dmOpen, showInviteMember: $showInviteMember)
+        return Coordinator(directMessage: $directMessage, channelList: $channelList, showChannelActionSheet: $showChannelActionSheet, channelOpen: $channelOpen, dmOpen: $dmOpen, showInviteMember: $showInviteMember, channelCellSelect: channelCellSelect, dmCellSelect: dmCellSelect)
     }
     
     class Coordinator: NSObject, UITableViewDelegate, ChatListHeaderViewDelegate {
@@ -45,16 +47,20 @@ struct ChannelListTableView: UIViewRepresentable {
         @Binding var channelOpen: Bool
         @Binding var dmOpen: Bool
         @Binding var showInviteMember: Bool
+        let channelCellSelect: (ChannelListItemModel) -> Void
+        let dmCellSelect: (DMRoomItemModel) -> Void
         
         let headers: [String] = ["채널", "다이렉트 메시지"]
         
-        init(directMessage: Binding<[DMRoomItemModel]>, channelList: Binding<[ChannelListItemModel]>, showChannelActionSheet: Binding<Bool>, channelOpen: Binding<Bool>, dmOpen: Binding<Bool>, showInviteMember: Binding<Bool>) {
+        init(directMessage: Binding<[DMRoomItemModel]>, channelList: Binding<[ChannelListItemModel]>, showChannelActionSheet: Binding<Bool>, channelOpen: Binding<Bool>, dmOpen: Binding<Bool>, showInviteMember: Binding<Bool>, channelCellSelect: @escaping (ChannelListItemModel) -> Void, dmCellSelect: @escaping (DMRoomItemModel) -> Void) {
             self._directMessage = directMessage
             self._channelList = channelList
             self._showChannelActionSheet = showChannelActionSheet
             self._dmOpen = dmOpen
             self._channelOpen = channelOpen
             self._showInviteMember = showInviteMember
+            self.channelCellSelect = channelCellSelect
+            self.dmCellSelect = dmCellSelect
             super.init()
         }
         
@@ -138,9 +144,15 @@ struct ChannelListTableView: UIViewRepresentable {
             if indexPath.section == 0 {
                 if indexPath.row == channelList.count {
                     showChannelActionSheet = true
+                } else {
+                    channelCellSelect(channelList[indexPath.row])
                 }
             } else if indexPath.section == 1 {
-                
+                if indexPath.row == directMessage.count {
+                    
+                } else {
+                    dmCellSelect(directMessage[indexPath.row])
+                }
             } else {
                 showInviteMember = true
             }
