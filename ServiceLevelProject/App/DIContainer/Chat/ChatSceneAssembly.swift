@@ -28,7 +28,9 @@ class ChatSceneAssembly: Assembly {
         
         container.register(ChannelChattingViewModel.self) { resolver, channelThumbnail in
             let channelRepository = resolver.resolve(ChannelRepository.self)!
-            return ChannelChattingViewModel(appState: appState, channelThumbnail: channelThumbnail, channelRepository: channelRepository)
+            let sendChattingUsecase = resolver.resolve(SendChattingUseCase.self)!
+            let chattingRepository = resolver.resolve(ChattingRepository.self)!
+            return ChannelChattingViewModel(appState: appState, channelThumbnail: channelThumbnail, channelRepository: channelRepository, sendChannelChattingUsecase: sendChattingUsecase, chattingRepository: chattingRepository)
         }
     }
 }
