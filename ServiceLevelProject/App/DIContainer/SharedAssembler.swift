@@ -21,7 +21,8 @@ final class SharedAssembler {
             WorkspaceAssembly(),
             ChatAssembly(),
             EditProfileAssembly(),
-            DMAssembly()
+            DMAssembly(),
+            ChattingAssembly()
         ])
     }
     

@@ -18,6 +18,11 @@ final class ChatDomainAssembly: Assembly {
         container.register(CreateChannelUseCase.self) { _ in
             return DefaultCreatChannelUseCase(channelRepository: channelRepository)
         }
+        
+        container.register(SendChattingUseCase.self) { resolver in
+            let chattingRepository = resolver.resolve(ChattingRepository.self)!
+            return DefaultSendChattingUseCase(channelRepository: channelRepository, chattingRepository: chattingRepository)
+        }
     }
     
 }
