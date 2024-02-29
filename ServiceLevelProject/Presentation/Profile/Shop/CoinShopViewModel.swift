@@ -47,18 +47,28 @@ class CoinShopViewModel: ViewModel, ObservableObject {
         switch input {
         case .appearView:
             fetchCoinList()
+            fetchMyProfile()
         case .tapBuyButton(let coin):
             buyCoin(coin: coin)
         }
     }
     
-    func fetchCoinList() {
+    private func fetchCoinList() {
         Task {
             do {
                 let cointList = try await profileRepository.fetchCoinList()
                 DispatchQueue.main.async {
                     self.state.coinList = cointList.map { .init(name: $0.item, price: $0.amount) }
                 }
+            }
+        }
+    }
+    
+    private func fetchMyProfile() {
+        Task {
+            do {
+                let userProfile = try await profileRepository.fetchMyProfile()
+                appState.setUserData(userProfile)
             }
         }
     }
