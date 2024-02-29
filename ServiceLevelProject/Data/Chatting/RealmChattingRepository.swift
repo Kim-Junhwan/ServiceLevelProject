@@ -18,9 +18,8 @@ final class RealmChattingRepository {
 }
 
 extension RealmChattingRepository: ChattingRepository {
-    func saveChannelChatting(_ channelChatting: ChannelChatting) throws {
-        let userObject = UserObject(userId: channelChatting.user.id, email: channelChatting.user.email, nickname: channelChatting.user.email, profileImage: channelChatting.user.profileImagePath)
-        let chattingObject = ChannelChattingObject(chatId: channelChatting.chatId, channelId: channelChatting.channelId, channelName: channelChatting.channelName, content: channelChatting.content, createdAt: channelChatting.createdAt, files: channelChatting.files, user: userObject)
+    func saveChannelChatting(_ channelChatting: [ChannelChatting]) throws {
+        let chattingObject = channelChatting.map { ChannelChattingObject(chatId: $0.chatId, channelId: $0.channelId, channelName: $0.channelName, content: $0.content, createdAt: $0.createdAt, files: $0.files, user: .init(userId: $0.user.id, email: $0.user.email, nickname: $0.user.nickname, profileImage: $0.user.profileImagePath)) }
         try realm.write {
             realm.add(chattingObject)
         }
