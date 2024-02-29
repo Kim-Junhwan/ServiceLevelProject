@@ -14,6 +14,7 @@ enum ChannelRouter: URLRequestConvertible {
     case fetchWorkspaceChannel(workspaceId: Int)
     case fetchDetailChannelInfo(workspaceId: Int, channelName: String)
     case postChatting(workspaceId: Int, channelName: String)
+    case fetchChannelChattingList(workspaceId: Int, channelName: String, cursorDate: Date)
     
     var method: HTTPMethod {
         switch self {
@@ -27,6 +28,8 @@ enum ChannelRouter: URLRequestConvertible {
             return .get
         case .postChatting:
             return .post
+        case .fetchChannelChattingList:
+            return .get
         }
     }
     
@@ -42,6 +45,8 @@ enum ChannelRouter: URLRequestConvertible {
             return "/v1/workspaces/\(workspaceId)/channels/\(channelName)"
         case .postChatting(let workspaceId, let channelName):
             return "/v1/workspaces/\(workspaceId)/channels/\(channelName)/chats"
+        case .fetchChannelChattingList(let workspaceId, let channelName, _):
+            return "/v1/workspaces/\(workspaceId)/channels/\(channelName)/chats"
         }
     }
     
@@ -52,6 +57,9 @@ enum ChannelRouter: URLRequestConvertible {
         var request = URLRequest(url: url)
         request.method = method
         switch self {
+        case .fetchChannelChattingList(_, _, let cursorDate):
+            request.url?.append(queryItems: [.init(name: "cursor_date", value: DateFormatter.defaultFormatter.string(from: cursorDate))])
+            print("**************************\(DateFormatter.defaultFormatter.string(from: cursorDate))")
         case .createChannel(_, let query):
             request = try JSONParameterEncoder().encode(query, into: request)
         default:
