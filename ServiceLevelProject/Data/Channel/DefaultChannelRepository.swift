@@ -43,4 +43,9 @@ final class DefaultChannelRepository: ChannelRepository {
             .slpSerializingDecodable(ChannelChattingResponseDTO.self, responseErrorMapper: PostChattingErrorMapper()).value
         return try value.toDomain()
     }
+    
+    func fetchChannelChatting(_ query: FetchChannelChattingFromServerQuery) async throws -> [ChannelChatting] {
+        let value = try await SSAC.accessTokenRequest(ChannelRouter.fetchChannelChattingList(workspaceId: query.workspaceId, channelName: query.channelName, cursorDate: query.cursorDate)).slpSerializingDecodable([ChannelChattingResponseDTO].self, responseErrorMapper: MissingDataErrorMapper()).value
+        return try value.map{ try $0.toDomain() }
+    }
 }

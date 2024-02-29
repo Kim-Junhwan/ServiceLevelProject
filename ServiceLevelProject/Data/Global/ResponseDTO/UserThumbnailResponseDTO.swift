@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct UserThumbnailResponseDTO: Decodable {
+struct UserThumbnailResponseDTO: Codable {
     let userId: Int
     let email: String
     let nickname: String
