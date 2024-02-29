@@ -14,5 +14,10 @@ class EditProfileSceneAssembly: Assembly {
             let profileRepository = resolver.resolve(ProfileRepository.self)!
             return EditProfileViewModel(appState: appState, profileRepository: profileRepository)
         }
+        
+        container.register(CoinShopViewModel.self) { resolver in
+            let profileRepository = resolver.resolve(ProfileRepository.self)!
+            return CoinShopViewModel(appState: appState, profileRepository: profileRepository)
+        }
     }
 }

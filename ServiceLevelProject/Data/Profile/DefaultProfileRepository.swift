@@ -37,4 +37,9 @@ final class DefaultProfileRepository: ProfileRepository {
             return .email(email: "", password: "")
         }
     }
+    
+    func fetchCoinList() async throws -> [Coin] {
+        let value = try await SSAC.accessTokenRequest(ProfileRouter.fetchCoinList).slpSerializingDecodable([CoinResponseDTO].self).value
+        return value.map{ $0.toDomain() }
+    }
 }

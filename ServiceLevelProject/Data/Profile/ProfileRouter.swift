@@ -12,6 +12,7 @@ enum ProfileRouter: URLRequestConvertible {
     case fetchMyProfile
     case editProfile(EditProfileRequestDTO)
     case editProfileImage
+    case fetchCoinList
     
     var method: HTTPMethod {
         switch self {
@@ -21,6 +22,8 @@ enum ProfileRouter: URLRequestConvertible {
             return .put
         case .editProfileImage:
             return .put
+        case .fetchCoinList:
+            return .get
         }
     }
     
@@ -32,6 +35,8 @@ enum ProfileRouter: URLRequestConvertible {
             return "/v1/users/my"
         case .editProfileImage:
             return "/v1/users/my/image"
+        case .fetchCoinList:
+            return "/v1/store/item/list"
         }
     }
     
