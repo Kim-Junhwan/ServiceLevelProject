@@ -13,6 +13,7 @@ struct EditProfileView: View {
     @State private var alert: AlertMessage? = nil
     @State private var showEditNickname: Bool = false
     @State private var showEditPhoneNumber: Bool = false
+    @State private var showCoinShop: Bool = false
     
     init(imageData: Data?) {
         self._viewModel = StateObject(wrappedValue: SharedAssembler.shared.resolve(EditProfileViewModel.self))
@@ -42,6 +43,9 @@ struct EditProfileView: View {
         .navigationDestination(isPresented: $showEditPhoneNumber, destination: {
             EditPhoneNumberView(phoneNumber: viewModel.state.phoneNumber, viewModel: viewModel)
         })
+        .navigationDestination(isPresented: $showCoinShop, destination: {
+            CoinShopView()
+        })
         .onAppear {
             viewModel.trigger(.onAppear)
         }
@@ -57,7 +61,7 @@ struct EditProfileView: View {
             } subView: {
                 EmptyView()
             } action: {
-                
+                showCoinShop = true
             }
             
             ProfileCell(title: "닉네임", subTitle: viewModel.state.nickname, decoratorType: .indicator) {
