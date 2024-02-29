@@ -9,6 +9,6 @@ import Foundation
 
 @MainActor
 protocol ChattingRepository {
-    func saveChannelChatting(_ channelChatting: ChannelChatting) throws
+    func saveChannelChatting(_ channelChatting: [ChannelChatting]) throws
     func fetchChannelChatting(_ query: FetchChannelChattingQuery) -> [ChannelChatting]
 }

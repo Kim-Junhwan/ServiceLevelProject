@@ -40,7 +40,13 @@ struct DetectChannelView: View {
                 }
             }
             .customAlert(alertMessage: $viewModel.state.alertEnterChannel)
+            .navigationDestination(isPresented: .constant(viewModel.state.selectChannel != nil)) {
+                if let selectChannel = viewModel.state.selectChannel {
+                    ChannelChattingView(channelThumnailModel: selectChannel)
+                }
+            }
         }
+        .accentColor(.black)
         .background(.secondary)
         .onAppear {
             viewModel.trigger(.appearView)

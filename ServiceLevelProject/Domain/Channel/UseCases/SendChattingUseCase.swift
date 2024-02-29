@@ -24,7 +24,7 @@ final class DefaultSendChattingUseCase {
 extension DefaultSendChattingUseCase: SendChattingUseCase {
     func excute(channelName: String, workspaceId: Int, content: String, files: [Data]) async throws -> ChannelChatting {
         let postChat = try await channelRepository.postChatting(.init(name: channelName, workspaceId: workspaceId, content: content, files: files))
-        try await chattingRepository.saveChannelChatting(postChat)
+        try await chattingRepository.saveChannelChatting([postChat])
         return postChat
     }
     

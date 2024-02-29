@@ -28,6 +28,14 @@ extension DateFormatter {
         return df
     }()
     
+    static let defaultFormatter: DateFormatter = {
+        let df = DateFormatter()
+        df.locale = Locale(identifier: "ko_KR")
+        df.timeZone = TimeZone(identifier: "Asia/Seoul")
+        df.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+        return df
+    }()
+    
     static func todatStandardFormatting(_ date: Date) -> String {
         let today = Date()
         if Calendar.current.isDate(date, inSameDayAs: today) {
