@@ -45,6 +45,9 @@ struct ChannelChattingView: View {
         .onAppear {
             viewModel.trigger(.onAppear)
         }
+        .onDisappear {
+            viewModel.trigger(.dismissView)
+        }
     }
 }
 

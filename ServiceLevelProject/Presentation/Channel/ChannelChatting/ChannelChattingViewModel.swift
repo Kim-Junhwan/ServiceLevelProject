@@ -62,7 +62,7 @@ final class ChannelChattingViewModel: ViewModel, ObservableObject {
         case .onAppear:
             fetchChannelInfo()
         case .dismissView:
-            break
+            closeSocket()
         }
     }
     
@@ -109,5 +109,10 @@ final class ChannelChattingViewModel: ViewModel, ObservableObject {
                 }
             }
         }
+    }
+    
+    private func closeSocket() {
+        socketManager.closeSocket()
+        socketManager
     }
 }

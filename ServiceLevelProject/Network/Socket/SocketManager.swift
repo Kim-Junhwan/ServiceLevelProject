@@ -52,6 +52,8 @@ final class SocketIOManager: NSObject {
     
     func closeSocket() {
         socket?.disconnect()
+        socket = nil
+        manager = nil
     }
     
     func sendMessage(channelChatting: ChannelChattingResponseDTO) {
