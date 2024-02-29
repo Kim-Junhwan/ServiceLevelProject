@@ -16,6 +16,7 @@ final class DetectChannelViewModel: ViewModel, ObservableObject {
     struct DetectChanneViewModelState {
         var channelList: [ChannelListItemModel] = []
         var alertEnterChannel: AlertMessage?
+        var selectChannel: ChannelListItemModel?
     }
     
     @Published var state: DetectChanneViewModelState = .init()
@@ -51,10 +52,11 @@ final class DetectChannelViewModel: ViewModel, ObservableObject {
     
     private func enterChannel(channel: ChannelListItemModel) {
         if comeInChannelList.contains(where: { $0.id == channel.id }) {
-            
+            self.state.selectChannel = channel
         } else {
             state.alertEnterChannel = .init(title: "채널 참여", description: "[\(channel.name)] 채널에 참여하시겠습니까?", type: .cancelOk(cancelTitle: "취소", okTitle: "확인"), action: {
-                
+                self.state.selectChannel = channel
+                self.state.alertEnterChannel = nil
             })
         }
     }
