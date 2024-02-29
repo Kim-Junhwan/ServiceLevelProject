@@ -13,4 +13,5 @@ protocol ChannelRepository {
     func fetchWorkspaceChannel(_ query: FetchWorkspaceChannelQuery) async throws -> [ChannelThumbnail]
     func fetchDetailChannel(_ query: FetchDetailChannelInfoQuery) async throws -> DetailChannelInfo
     func postChatting(_ query: PostChattingQuery) async throws -> ChannelChatting
+    func fetchChannelChatting(_ query: FetchChannelChattingFromServerQuery) async throws -> [ChannelChatting]
 }
