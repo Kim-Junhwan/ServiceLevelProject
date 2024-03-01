@@ -22,10 +22,12 @@ final class DMViewModel: ViewModel, ObservableObject {
     private let appState: AppState
     private let dmRepository: DirectMessageRepository
     private var cancellableBag = Set<AnyCancellable>()
+    private let fetchDMRoomListUsecase: FetchDMRoomListUsecase
     
-    init(appState: AppState, dmRepository: DirectMessageRepository) {
+    init(appState: AppState, dmRepository: DirectMessageRepository, fetchDMRoomListUsecase: FetchDMRoomListUsecase) {
         self.appState = appState
         self.dmRepository = dmRepository
+        self.fetchDMRoomListUsecase = fetchDMRoomListUsecase
         appStateBind()
     }
     
@@ -49,9 +51,9 @@ final class DMViewModel: ViewModel, ObservableObject {
         guard let workspaceId = appState.currentWorkspace?.id else {return}
         Task {
             do {
-                let value = try await dmRepository.fetchDirectMessageRoomList(.init(workspaceId: workspaceId))
+                let value = try await fetchDMRoomListUsecase.excute(workspaceId: workspaceId)
                 DispatchQueue.main.async {
-                    self.state.dmRooms = value.map{ .init(dm: $0) }
+                    self.state.dmRooms = value.map{ .init(dm: $0, thumbnailContent: $1) }
                 }
             }
         }
