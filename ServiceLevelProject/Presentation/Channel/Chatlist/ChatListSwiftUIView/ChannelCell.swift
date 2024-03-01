@@ -60,7 +60,6 @@ struct ChatListDefaultcell<IconImage: View>: View {
         .padding([.leading, .trailing], 16)
     }
     
-    @ViewBuilder
     var newChatCounter: some View {
         Text("\(newChatCount)")
             .font(CustomFont.caption.font)

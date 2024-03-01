@@ -90,12 +90,21 @@ struct DirectMessageView: View {
                             .font(.system(size: 11))
                             .foregroundStyle(.textSecondary)
                         Spacer()
+                        if dmRoom.newMessageCount != 0 {
+                            Text("\(dmRoom.newMessageCount)")
+                                .font(CustomFont.caption.font)
+                                .padding([.leading, .trailing], 4)
+                                .foregroundStyle(.white)
+                                .background(.brandGreen)
+                                .background(in: .capsule)
+                        }
                     }
                 }
             }
         })
         .frame(maxWidth: .infinity)
     }
+    
 }
 
 #Preview {
