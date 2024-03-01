@@ -12,6 +12,7 @@ enum DirectMessageRouter: URLRequestConvertible {
     case fetchDMSRoomList(FetchDirectMessageRoomQuery)
     case fetchDMChattingList(audienceId: Int, workspaceId: Int, cursorDate: Date?)
     case postChatting(roomId: Int, workspaceId: Int)
+    case fetchNotReadChattingCount(roomId: Int, workspaceId: Int, cursorDate: Date?)
     
     var method: HTTPMethod {
         switch self {
@@ -21,6 +22,8 @@ enum DirectMessageRouter: URLRequestConvertible {
             return .get
         case .postChatting:
             return .post
+        case .fetchNotReadChattingCount:
+            return .get
         }
     }
     
@@ -32,6 +35,8 @@ enum DirectMessageRouter: URLRequestConvertible {
             return "/v1/workspaces/\(workspaceId)/dms/\(audienceId)/chats"
         case .postChatting(let roomId, let workspaceId):
             return "/v1/workspaces/\(workspaceId)/dms/\(roomId)/chats"
+        case .fetchNotReadChattingCount(let roomId, let workspaceId, _):
+            return "/v1/workspaces/\(workspaceId)/dms/\(roomId)/unreads"
         }
     }
     
@@ -45,6 +50,10 @@ enum DirectMessageRouter: URLRequestConvertible {
         case .fetchDMChattingList(_, _, let cursorDate):
             if let cursorDate {
                 request.url?.append(queryItems: [.init(name: "cursor_date", value: DateFormatter.defaultFormatter.string(from: cursorDate))])
+            }
+        case .fetchNotReadChattingCount(_, _, let cursorDate):
+            if let cursorDate {
+                request.url?.append(queryItems: [.init(name: "after", value: DateFormatter.defaultFormatter.string(from: cursorDate))])
             }
         default:
             break

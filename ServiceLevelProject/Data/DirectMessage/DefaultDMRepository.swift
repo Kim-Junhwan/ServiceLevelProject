@@ -32,4 +32,9 @@ class DefaultDMRepository: DirectMessageRepository {
             .slpSerializingDecodable(DMChattingResponseDTO.self, responseErrorMapper: PostDMErrorMapper()).value
         return try value.toDomain()
     }
+    
+    func fetchNotReadChattingCount(_ query: FetchNotReadChattingCountQuery) async throws -> Int {
+        let value = try await SSAC.accessTokenRequest(DirectMessageRouter.fetchNotReadChattingCount(roomId: query.roomId, workspaceId: query.workspaceId, cursorDate: query.cursorDate)).slpSerializingDecodable(NotReadChattingCountResponseDTO.self, responseErrorMapper: MissingDataErrorMapper()).value
+        return value.count
+    }
 }
