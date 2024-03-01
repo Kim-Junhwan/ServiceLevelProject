@@ -10,7 +10,7 @@ import Foundation
 
 enum DirectMessageRouter: URLRequestConvertible {
     case fetchDMSRoomList(FetchDirectMessageRoomQuery)
-    case fetchDMChattingList(audienceId: Int, workspaceId: Int, cursorDate: Date)
+    case fetchDMChattingList(audienceId: Int, workspaceId: Int, cursorDate: Date?)
     case postChatting(roomId: Int, workspaceId: Int)
     
     var method: HTTPMethod {
@@ -43,8 +43,9 @@ enum DirectMessageRouter: URLRequestConvertible {
         request.method = method
         switch self {
         case .fetchDMChattingList(_, _, let cursorDate):
+            if let cursorDate {
                 request.url?.append(queryItems: [.init(name: "cursor_date", value: DateFormatter.defaultFormatter.string(from: cursorDate))])
-                print("**************************\(DateFormatter.defaultFormatter.string(from: cursorDate))")
+            }
         default:
             break
         }

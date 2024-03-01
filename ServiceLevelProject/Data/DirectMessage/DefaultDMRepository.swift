@@ -16,7 +16,7 @@ class DefaultDMRepository: DirectMessageRepository {
     }
     
     func fetchDMChattingList(_ query: FetchDMChattingListQuery) async throws -> DMChattingList {
-        let value = try await SSAC.accessTokenRequest(DirectMessageRouter.fetchDMChattingList(audienceId: query.audienceId, workspaceId: query.workspaceId, cursorDate: query.cursorDate ?? Date())).slpSerializingDecodable(DMChattingListResponseDTO.self, responseErrorMapper: MissingDataErrorMapper()).value
+        let value = try await SSAC.accessTokenRequest(DirectMessageRouter.fetchDMChattingList(audienceId: query.audienceId, workspaceId: query.workspaceId, cursorDate: query.cursorDate)).slpSerializingDecodable(DMChattingListResponseDTO.self, responseErrorMapper: MissingDataErrorMapper()).value
         return try value.toDomain()
     }
     
