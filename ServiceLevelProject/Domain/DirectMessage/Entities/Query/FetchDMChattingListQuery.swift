@@ -10,5 +10,5 @@ import Foundation
 struct FetchDMChattingListQuery {
     let audienceId: Int
     let workspaceId: Int
-    let cursorDate: Date
+    let cursorDate: Date?
 }

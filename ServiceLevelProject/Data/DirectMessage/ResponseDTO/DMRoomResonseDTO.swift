@@ -14,7 +14,7 @@ struct DMRoomResonseDTO: Decodable {
     let user: UserThumbnailResponseDTO
     
     enum CodingKeys: String, CodingKey {
-        case workspaceId = "user_id"
+        case workspaceId = "workspace_id"
         case roomId = "room_id"
         case createdAt
         case user

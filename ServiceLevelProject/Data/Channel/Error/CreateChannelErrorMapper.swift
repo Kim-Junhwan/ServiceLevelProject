@@ -18,5 +18,4 @@ struct CreateChannelErrorMapper: ResponseErrorMapper {
         return ResponseError(rawValue: identifier)
     }
     
-    
 }
