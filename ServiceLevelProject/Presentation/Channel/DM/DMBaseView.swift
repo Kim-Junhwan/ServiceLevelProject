@@ -10,6 +10,7 @@ import SwiftUI
 struct DMBaseView: View {
     @StateObject var viewModel: DMViewModel = SharedAssembler.shared.resolve(DMViewModel.self)
     @State var showInviteMember: Bool = false
+    @State var showDMChatting: Bool = false
     @State var selectUser: UserThumbnailModel?
     
     var body: some View {
@@ -17,7 +18,7 @@ struct DMBaseView: View {
             .sheet(isPresented: $showInviteMember, content: {
                 InviteMemberView(isPresenting: $showInviteMember)
             })
-            .navigationDestination(isPresented: .constant(selectUser != nil)) {
+            .navigationDestination(isPresented: $showDMChatting) {
                 if let selectUser {
                     DMChattingView(selectUser: selectUser)
                 }
@@ -29,7 +30,7 @@ struct DMBaseView: View {
         if viewModel.state.workspaceMembers.isEmpty {
             EmptyMemberDMView(showInviteMember: $showInviteMember)
         } else {
-            DirectMessageView(memberList: $viewModel.state.workspaceMembers, dmList: $viewModel.state.dmRooms, selectUser: $selectUser)
+            DirectMessageView(memberList: $viewModel.state.workspaceMembers, dmList: $viewModel.state.dmRooms, showDMChatting: $showDMChatting, selectUser: $selectUser)
                 .onAppear {
                     viewModel.trigger(.appearView)
                 }
