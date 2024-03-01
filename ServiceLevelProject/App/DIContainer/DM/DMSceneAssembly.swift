@@ -20,7 +20,8 @@ class DMSceneAssembly: Assembly {
         container.register(DMChattingViewModel.self) { resolver,  userInfo in
             let sendUsecase = resolver.resolve(SendDMChattingUsecase.self)!
             let fetchChatUsecase = resolver.resolve(FetchEnterDMChatListUsecase.self)!
-            return DMChattingViewModel(appState: appState, fetchEnterDMChattingUsecase: fetchChatUsecase, sendDMChattingUsecase: sendUsecase, user: userInfo)
+            let chattingRepository = resolver.resolve(ChattingRepository.self)!
+            return DMChattingViewModel(appState: appState, fetchEnterDMChattingUsecase: fetchChatUsecase, sendDMChattingUsecase: sendUsecase, user: userInfo, chattingRepository: chattingRepository)
         }
     }
 }
