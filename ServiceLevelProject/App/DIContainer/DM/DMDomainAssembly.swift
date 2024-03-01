@@ -25,6 +25,9 @@ final class DMDomainAssembly: Assembly {
             let chattingRepository = resolver.resolve(ChattingRepository.self)!
             return DefaultFetchEnterDMChatListUsecase(chattingRepository: chattingRepository, dmReposiotry: dmRepository)
         }
+        container.register(FetchDMRoomListUsecase.self) { _ in
+            return DefaultFetchDMRoomListUsecase(dmRepository: dmRepository)
+        }
     }
     
 }
