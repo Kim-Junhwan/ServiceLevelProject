@@ -11,4 +11,5 @@ protocol DirectMessageRepository {
     func fetchDirectMessageRoomList(_ query: FetchDirectMessageRoomQuery) async throws -> [DirectMessageRoom]
     func fetchDMChattingList(_ query: FetchDMChattingListQuery) async throws -> DMChattingList
     func postDMChatting(_ query: PostDMChattingQuery) async throws -> DMChatting
+    func fetchNotReadChattingCount(_ query: FetchNotReadChattingCountQuery) async throws -> Int
 }
