@@ -15,7 +15,7 @@ struct ChannelChattingView: View {
     }
     
     var body: some View {
-        ChattingView(inputText: $viewModel.state.chattingBarText, chatList: viewModel.state.chattingList, imagePickerModel: viewModel.imageModel, sendButtonAction: {
+        ChattingView(inputText: $viewModel.state.chattingBarText, chatList: viewModel.state.chattingList, imagePickerModel: viewModel.imageModel, sendSuccess: $viewModel.state.successSend, sendButtonAction: {
             viewModel.trigger(.sendChatting)
         })
         .underlineNavigationBar(title: "")

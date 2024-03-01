@@ -12,24 +12,35 @@ struct ChattingView: View {
     let chatList: [ChattingMessageModel]
     @ObservedObject var imagePickerModel: MultipleImagePickerModel
     @FocusState private var isFocus: Bool
+    @Binding var sendSuccess: Bool
     let sendButtonAction: () -> Void
+    @Namespace var scrollViewBottom
     
     var body: some View {
         NavigationStack {
             VStack {
-                ScrollView {
-                    LazyVStack(alignment: .leading) {
-                        ForEach(chatList) { msg in
-                            ChatBubble(message: msg)
+                ScrollViewReader { proxy in
+                    ScrollView {
+                        LazyVStack(alignment: .leading) {
+                            ForEach(chatList) { msg in
+                                ChatBubble(message: msg)
+                            }
                         }
+                        .id(scrollViewBottom)
+                        .padding(.top, 16)
+                        .padding([.leading, .trailing], 16)
+                    }.onAppear {
+                        proxy.scrollTo(scrollViewBottom, anchor: .bottom)
                     }
-                    .padding(.top, 16)
-                    .padding([.leading, .trailing], 16)
-                }.onTapGesture {
-                    isFocus = false
-                }
-                ChattingBarView(text: $inputText, imagePickerModel: imagePickerModel, isFocus: $isFocus) {
-                    sendButtonAction()
+                    .onTapGesture {
+                        isFocus = false
+                    }
+                    .onChange(of: sendSuccess) { _ in
+                        proxy.scrollTo(scrollViewBottom, anchor: .bottom)
+                    }
+                    ChattingBarView(text: $inputText, imagePickerModel: imagePickerModel, isFocus: $isFocus) {
+                        sendButtonAction()
+                    }
                 }
             }
             
@@ -38,7 +49,7 @@ struct ChattingView: View {
 }
 
 #Preview {
-    ChattingView(inputText: .constant(""), chatList: [], imagePickerModel: .init(maxSize: 44, imageData: [])) {
+    ChattingView(inputText: .constant(""), chatList: [], imagePickerModel: .init(maxSize: 44, imageData: []), sendSuccess: .constant(false)) {
         
     }
 }
