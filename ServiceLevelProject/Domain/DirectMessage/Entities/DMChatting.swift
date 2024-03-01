@@ -15,7 +15,7 @@ struct DMChattingList {
 
 struct DMChatting {
     let dmId: Int
-    let roomId: Int?
+    let roomId: Int
     let content: String?
     let createdAt: Date
     let files: [String]

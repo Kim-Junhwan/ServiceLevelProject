@@ -11,6 +11,6 @@ import Foundation
 protocol ChattingRepository {
     func saveChannelChatting(_ channelChatting: [ChannelChatting]) throws
     func fetchChannelChatting(_ query: FetchChannelChattingQuery) -> [ChannelChatting]
-    func saveDMChatting(_ dmChatting: [DMChatting]) throws
+    func saveDMChatting(_ dmChatting: DMChattingList) throws
     func fetchDMChatting(_ query: FetchDMChattingQuery) -> [DMChatting]
 }
