@@ -47,7 +47,7 @@ final class DMChattingViewModel: ViewModel, ObservableObject {
         case .onAppear:
             fetchDM()
         case .dismissView:
-            break
+            dismissView()
         }
     }
     
@@ -96,16 +96,21 @@ final class DMChattingViewModel: ViewModel, ObservableObject {
         guard let workspaceId = appState.currentWorkspace?.id else { return }
         let imageData = imageModel.imageData.compactMap({ $0 })
         let dmText = state.dMBarText
-        state.dMBarText = ""
         Task {
             do {
                 let sendChatting = try await sendDMChattingUsecase.excute(roomId: roomId, workspaceId: workspaceId, content: state.dMBarText.isEmpty ? "" : dmText, files: imageData)
                 DispatchQueue.main.async {
                     self.state.chattingList.append(.init(chatId: sendChatting.chatId, content: dmText, createdAt: sendChatting.createdAt, files: sendChatting.files, user: sendChatting.user))
                     self.state.successSend.toggle()
+                    self.state.dMBarText = ""
                 }
                 await imageModel.removeAll()
             }
         }
+    }
+    
+    private func dismissView() {
+        socketManager?.closeSocket()
+        socketManager = nil
     }
 }

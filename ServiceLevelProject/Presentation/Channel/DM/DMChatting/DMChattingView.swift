@@ -21,6 +21,9 @@ struct DMChattingView: View {
         .onAppear {
             viewModel.trigger(.onAppear)
         }
+        .onDisappear {
+            viewModel.trigger(.dismissView)
+        }
         .underlineNavigationBar(title: viewModel.state.userInfo.nickname)
     }
 }
