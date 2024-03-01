@@ -29,8 +29,6 @@ struct ChattingView: View {
                         .id(scrollViewBottom)
                         .padding(.top, 16)
                         .padding([.leading, .trailing], 16)
-                    }.onAppear {
-                        proxy.scrollTo(scrollViewBottom, anchor: .bottom)
                     }
                     .onTapGesture {
                         isFocus = false
@@ -38,9 +36,9 @@ struct ChattingView: View {
                     .onChange(of: sendSuccess) { _ in
                         proxy.scrollTo(scrollViewBottom, anchor: .bottom)
                     }
-                    ChattingBarView(text: $inputText, imagePickerModel: imagePickerModel, isFocus: $isFocus) {
-                        sendButtonAction()
-                    }
+                }
+                ChattingBarView(text: $inputText, imagePickerModel: imagePickerModel, isFocus: $isFocus) {
+                    sendButtonAction()
                 }
             }
             
