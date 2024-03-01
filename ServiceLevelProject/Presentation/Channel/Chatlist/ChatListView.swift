@@ -18,6 +18,8 @@ struct ChatListView: View {
     @State private var showInviteMember = false
     @State private var showChannelChatting = false
     @State private var selectedChannel: ChannelListItemModel?
+    @State private var showDMChattingView = false
+    @State private var selectDMUser: UserThumbnailModel?
     
     var body: some View {
         ZStack {
@@ -26,7 +28,8 @@ struct ChatListView: View {
                     selectedChannel = channel
                     showChannelChatting = true
                 } dmCellSelect: { dm in
-                    print(dm)
+                    selectDMUser = dm.user
+                    showDMChattingView = true
                 }
 
             }
@@ -35,6 +38,11 @@ struct ChatListView: View {
         .navigationDestination(isPresented: $showChannelChatting, destination: {
             if let selectedChannel {
                 ChannelChattingView(channelThumnailModel: selectedChannel)
+            }
+        })
+        .navigationDestination(isPresented: $showDMChattingView, destination: {
+            if let selectDMUser {
+                DMChattingView(selectUser: selectDMUser)
             }
         })
         .sheet(isPresented: $showCreateChannel, content: {
