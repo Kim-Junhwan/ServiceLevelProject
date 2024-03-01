@@ -99,7 +99,7 @@ final class DMChattingViewModel: ViewModel, ObservableObject {
         state.dMBarText = ""
         Task {
             do {
-                let sendChatting = try await sendDMChattingUsecase.excute(roomId: roomId, workspaceId: workspaceId, content: state.dMBarText.isEmpty ? "" : state.dMBarText, files: imageData)
+                let sendChatting = try await sendDMChattingUsecase.excute(roomId: roomId, workspaceId: workspaceId, content: state.dMBarText.isEmpty ? "" : dmText, files: imageData)
                 DispatchQueue.main.async {
                     self.state.chattingList.append(.init(chatId: sendChatting.chatId, content: dmText, createdAt: sendChatting.createdAt, files: sendChatting.files, user: sendChatting.user))
                     self.state.successSend.toggle()
