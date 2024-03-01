@@ -14,7 +14,8 @@ class DMSceneAssembly: Assembly {
         let appState = container.resolve(AppState.self)!
         container.register(DMViewModel.self) { resolver in
             let dmRepository = resolver.resolve(DirectMessageRepository.self)!
-            return DMViewModel(appState: appState, dmRepository: dmRepository)
+            let fetchDMRoomUsecase = resolver.resolve(FetchDMRoomListUsecase.self)!
+            return DMViewModel(appState: appState, dmRepository: dmRepository, fetchDMRoomListUsecase: fetchDMRoomUsecase)
         }
         container.register(DMChattingViewModel.self) { resolver,  userInfo in
             let sendUsecase = resolver.resolve(SendDMChattingUsecase.self)!
