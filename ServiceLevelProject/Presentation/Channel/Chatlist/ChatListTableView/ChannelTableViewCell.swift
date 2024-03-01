@@ -109,4 +109,5 @@ class ChannelTableViewCell: UITableViewCell {
         iconImageView.tintColor = count == 0 ? .textSecondary : .black
         newMessageIcon.isHidden = count == 0
     }
+    
 }

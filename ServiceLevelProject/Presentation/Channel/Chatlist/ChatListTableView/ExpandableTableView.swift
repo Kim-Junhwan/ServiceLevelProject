@@ -69,19 +69,16 @@ class ExpandableTableView: UIView {
                 }
                 return cell
             case .dm:
-                if let cell = tableView.dequeueReusableCell(withIdentifier: ChannelTableViewCell.identifier, for: indexPath) as? ChannelTableViewCell {
-                    if let button = item as? ButtonCell {
-                        cell.setImage(image: button.icon, title: button.title)
-                        return cell
-                    }
-                }
-                if let cell = tableView.dequeueReusableCell(withIdentifier: DirectMessageTableViewCell.identifier, for: indexPath) as? DirectMessageTableViewCell {
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: DirectMessageTableViewCell.identifier, for: indexPath) as? DirectMessageTableViewCell else { return .init() }
                     if let dmItem = item as? DMRoomItemModel {
                         cell.config(profile: dmItem.user.profileImagePath, name: dmItem.user.nickname, newMessageCount: dmItem.newMessageCount)
                         return cell
                     }
-                }
-                return .init()
+                    if let button = item as? ButtonCell{
+                        cell.setImage(image: button.icon, title: button.title)
+                        return cell
+                    }
+                return cell
             case .addMember:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: ChannelTableViewCell.identifier, for: indexPath) as? ChannelTableViewCell, let button = item as? ButtonCell else { return .init() }
                 cell.setImage(image: button.icon, title: button.title)

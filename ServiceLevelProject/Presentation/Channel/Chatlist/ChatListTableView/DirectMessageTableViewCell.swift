@@ -11,6 +11,17 @@ class DirectMessageTableViewCell: UITableViewCell {
     
     static let identifier = "DirectMessageTableViewCell"
     
+    private let iconImageView: UIImageView = {
+        let indicatorImage = UIImage(systemName: "number")?.withRenderingMode(.alwaysTemplate)
+        let imageView = UIImageView(image: indicatorImage)
+        imageView.contentMode = .scaleAspectFit
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.tintColor = .black
+        var config = UIImage.SymbolConfiguration(font: .boldSystemFont(ofSize: 10))
+        imageView.preferredSymbolConfiguration = config
+        return imageView
+    }()
+    
     private let userProfileImageView: AsyncUIImageView = {
         let asyncImageView = AsyncUIImageView(placeholder: .noPhotoGreen)
         asyncImageView.layer.cornerRadius = 4
@@ -40,7 +51,7 @@ class DirectMessageTableViewCell: UITableViewCell {
     }()
     
     lazy var contentStackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [userProfileImageView, titleLabel, newMessageIcon])
+        let stackView = UIStackView(arrangedSubviews: [iconImageView ,userProfileImageView, titleLabel, newMessageIcon])
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .horizontal
         stackView.alignment = .center
@@ -63,6 +74,8 @@ class DirectMessageTableViewCell: UITableViewCell {
         super.prepareForReuse()
         titleLabel.text = nil
         userProfileImageView.fetchImageModel.url = nil
+        iconImageView.isHidden = true
+        userProfileImageView.isHidden = false
     }
 
     private func configureView() {
@@ -71,6 +84,8 @@ class DirectMessageTableViewCell: UITableViewCell {
     
     private func setConstraints() {
         NSLayoutConstraint.activate([
+            iconImageView.widthAnchor.constraint(equalToConstant: 18),
+            iconImageView.heightAnchor.constraint(equalToConstant: 18),
             userProfileImageView.widthAnchor.constraint(equalToConstant: 24),
             userProfileImageView.heightAnchor.constraint(equalToConstant: 24),
             contentStackView.centerYAnchor.constraint(equalTo: centerYAnchor),
@@ -81,6 +96,7 @@ class DirectMessageTableViewCell: UITableViewCell {
     
     func config(profile: String?, name: String, newMessageCount: Int) {
         self.userProfileImageView.fetchImageModel.url = profile
+        iconImageView.isHidden = true
         self.titleLabel.text = name
         userProfileImageView.fetchImageModel.fetchImage()
         newMessageCountLayout(count: newMessageCount)
@@ -90,5 +106,13 @@ class DirectMessageTableViewCell: UITableViewCell {
         titleLabel.font = count == 0 ? CustomFont.body.uifont : CustomFont.bodyBold.uifont
         newMessageIcon.text = "\(count)"
         newMessageIcon.isHidden = count == 0
+    }
+    
+    func setImage(image: String, title: String) {
+        iconImageView.isHidden = false
+        userProfileImageView.isHidden = true
+        iconImageView.image = UIImage(systemName: image)
+        titleLabel.text = title
+        newMessageCountLayout(count: 0)
     }
 }
