@@ -10,7 +10,7 @@ import Combine
 
 final class DMViewModel: ViewModel, ObservableObject {
     enum DMViewModelInput {
-        
+        case appearView
     }
     
     struct DMViewModelState {
@@ -20,10 +20,12 @@ final class DMViewModel: ViewModel, ObservableObject {
     
     @Published var state: DMViewModelState = .init()
     private let appState: AppState
+    private let dmRepository: DirectMessageRepository
     private var cancellableBag = Set<AnyCancellable>()
     
-    init(appState: AppState) {
+    init(appState: AppState, dmRepository: DirectMessageRepository) {
         self.appState = appState
+        self.dmRepository = dmRepository
         appStateBind()
     }
     
@@ -37,6 +39,21 @@ final class DMViewModel: ViewModel, ObservableObject {
     }
     
     func trigger(_ input: DMViewModelInput) {
-        
+        switch input {
+        case .appearView:
+            fetchDMRoom()
+        }
+    }
+    
+    private func fetchDMRoom() {
+        guard let workspaceId = appState.currentWorkspace?.id else {return}
+        Task {
+            do {
+                let value = try await dmRepository.fetchDirectMessageRoomList(.init(workspaceId: workspaceId))
+                DispatchQueue.main.async {
+                    self.state.dmRooms = value.map{ .init(dm: $0) }
+                }
+            }
+        }
     }
 }
