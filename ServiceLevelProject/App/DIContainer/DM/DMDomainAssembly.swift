@@ -10,13 +10,20 @@ import Swinject
 final class DMDomainAssembly: Assembly {
     func assemble(container: Container) {
         let channelRepository = container.resolve(ChannelRepository.self)!
+        let dmRepository = container.resolve(DirectMessageRepository.self)!
         container.register(FetchWorkspaceComeInChannelDMListUseCase.self) { resolver in
-            let dmRepository = resolver.resolve(DirectMessageRepository.self)!
             return DefaultFetchWorkspaceComeInChannelDMListUseCase(channelRepository: channelRepository, dmRepository: dmRepository)
         }
-        
         container.register(CreateChannelUseCase.self) { _ in
             return DefaultCreatChannelUseCase(channelRepository: channelRepository)
+        }
+        container.register(SendDMChattingUsecase.self) { resolver in
+            let chattingRepository = resolver.resolve(ChattingRepository.self)!
+            return DefaultSendDMChattingUsecase(chattingRepository: chattingRepository, dmRepository: dmRepository)
+        }
+        container.register(FetchEnterDMChatListUsecase.self) { resolver in
+            let chattingRepository = resolver.resolve(ChattingRepository.self)!
+            return DefaultFetchEnterDMChatListUsecase(chattingRepository: chattingRepository, dmReposiotry: dmRepository)
         }
     }
     
