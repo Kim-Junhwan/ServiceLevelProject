@@ -12,7 +12,6 @@ struct HomeView: View {
     @State var showWorkspaceList: Bool = false
     @State var toast: Toast? = nil
     @State var showEditProfile: Bool = false
-    @State private var selectedTabIndex = 0
     @StateObject var viewModel: HomeViewModel = SharedAssembler.shared.resolve(HomeViewModel.self)
     
     var dragGesture: some Gesture {
@@ -29,7 +28,7 @@ struct HomeView: View {
             NavigationStack {
                 VStack {
                     if !viewModel.state.workspaceIsEmpty {
-                        HomeTabView(selectedTabIndex: $selectedTabIndex)
+                        HomeTabView(selectedTabIndex: $viewModel.state.selectedTabIndex)
                     } else {
                         EmptyHomeView()
                     }
@@ -67,7 +66,7 @@ struct HomeView: View {
             SideMenu(isPresenting: $showWorkspaceList) {
                 WorkspaceListView(isPresenting: $showWorkspaceList)
             }
-            .onChange(of: selectedTabIndex) { value in
+            .onChange(of: viewModel.state.selectedTabIndex) { value in
                 if value == 0 {
                     viewModel.state.navigationTitle = viewModel.state.currentWorkspace?.name ?? "No Workspace"
                 } else if value == 1 {

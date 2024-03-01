@@ -17,6 +17,7 @@ final class HomeViewModel: ViewModel {
         var navigationTitle: String
         var currentWorkspace: WorkspaceDetailInfo?
         var workspaceIsEmpty: Bool = true
+        var selectedTabIndex: Int = 0
     }
     
     @Published var workspaceImage: FetchImageModel
@@ -60,6 +61,9 @@ final class HomeViewModel: ViewModel {
             .sink { selectWorkspace in
                 self.state.currentWorkspace = selectWorkspace
                 self.workspaceImage.url = selectWorkspace?.thumbnail
+                if self.state.selectedTabIndex == 0 {
+                    self.state.navigationTitle = selectWorkspace?.name ?? "No Workspace"
+                }
             }
             .store(in: &cancellableBag )
     }
