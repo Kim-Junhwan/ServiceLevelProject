@@ -18,7 +18,8 @@ final class SocketIOManager: NSObject {
     
     private var manager: SocketManager?
     var socket: SocketIOClient?
-    var messageSubject = PassthroughSubject<ChannelChatting, Never>()
+    var channelMessageSubject = PassthroughSubject<ChannelChatting, Never>()
+    var dmMessageSubject = PassthroughSubject<DMChatting, Never>()
     
     init(id: Int, type: SocketType) {
         super.init()
@@ -31,8 +32,15 @@ final class SocketIOManager: NSObject {
                 let originData = data[0]
                 let dat = try JSONSerialization.data(withJSONObject: originData)
                 print(String(decoding: dat, as: UTF8.self))
-                let res = try JSONDecoder().decode(ChannelChattingResponseDTO.self, from: dat)
-                self.messageSubject.send(.init(channelId: res.channelId, channelName: res.channelName, chatId: res.chatId, content: res.content, createdAt: try res.createdAt.toDate(), files: res.files, user: res.user.toDomain()))
+                if type == .channel {
+                    let res = try JSONDecoder().decode(ChannelChattingResponseDTO.self, from: dat)
+                    self.channelMessageSubject.send(try res.toDomain())
+                } else {
+                    let res = try JSONDecoder().decode(DMChattingResponseDTO.self, from: dat)
+                    let dm = try res.toDomain()
+                    self.dmMessageSubject.send(dm)
+                }
+                
             } catch {
                 print(error)
             }
