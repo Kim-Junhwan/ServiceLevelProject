@@ -11,6 +11,7 @@ struct DirectMessageView: View {
     
     @Binding var memberList: [UserThumbnailModel]
     @Binding var dmList: [DMRoomItemModel]
+    @Binding var showDMChatting: Bool
     @Binding var selectUser: UserThumbnailModel?
     
     var body: some View {
@@ -47,6 +48,7 @@ struct DirectMessageView: View {
     func memberProfileView(userThumbnail: UserThumbnailModel) -> some View {
         Button(action: {
             selectUser = userThumbnail
+            showDMChatting = true
         }, label: {
             VStack(alignment: .center, spacing: 4) {
                 FetchImageFromServerView(url: userThumbnail.profileImagePath) {
@@ -64,7 +66,8 @@ struct DirectMessageView: View {
     
     func dMRoomView(dmRoom: DMRoomItemModel) -> some View {
         Button(action: {
-            print("Hello")
+            selectUser = dmRoom.user
+            showDMChatting = true
         }, label: {
             HStack {
                 FetchImageFromServerView(url: dmRoom.user.profileImagePath) {
@@ -83,7 +86,7 @@ struct DirectMessageView: View {
                             .foregroundStyle(.textSecondary)
                     }
                     HStack {
-                        Text(dmRoom.user.nickname)
+                        Text(dmRoom.thumbnailContent)
                             .font(.system(size: 11))
                             .foregroundStyle(.textSecondary)
                         Spacer()
@@ -96,9 +99,5 @@ struct DirectMessageView: View {
 }
 
 #Preview {
-    DirectMessageView(memberList: .constant([.init(userThumnail: .init(id: 0, email: "123", nickname: "chatliu", profileImagePath: nil)), .init(userThumnail: .init(id: 3, email: "123", nickname: "나마", profileImagePath: nil))]), dmList: .constant([
-        .init(dm: .init(workspaceId: 123, roomId: 12, createdAt: Date(), user: .init(id: 0, email: "123", nickname: "chatliu", profileImagePath: nil))),
-        .init(dm: .init(workspaceId: 123, roomId: 12, createdAt: Date(), user: .init(id: 0, email: "123", nickname: "chatliu", profileImagePath: nil))),
-        .init(dm: .init(workspaceId: 123, roomId: 12, createdAt: Date(), user: .init(id: 0, email: "123", nickname: "chatliu", profileImagePath: nil)))
-    ]), selectUser: .constant(nil))
+    DirectMessageView(memberList: .constant([.init(userThumnail: .init(id: 0, email: "123", nickname: "chatliu", profileImagePath: nil)), .init(userThumnail: .init(id: 3, email: "123", nickname: "나마", profileImagePath: nil))]), dmList: .constant([]), showDMChatting: .constant(false), selectUser: .constant(nil))
 }
