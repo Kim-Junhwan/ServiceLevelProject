@@ -15,7 +15,7 @@ final class DMChattingViewModel: ViewModel, ObservableObject {
     }
     
     struct DMChattingState {
-        var DMBarText: String = ""
+        var dMBarText: String = ""
         var userInfo: UserThumbnailModel
         var chattingList: [ChattingMessageModel] = []
     }
@@ -37,7 +37,7 @@ final class DMChattingViewModel: ViewModel, ObservableObject {
     func trigger(_ input: DMChattingInput) {
         switch input {
         case .sendChatting:
-            break
+            sendChatting()
         case .onAppear:
             fetchDM()
         case .dismissView:
@@ -45,13 +45,31 @@ final class DMChattingViewModel: ViewModel, ObservableObject {
         }
     }
     
-    func fetchDM() {
+    private func fetchDM() {
         guard let workspacId = appState.currentWorkspace?.id else { return }
         Task {
             do {
                 let value = try await fetchEnterDMChattingUsecase.excute(workspaceId: workspacId, audienceId: state.userInfo.id)
                 self.roomId = value.roomId
-                self.state.chattingList = value.chats.map { .init(chatId: $0.dmId, content: $0.content, createdAt: $0.createdAt, files: $0.files, user: .init(userThumnail: $0.user)) }
+                DispatchQueue.main.async {
+                    self.state.chattingList = value.chats.map { .init(chatId: $0.dmId, content: $0.content, createdAt: $0.createdAt, files: $0.files, user: .init(userThumnail: $0.user)) }
+                }
+            }
+        }
+    }
+    
+    private func sendChatting() {
+        guard let roomId else { return }
+        guard let workspaceId = appState.currentWorkspace?.id else { return }
+        let imageData = imageModel.imageData.compactMap({ $0 })
+        Task {
+            do {
+                let sendChatting = try await sendDMChattingUsecase.excute(roomId: roomId, workspaceId: workspaceId, content: state.dMBarText.isEmpty ? "" : state.dMBarText, files: imageData)
+                DispatchQueue.main.async {
+                    self.state.chattingList.append(.init(chatId: sendChatting.chatId, content: sendChatting.content, createdAt: sendChatting.createdAt, files: sendChatting.files, user: sendChatting.user))
+                }
+                state.dMBarText = ""
+                await imageModel.removeAll()
             }
         }
     }

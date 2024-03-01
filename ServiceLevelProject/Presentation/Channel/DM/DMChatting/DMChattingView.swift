@@ -15,7 +15,7 @@ struct DMChattingView: View {
     }
     
     var body: some View {
-        ChattingView(inputText: $viewModel.state.DMBarText, chatList: viewModel.state.chattingList, imagePickerModel: viewModel.imageModel) {
+        ChattingView(inputText: $viewModel.state.dMBarText, chatList: viewModel.state.chattingList, imagePickerModel: viewModel.imageModel) {
             viewModel.trigger(.sendChatting)
         }
         .onAppear {
