@@ -53,7 +53,7 @@ final class ChatListViewModel: ViewModel, ObservableObject {
             let fetchChatList = try await fetchWorkspaceChatListUsecase.excute(workspaceId: workspaceId)
             DispatchQueue.main.async {
                 self.state.channelList = fetchChatList.comeInChannelList.map{ .init(channelList: $0) }
-                self.state.dmList = fetchChatList.dmList.map{ .init(dm: $0, thumbnailContent: "") }
+                self.state.dmList = fetchChatList.dmList.map{ .init(dm: $0, thumbnailContent: "", newMessageCount: 0) }
             }
         }
     }

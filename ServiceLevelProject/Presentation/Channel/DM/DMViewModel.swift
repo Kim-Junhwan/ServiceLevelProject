@@ -53,7 +53,8 @@ final class DMViewModel: ViewModel, ObservableObject {
             do {
                 let value = try await fetchDMRoomListUsecase.excute(workspaceId: workspaceId)
                 DispatchQueue.main.async {
-                    self.state.dmRooms = value.map{ .init(dm: $0, thumbnailContent: $1) }
+                    print(value)
+                    self.state.dmRooms = value.map{ .init(dm: $0, thumbnailContent: $1, newMessageCount: $2) }
                 }
             }
         }

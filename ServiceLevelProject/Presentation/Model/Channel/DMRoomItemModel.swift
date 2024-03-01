@@ -15,12 +15,12 @@ struct DMRoomItemModel: Hashable, Identifiable {
     var newMessageCount: Int
     var thumbnailContent: String
     
-    init(dm: DirectMessageRoom, thumbnailContent: String) {
+    init(dm: DirectMessageRoom, thumbnailContent: String, newMessageCount: Int) {
         workspaceId = dm.workspaceId
         id = dm.roomId
         createdAt = DateFormatter.todatStandardFormatting(dm.createdAt)
         user = .init(userThumnail: dm.user)
-        newMessageCount = 0
+        self.newMessageCount = newMessageCount
         self.thumbnailContent = thumbnailContent
     }
 }
