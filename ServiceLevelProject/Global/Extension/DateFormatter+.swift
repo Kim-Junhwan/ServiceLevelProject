@@ -10,29 +10,29 @@ import Foundation
 extension DateFormatter {
     static let yearMonthDateFormatter: DateFormatter = {
         let df = DateFormatter()
+        df.timeZone = TimeZone(identifier: "UTC")
         df.dateFormat = "yy. MM. dd"
         return df
     }()
     
     static let hourMinuteDateFormatter: DateFormatter = {
         let df = DateFormatter()
-        df.locale = Locale(identifier: "ko_KR")
+        df.timeZone = TimeZone(identifier: "UTC")
         df.dateFormat = "hh:mm a"
         return df
     }()
     
     static let dayHourMinuteDateFormatter: DateFormatter = {
         let df = DateFormatter()
-        df.locale = Locale(identifier: "ko_KR")
+        df.timeZone = TimeZone(identifier: "UTC")
         df.dateFormat = "MM/dd hh:mm a"
         return df
     }()
     
     static let defaultFormatter: DateFormatter = {
         let df = DateFormatter()
-        df.locale = Locale(identifier: "ko_KR")
-        df.timeZone = TimeZone(identifier: "Asia/Seoul")
-        df.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+        df.timeZone = TimeZone(identifier: "UTC")
+        df.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
         return df
     }()
     

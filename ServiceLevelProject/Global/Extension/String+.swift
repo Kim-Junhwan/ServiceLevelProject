@@ -30,7 +30,7 @@ extension String {
     func toDate() throws -> Date {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
-        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
+        dateFormatter.timeZone = TimeZone(identifier: "UTC")
         guard let date = dateFormatter.date(from: self) else { throw FormattingError.stringToDateFormatError }
         return date
     }
