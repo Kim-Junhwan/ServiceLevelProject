@@ -39,7 +39,8 @@ extension RealmChattingRepository: ChattingRepository {
     }
     
     func fetchDMChatting(_ query: FetchDMChattingQuery) -> [DMChatting] {
-        let dmChattingList = realm.objects(DMChattingObject.self).where { $0.workspaceId == query.workspaceId && $0.user.userId == query.audienceId }
+        guard let roomId = realm.objects(DMChattingObject.self).where({ $0.workspaceId == query.workspaceId && $0.user.userId == query.audienceId }).first?.roomlId else { return [] }
+        let dmChattingList = realm.objects(DMChattingObject.self).where { $0.roomlId == roomId }
         return dmChattingList.map { $0.toDomain() }
     }
 }
