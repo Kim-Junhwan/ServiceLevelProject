@@ -42,4 +42,9 @@ final class DefaultProfileRepository: ProfileRepository {
         let value = try await SSAC.accessTokenRequest(ProfileRouter.fetchCoinList).slpSerializingDecodable([CoinResponseDTO].self).value
         return value.map{ $0.toDomain() }
     }
+    
+    func checkPurchase(_ query: CheckPurchaseQuery) async throws -> PurchaseInfo {
+        let value = try await SSAC.accessTokenRequest(ProfileRouter.checkPurchase(.init(impUid: query.impUid, merchantUid: query.merchantUid))).slpSerializingDecodable(CheckPurchaseResponseDTO.self, responseErrorMapper: CheckPurchaseResponseErrorMapper()).value
+        return try value.toDomain()
+    }
 }
