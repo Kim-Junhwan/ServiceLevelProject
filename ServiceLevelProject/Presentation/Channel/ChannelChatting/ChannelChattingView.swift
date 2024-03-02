@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ChannelChattingView: View {
     @StateObject var viewModel: ChannelChattingViewModel
+    @State var showChannelOption: Bool = false
     
     init(channelThumnailModel: ChannelListItemModel) {
         self._viewModel = StateObject(wrappedValue: SharedAssembler.shared.resolve(ChannelChattingViewModel.self, argument: channelThumnailModel))
@@ -33,7 +34,7 @@ struct ChannelChattingView: View {
             }
             ToolbarItem(placement: .topBarTrailing) {
                 Button(action: {
-                    
+                    showChannelOption = true
                 }, label: {
                     Image(systemName: "list.bullet")
                         .resizable()
@@ -48,9 +49,11 @@ struct ChannelChattingView: View {
         .onDisappear {
             viewModel.trigger(.dismissView)
         }
+        .navigationDestination(isPresented: $showChannelOption) {
+            if let channelInfo = viewModel.state.detailChannelInfo {
+                ChannelOptionView(memberList: channelInfo.channelMembers, channelName: channelInfo.name)
+            }
+            
+        }
     }
-}
-
-#Preview {
-    ChannelChattingView(channelThumnailModel: .init(channelList: .init(workspaceId: 1, channelId: 1, name: "귀염둥이", description: "1234", ownerId: 1, secret: false, createdAt: Date())))
 }

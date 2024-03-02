@@ -15,7 +15,7 @@ struct SideMenuWorkspaceListView: View {
     var body: some View {
         ScrollView {
             LazyVStack(spacing: 0) {
-                ForEach(workspaceList, id: \.workspaceId) { workspace in
+                ForEach(viewModel.state.workspaceList, id: \.workspaceId) { workspace in
                     WorkspaceSideMenuCell(workspace: workspace, isAdmin: viewModel.state.selectWorkspaceOwner, isSelected: viewModel.state.selectedWorkspaceId == workspace.workspaceId) {
                         viewModel.trigger(.tapWorkspace(workspace))
                     }

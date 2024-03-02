@@ -17,6 +17,7 @@ final class ChatListViewModel: ViewModel, ObservableObject {
         var channelList: [ChannelListItemModel] = []
         var dmList: [DMRoomItemModel] = []
         var toast: Toast?
+        var successCreateChannel: Bool = false
     }
     
     @Published var state: ChatListViewState = .init()
@@ -63,6 +64,7 @@ final class ChatListViewModel: ViewModel, ObservableObject {
         Task {
             do {
                 state.channelList = try await createChannelUsecase.excute(workspaceId: workspaceId, channelName: name, channelDescription: description).map{ .init(channelList: $0) }
+                state.successCreateChannel = true
             }
         }
     }

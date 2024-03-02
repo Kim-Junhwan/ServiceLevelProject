@@ -43,6 +43,9 @@ struct CreateChannelView: View {
                     })
                 }
             }
+            .onChange(of: viewModel.state.successCreateChannel) { value in
+                isPresenting = !value
+            }
         }
     }
 }
