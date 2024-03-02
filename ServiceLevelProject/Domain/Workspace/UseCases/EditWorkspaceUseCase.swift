@@ -24,11 +24,9 @@ final class DefaultEditWorkspaceUseCase {
 extension DefaultEditWorkspaceUseCase: EditWorkspaceUseCase {
     func excute(_ query: EditWorkspaceQuery) async throws {
         let value = try await workspaceRepository.editWorkspace(query)
-        let editWorkspaceIndex = await appState.workspaceList.firstIndex { $0.id == value.id }
-        if let index = editWorkspaceIndex {
-            DispatchQueue.main.async {
-                self.appState.workspaceList[index] = value
-            }
+        let fetchList = try await workspaceRepository.fetchComeInWorkspaceList()
+        DispatchQueue.main.async {
+            self.appState.workspaceList = fetchList.list
         }
     }
     

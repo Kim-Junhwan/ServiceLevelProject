@@ -12,4 +12,5 @@ protocol ProfileRepository {
     func editProfile(_ query: EditProfileQuery) async throws -> UserProfile
     func editProfileImage(imageData: Data) async throws -> UserProfile
     func fetchCoinList() async throws -> [Coin]
+    func checkPurchase(_ query: CheckPurchaseQuery) async throws -> PurchaseInfo
 }
