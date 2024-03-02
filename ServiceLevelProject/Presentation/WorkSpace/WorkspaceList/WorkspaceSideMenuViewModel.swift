@@ -29,13 +29,16 @@ struct WorkspaceThumbnailModel {
 final class WorkspaceSideMenuViewModel: ViewModel {
     enum WorkSpaceSideMenuInput {
         case tapWorkspace(WorkspaceThumbnailModel)
+        case outWorkspace(workspaceId: Int)
     }
     
     struct WorkspaceSideMenuState {
         var selectedWorkspaceId: Int?
         var workspaceList: [WorkspaceThumbnailModel]
         var workspaceIsEmpty: Bool
+        var workspaceImageList: [FetchImageModel]
         var selectWorkspaceOwner: Bool = false
+        var showAlert: AlertMessage? = nil
         var selectedWorkspace: WorkspaceThumbnailModel? {
             workspaceList.first{ $0.workspaceId == selectedWorkspaceId }
         }
@@ -44,12 +47,14 @@ final class WorkspaceSideMenuViewModel: ViewModel {
     @Published var state: WorkspaceSideMenuState
     private let appState: AppState
     private let selectWorkspaceUseCase: SelectWorkspaceUseCase
+    private let outWorkspaceUsecase: OutWorkspaceUsecase
     private var cancellableBag = Set<AnyCancellable>()
     
-    init(appState: AppState, selectWorkspaceUseCase: SelectWorkspaceUseCase) {
-        self.state = .init(workspaceList: appState.workspaceList.map{.init(workspace: $0)}, workspaceIsEmpty: appState.workspaceList.isEmpty)
+    init(appState: AppState, selectWorkspaceUseCase: SelectWorkspaceUseCase, outWorkspaceUsecase: OutWorkspaceUsecase) {
+        self.state = .init(workspaceList: appState.workspaceList.map{.init(workspace: $0)}, workspaceIsEmpty: appState.workspaceList.isEmpty, workspaceImageList: appState.workspaceList.map({.init(url: $0.thumbnailPath)}))
         self.appState = appState
         self.selectWorkspaceUseCase = selectWorkspaceUseCase
+        self.outWorkspaceUsecase = outWorkspaceUsecase
         appStateBind()
     }
     
@@ -76,6 +81,8 @@ final class WorkspaceSideMenuViewModel: ViewModel {
         switch input {
         case .tapWorkspace(let workspaceThumbnailModel):
             selectWorkspace(workspaceId: workspaceThumbnailModel.workspaceId)
+        case .outWorkspace(let workspaceId):
+            outWorkspace(workspaceId: workspaceId)
         }
     }
     
@@ -83,6 +90,20 @@ final class WorkspaceSideMenuViewModel: ViewModel {
         Task {
             do {
                 try await selectWorkspaceUseCase.excute(workspaceId: workspaceId)
+            }
+        }
+    }
+    
+    private func outWorkspace(workspaceId: Int) {
+        Task {
+            do {
+                try await outWorkspaceUsecase.excute(workspaceId: workspaceId)
+            } catch OutWorkspaceError.hasChannelAdmin {
+                DispatchQueue.main.async {
+                    self.state.showAlert = .init(title: "워크스페이스 나가기", description: "회원님은 해당 워크스페이스의 채널의 관리자입니다. 채널의 관리자를 다른 멤버로 변경 한 후 나갈 수 있습니다.", type: .ok(title: "확인"), action: {
+                        self.state.showAlert = nil
+                    })
+                }
             }
         }
     }

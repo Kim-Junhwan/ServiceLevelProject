@@ -11,6 +11,7 @@ struct WorkspaceActionSheetView: View {
     let isAdmin: Bool
     let workspaceModel: WorkspaceThumbnailModel
     @EnvironmentObject var state: WorkspaceListViewState
+    @EnvironmentObject var viewModel: WorkspaceSideMenuViewModel
     
     var body: some View {
         if isAdmin {
@@ -36,7 +37,8 @@ struct WorkspaceActionSheetView: View {
         } else {
             Button("워크스페이스 나가기") {
                 state.showAlert = .init(title: "워크스페이스 나가기", description: "정말 이 워크스페이스를 떠나시겠습니까?", type: .cancelOk(cancelTitle: "취소", okTitle: "나가기"), action: {
-                    
+                    state.showAlert = nil
+                    viewModel.trigger(.outWorkspace(workspaceId: workspaceModel.workspaceId))
                 })
             }
         }
