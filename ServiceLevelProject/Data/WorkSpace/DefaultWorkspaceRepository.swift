@@ -58,4 +58,9 @@ final class DefaultWorkspaceRepository: WorkspaceRepository {
         let value = try await SSAC.accessTokenRequest(WorkspaceRouter.inviteMember(requestDTO, workspaceId: query.workspaceId)).slpSerializingDecodable(UserThumbnailResponseDTO.self, responseErrorMapper: InviteMemberError()).value
         return value.toDomain()
     }
+    
+    func outWorkspace(_ workspaceId: Int) async throws -> [WorkSpaceThumbnail] {
+        let value = try await SSAC.accessTokenRequest(WorkspaceRouter.outWorkspace(workspaceId: workspaceId)).slpSerializingDecodable([WorkspaceListResponseDTO].self, responseErrorMapper: OutWorkspaceErrorMapper()).value
+        return try value.map{.init(id: $0.workspaceId, name: $0.name, description: $0.description, thumbnailPath: $0.thumbnail, ownerId: $0.ownerId, createAt: try $0.createdAt.toDate())}
+    }
 }
