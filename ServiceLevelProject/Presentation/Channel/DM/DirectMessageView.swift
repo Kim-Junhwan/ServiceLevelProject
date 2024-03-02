@@ -19,7 +19,10 @@ struct DirectMessageView: View {
             ScrollView(.horizontal) {
                 LazyHGrid(rows: [GridItem(.fixed(100))], content: {
                     ForEach(memberList) { member in
-                        memberProfileView(userThumbnail: member)
+                        DMUserProfileView(userThumbnail: member) {
+                            selectUser = member
+                            showDMChatting = true
+                        }
                     }
                 })
             }
@@ -34,9 +37,13 @@ struct DirectMessageView: View {
                 }
             }
             ForEach(dmList) { dm in
-                dMRoomView(dmRoom: dm)
-                    .listRowSeparator(.hidden)
-                    .listRowInsets(.init())
+                DMRoomView(dmRoom: dm) {
+                    selectUser = dm.user
+                    showDMChatting = true
+                }
+                .frame(maxWidth: .infinity)
+                .listRowSeparator(.hidden)
+                .listRowInsets(.init())
             }
             .padding(16)
         }
@@ -44,33 +51,26 @@ struct DirectMessageView: View {
         .listStyle(.plain)
         .listRowSeparator(.hidden)
     }
+}
+
+struct DMRoomView: View {
     
-    func memberProfileView(userThumbnail: UserThumbnailModel) -> some View {
-        Button(action: {
-            selectUser = userThumbnail
-            showDMChatting = true
-        }, label: {
-            VStack(alignment: .center, spacing: 4) {
-                FetchImageFromServerView(url: userThumbnail.profileImagePath) {
-                    Image(.noPhotoGreen)
-                }
-                .frame(width: 44, height: 44)
-                .clipShape(.rect(cornerRadius: 8))
-                Text(userThumbnail.nickname)
-                    .tint(.black)
-                    .font(CustomFont.body.font)
-            }
-        })
-        .frame(width: 76, height: 100)
+    let dmRoom: DMRoomItemModel
+    @StateObject var imageModel: FetchImageModel
+    let action: () -> Void
+    
+    init(dmRoom: DMRoomItemModel, action: @escaping () -> Void) {
+        self.dmRoom = dmRoom
+        self.action = action
+        self._imageModel = StateObject(wrappedValue: .init(url: dmRoom.user.profileImagePath))
     }
     
-    func dMRoomView(dmRoom: DMRoomItemModel) -> some View {
+    var body: some View {
         Button(action: {
-            selectUser = dmRoom.user
-            showDMChatting = true
+            action()
         }, label: {
             HStack {
-                FetchImageFromServerView(url: dmRoom.user.profileImagePath) {
+                FetchImageFromServerView(imageModel: imageModel) {
                     Image(.noPhotoGreen)
                         .resizable()
                 }
@@ -102,9 +102,38 @@ struct DirectMessageView: View {
                 }
             }
         })
-        .frame(maxWidth: .infinity)
+    }
+}
+
+struct DMUserProfileView: View {
+    
+    let userThumbnail: UserThumbnailModel
+    @StateObject var imageModel: FetchImageModel
+    let action: () -> Void
+    
+    init(userThumbnail: UserThumbnailModel, action: @escaping () -> Void) {
+        self.userThumbnail = userThumbnail
+        self.action = action
+        self._imageModel = StateObject(wrappedValue: .init(url: userThumbnail.profileImagePath))
     }
     
+    var body: some View {
+        Button(action: {
+            action()
+        }, label: {
+            VStack(alignment: .center, spacing: 4) {
+                FetchImageFromServerView(imageModel: imageModel) {
+                    Image(.noPhotoGreen)
+                }
+                .frame(width: 44, height: 44)
+                .clipShape(.rect(cornerRadius: 8))
+                Text(userThumbnail.nickname)
+                    .tint(.black)
+                    .font(CustomFont.body.font)
+            }
+        })
+        .frame(width: 76, height: 100)
+    }
 }
 
 #Preview {
