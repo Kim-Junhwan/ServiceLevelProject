@@ -10,6 +10,7 @@ import SwiftUI
 struct CoinShopView: View {
     
     @StateObject var viewModel: CoinShopViewModel = SharedAssembler.shared.resolve(CoinShopViewModel.self)
+    @State var showPatmentWebView: Bool = false
     
     var body: some View {
         VStack(spacing: 16) {
@@ -34,6 +35,7 @@ struct CoinShopView: View {
                 ForEach(viewModel.state.coinList) { coin in
                     CoinCell(coin: coin) {
                         viewModel.trigger(.tapBuyButton(coin))
+                        showPatmentWebView = true
                     }
                 }
             }
@@ -47,6 +49,10 @@ struct CoinShopView: View {
         .onAppear {
             viewModel.trigger(.appearView)
         }
+        .navigationDestination(isPresented: $showPatmentWebView) {
+            PaymentWebView(viewModel: viewModel)
+        }
+        .singleToastView(toast: $viewModel.state.toast)
     }
     
     
