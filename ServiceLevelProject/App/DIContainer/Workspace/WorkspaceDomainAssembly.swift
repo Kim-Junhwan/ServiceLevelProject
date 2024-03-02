@@ -26,5 +26,9 @@ final class WorkspaceDomainAssembly: Assembly {
         container.register(InviteMemberUsecase.self) { _ in
             return DefaultInviteMemberUsecase(appState: appState, workspaceRepository: workspaceRepository)
         }
+        container.register(OutWorkspaceUsecase.self) { resolver in
+            let channelRepository = resolver.resolve(ChannelRepository.self)!
+            return DefaultOutWorkspaceUsecase(workspaceRepository: workspaceRepository, channelRepository: channelRepository, appState: appState)
+        }
     }
 }
