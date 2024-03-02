@@ -30,7 +30,6 @@ final class DefaultChannelRepository: ChannelRepository {
         return try value.toDomain()
     }
     
-    
     func postChatting(_ query: PostChattingQuery) async throws -> ChannelChatting {
         let value = try await SSAC.upload(multipartFormData: { multipartFormData in
             if let content = query.content {
@@ -48,4 +47,11 @@ final class DefaultChannelRepository: ChannelRepository {
         let value = try await SSAC.accessTokenRequest(ChannelRouter.fetchChannelChattingList(workspaceId: query.workspaceId, channelName: query.channelName, cursorDate: query.cursorDate)).slpSerializingDecodable([ChannelChattingResponseDTO].self, responseErrorMapper: MissingDataErrorMapper()).value
         return try value.map{ try $0.toDomain() }
     }
+    
+    func fetchNotReadChanntChattingCount(_ query: FetchNotReadChannelChattingCountQuery) async throws -> Int {
+        let value = try await SSAC.accessTokenRequest(ChannelRouter.fetchNotReadChattingCount(workspaceId: query.workspaceId, channelName: query.channelName, cursorDate: query.cursorDate)).slpSerializingDecodable(NotReadChattingCountResponseDTO.self, responseErrorMapper: MissingDataErrorMapper()).value
+        
+        return value.count
+    }
+    
 }
