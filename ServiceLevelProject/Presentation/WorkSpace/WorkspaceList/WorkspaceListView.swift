@@ -71,6 +71,7 @@ struct WorkspaceListView: View {
                             .environmentObject(state)
                     })
                     .customAlert(alertMessage: $state.showAlert)
+                    .customAlert(alertMessage: $viewModel.state.showAlert)
                 }
                 Spacer()
             }
