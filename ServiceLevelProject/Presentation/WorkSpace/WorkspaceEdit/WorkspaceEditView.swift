@@ -47,9 +47,12 @@ struct WorkspaceEditView: View {
                     })
                 }
             }
-//            .onReceive(viewModel.$state, perform: { state  in
-//                isPresenting = !state.successEditWorkspace
-//            })
+            .onChange(of: viewModel.state.successEditWorkspace) { value in
+                if value {
+                    state.showEditWorkspace = nil
+                }
+                
+            }
         }
     }
 }
