@@ -14,4 +14,5 @@ protocol WorkspaceRepository {
     func fetchWorkspaceMembers(_ query: FetchWorkspaceMembersQuery) async throws -> [UserThumbnail]
     func fetchDetailWorkspace(_ query: FetchDetailWorkspaceInfoQuery) async throws -> WorkspaceDetailInfo
     func inviteMember(_ query: InviteMemberQuery) async throws -> UserThumbnail
+    func outWorkspace(_ workspaceId: Int) async throws -> [WorkSpaceThumbnail]
 }
