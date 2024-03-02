@@ -9,9 +9,22 @@ import SwiftUI
 import KakaoSDKCommon
 import KakaoSDKAuth
 import Swinject
+import iamport_ios
+
+class AppDelegate: NSObject, UIApplicationDelegate {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+        return true
+    }
+    
+    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+        Iamport.shared.receivedURL(url)
+        return true
+    }
+}
 
 @main
 struct ServiceLevelProjectApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
     init() {
         let kakaokAPIKey = Bundle.main.infoDictionary?["KAKAO_NATIVE_APP_KEY"] ?? ""
