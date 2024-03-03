@@ -4,9 +4,9 @@
 
 새싹(Sesac)의 마지막 프로젝트 Service Level Project인 새싹톡입니다. 협업툴인 잔디앱을 기반으로 제작된 프로젝트 입니다.
 
-## 주요 화면 
+## 주요 화면 및 기능
 
-### 인증
+### 로그인 및 회원가입
 <img src = "https://github.com/Kim-Junhwan/SesacTalk/assets/58679737/92fc0fe8-409c-42b2-bd13-888d115c0c92" width="200" height="433">
 <img src = "https://github.com/Kim-Junhwan/SesacTalk/assets/58679737/6190e9c1-461e-4ee5-a780-419262d406f7" width="200" height="433">
 
@@ -18,9 +18,10 @@
 <img src = "https://github.com/Kim-Junhwan/SesacTalk/assets/58679737/84f7d66b-203c-4b33-885e-0e576652ea3b" width="200" height="400">
 <img src = "https://github.com/Kim-Junhwan/SesacTalk/assets/58679737/ebe12ea2-286e-48b6-9f92-c70c8a580093" width="200" height="400">
 
-### 회원정보 관리
+### 회원정보 관리 및 결제
 <img src = "https://github.com/Kim-Junhwan/SesacTalk/assets/58679737/d810bc25-fef6-45e7-8880-c28517f34994" width="200" height="433">
 <img src = "https://github.com/Kim-Junhwan/SesacTalk/assets/58679737/99f3f276-8b5c-447f-800e-e0622544f5f6" width="200" height="433">
+
 
 ## 개발 환경 및 기술 스택
 
@@ -44,4 +45,37 @@
 
 ![SLPArch](https://github.com/Kim-Junhwan/SesacTalk/assets/58679737/e3613e54-c527-4d17-a5d0-436708a68282)
 
-전체적으로 유지되어야 하는 상태값(로그인 상태, 유저 프로필 등등), 또는 데이터를 관리하기 위해 AppState라는 객체를 두어 이를 관리. 
+전체적으로 유지되어야 하는 상태값(로그인 상태, 유저 프로필 등등), 또는 데이터를 관리하기 위해 AppState라는 객체를 두어 이를 관리. 많은 API를 사용하는 기능을 보다 수월하게 개발하기 위해, 이를 Usecase와 Repository로 추상화를 진행하여 Presentation계층과 Domain계층, Data계층을 나누었음.
+
+## 트러블 슈팅 및 도전
+
+### Alamofire의 Response Serializer을 Custom하여 응답값 핸들링
+
+로그인을 한 후 AccessToken을 재발급 받아야 할때, 기존에는 interceptor를 이용하여 이를 처리했지만 다음과 같이 statusCode가 같고 body의 errorCode로 에러를 판단 해야 할때, interceptor의 retry 메소드는 인자값으로 response의 값을 제공해 주지 않기 때문에 interceptor만으로 응답값을 처리 할 수 없었음. 
+
+|Status Code|에러 원인|에러 body값|
+|------|---|--|
+|400|알맞지 않은 서버 키 값|"errorCode": "1"|
+|400|옳바르지 않는 경로|"errorCode": "2"|
+|400|Access Token 시간 만료|"errorCode": "3"|
+
+이를 해결하기 위해 Alamofire가 어떤 방식으로 응답의 유효성을 검증하는지를 내부 코드를 뜯어 보아서 validate와 response함수에서 유효성을 검증하는 것을 알았고, 보다 상세한 유효성을 검증하기 위해 response를 커스텀 하는 방식으로 이 문제를 해결.
+
+```swift
+func serialize(request: URLRequest?, response: HTTPURLResponse?, data: Data?, error: Error?) throws -> T {
+        guard error == nil, let response else { throw error! }
+        guard let data, !data.isEmpty else {
+            return try responseEmpty(request: request, response: response)
+        }
+        if !acceptableStatusCode.contains(response.statusCode) {
+            let errorCode = try decoder.decode(SLPErrorModel.self, from: data).errorCode
+            try mappingError(errorCode: errorCode)
+        }
+        do {
+            return try decoder.decode(T.self, from: data)
+        } catch {
+            throw AFError.responseSerializationFailed(reason: .decodingFailed(error: error))
+        }
+    }
+```
+
