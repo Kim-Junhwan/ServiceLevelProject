@@ -40,7 +40,7 @@
 |------|---|
 |최소 버전|16.0|
 |DB|Realm|
-|UI 프레임워크|SwiftUI|
+|UI 프레임워크|SwiftUI, UIKit|
 
 ## 사용 라이브러리
 
