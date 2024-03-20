@@ -48,7 +48,8 @@ final class SocketIOManager: NSObject {
     }
     
     private func createSocket(type: SocketType, id: Int) {
-        guard let baseUrl = URL(string: "http://slp.sesac.kr:27888") else { return }
+        guard let baseUrlStr = Bundle.main.infoDictionary?["SESAC_BASE_URL"] as? String else { return }
+        guard let baseUrl = URL(string: baseUrlStr) else { return }
         guard let SLPAPIKey = Bundle.main.infoDictionary?["SESAC_APP_KEY"] as? String else { return }
         self.manager = SocketManager(socketURL: baseUrl, config: [.log(false), .extraHeaders(["SesacKey":SLPAPIKey, "Authorization":Token.accessToken!])])
         socket = manager?.socket(forNamespace: "/ws-\(type.rawValue)-\(id)")
