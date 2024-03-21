@@ -23,6 +23,11 @@ final class ChatDomainAssembly: Assembly {
             let chattingRepository = resolver.resolve(ChattingRepository.self)!
             return DefaultSendChattingUseCase(channelRepository: channelRepository, chattingRepository: chattingRepository)
         }
+        
+        container.register(FetchEnterChannelChatListUsecase.self) { resolver in
+            let chattingRepository = resolver.resolve(ChattingRepository.self)!
+            return DefaultFetchEnterChannelChatListUsecase(chattingRepository: chattingRepository, channelRepository: channelRepository)
+        }
     }
     
 }

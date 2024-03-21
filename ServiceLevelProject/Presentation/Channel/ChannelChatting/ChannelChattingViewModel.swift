@@ -25,40 +25,21 @@ final class ChannelChattingViewModel: ViewModel, ObservableObject {
     @Published var imageModel: MultipleImagePickerModel = .init(maxSize: 44, imageData: [])
     @Published var state: ChannelChattingState = .init()
     private var channelThumbnail: ChannelListItemModel
-    let appState: AppState
-    let channelRepository: ChannelRepository
-    let chattingRepository: ChattingRepository
-    let sendChannelChattingUsecase: SendChattingUseCase
-    private var socketManager: SocketIOManager?
+    private let appState: AppState
+    private let channelRepository: ChannelRepository
+    private let chattingRepository: ChattingRepository
+    private let sendChannelChattingUsecase: SendChattingUseCase
+    private let fetchChannelChatList: FetchEnterChannelChatListUsecase
     private var cancellableBag = Set<AnyCancellable>()
+    private var socketManager: ChannelSocketIOManager?
     
-    init(appState: AppState, channelThumbnail: ChannelListItemModel, channelRepository: ChannelRepository, sendChannelChattingUsecase: SendChattingUseCase, chattingRepository: ChattingRepository) {
+    init(appState: AppState, channelThumbnail: ChannelListItemModel, channelRepository: ChannelRepository, sendChannelChattingUsecase: SendChattingUseCase, chattingRepository: ChattingRepository, fetchChannelChatList: FetchEnterChannelChatListUsecase) {
         self.appState = appState
         self.channelThumbnail = channelThumbnail
         self.channelRepository = channelRepository
         self.sendChannelChattingUsecase = sendChannelChattingUsecase
         self.chattingRepository = chattingRepository
-        self.socketManager = SocketIOManager(id: channelThumbnail.id, type: .channel)
-        socketBinding()
-    }
-    
-    private func socketBinding() {
-        socketManager?.channelMessageSubject.sink { chatting in
-            if chatting.user.id == self.appState.userData.id {
-                return
-            }
-            Task {
-                do {
-                    try await self.chattingRepository.saveChannelChatting([chatting])
-                    DispatchQueue.main.async {
-                        self.state.chattingList.append(.init(chatId: chatting.chatId, content: chatting.content, createdAt: chatting.createdAt, files: chatting.files, user: .init(userThumnail: chatting.user)))
-                        self.state.successSend.toggle()
-                    }
-                }
-                
-            }
-        }
-        .store(in: &cancellableBag)
+        self.fetchChannelChatList = fetchChannelChatList
     }
     
     func trigger(_ input: ChannelChattingInput) {
@@ -72,32 +53,38 @@ final class ChannelChattingViewModel: ViewModel, ObservableObject {
         }
     }
     
+    private func socketInital() {
+        socketManager = ChannelSocketIOManager(id: channelThumbnail.id)
+        socketManager?.connectSocket()
+        socketManager?.chattingSubject
+            .receive(on: RunLoop.main)
+            .sink(receiveCompletion: { error in
+                print(error)
+            }, receiveValue: { chattingList in
+                self.applyChatting(chattingList: [chattingList])
+            })
+            .store(in: &cancellableBag)
+    }
+    
     private func fetchChannelInfo() {
         Task {
-            let dbChattingList = await chattingRepository.fetchChannelChatting(.init(channelId: channelThumbnail.id, cursorDate: Date()))
-            DispatchQueue.main.async {
-                let presentationModel: [ChattingMessageModel] = dbChattingList.map { .init(chatId: $0.chatId, content: $0.content, createdAt: $0.createdAt, files: $0.files, user: .init(userThumnail: $0.user)) }
-                self.state.chattingList.append(contentsOf: presentationModel)
-            }
             do {
-                let lastDate = dbChattingList.sorted(by: { $0.createdAt < $1.createdAt }).last?.createdAt ?? Date()
-                print(dbChattingList)
-                print(lastDate)
-                let workspaceId = channelThumbnail.workspaceId
-                let fetchChattingList = try await channelRepository.fetchChannelChatting(.init(workspaceId: workspaceId, channelName: channelThumbnail.name, cursorDate: lastDate))
-                let detailChannelInfo = try await channelRepository.fetchDetailChannel(.init(channelName: channelThumbnail.name, workspaceId: workspaceId))
-                try await chattingRepository.saveChannelChatting(fetchChattingList)
+                let chattingList = try await self.fetchChannelChatList.excute(channelItem: self.channelThumbnail)
                 DispatchQueue.main.async {
-                    self.state.detailChannelInfo = .init(detailChannelInfo)
-                    self.state.chattingList.append(contentsOf: fetchChattingList.map{ .init(chatId: $0.chatId, content: $0.content, createdAt: $0.createdAt, files: $0.files, user: .init(userThumnail: $0.user)) })
-                    self.state.successSend.toggle()
+                    self.state.detailChannelInfo = .init(chattingList.1)
                 }
+                socketInital()
+                applyChatting(chattingList: chattingList.0)
             } catch {
                 print(error)
             }
-            self.socketManager?.connectSocket()
         }
+    }
     
+    private func applyChatting(chattingList: [ChannelChatting]) {
+        DispatchQueue.main.async {
+            self.state.chattingList = chattingList.map { .init(chatId: $0.chatId, content: $0.content, createdAt: $0.createdAt, files: $0.files, user: .init(userThumnail: $0.user)) }
+        }
     }
     
     private func sendChatting() {
@@ -110,11 +97,8 @@ final class ChannelChattingViewModel: ViewModel, ObservableObject {
             await imageModel.removeAll()
             do {
                 let postChatting = try await sendChannelChattingUsecase.excute(channelName: channelInfo.name, workspaceId: workspaceId, content: chattingBarText, files: imageData)
-                self.socketManager?.sendMessage(channelChatting: .init(channelId: postChatting.channelId, channelName: postChatting.channelName, chatId: postChatting.chatId, content: postChatting.content, createdAt: postChatting.createdAt.description, files: postChatting.files, user: .init(userId: postChatting.user.id, email: postChatting.user.email, nickname: postChatting.user.nickname, profileImage: postChatting.user.profileImagePath)))
-                DispatchQueue.main.async {
-                    self.state.chattingList.append(.init(chatId: postChatting.chatId, content: postChatting.content, createdAt: postChatting.createdAt, files: postChatting.files, user: .init(userThumnail: postChatting.user)))
-                    self.state.successSend.toggle()
-                }
+                socketManager?.emit(chatting: postChatting)
+                applyChatting(chattingList: [postChatting])
             }
         }
     }

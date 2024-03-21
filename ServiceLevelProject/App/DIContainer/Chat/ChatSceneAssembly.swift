@@ -30,7 +30,8 @@ class ChatSceneAssembly: Assembly {
             let channelRepository = resolver.resolve(ChannelRepository.self)!
             let sendChattingUsecase = resolver.resolve(SendChattingUseCase.self)!
             let chattingRepository = resolver.resolve(ChattingRepository.self)!
-            return ChannelChattingViewModel(appState: appState, channelThumbnail: channelThumbnail, channelRepository: channelRepository, sendChannelChattingUsecase: sendChattingUsecase, chattingRepository: chattingRepository)
+            let fetchChannelUsecase = resolver.resolve(FetchEnterChannelChatListUsecase.self)!
+            return ChannelChattingViewModel(appState: appState, channelThumbnail: channelThumbnail, channelRepository: channelRepository, sendChannelChattingUsecase: sendChattingUsecase, chattingRepository: chattingRepository, fetchChannelChatList: fetchChannelUsecase)
         }
     }
 }
