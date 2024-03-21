@@ -7,10 +7,9 @@
 
 import Foundation
 
-@MainActor
 protocol ChattingRepository {
-    func saveChannelChatting(_ channelChatting: [ChannelChatting]) throws
-    func fetchChannelChatting(_ query: FetchChannelChattingQuery) -> [ChannelChatting]
-    func saveDMChatting(_ dmChatting: DMChattingList) throws
-    func fetchDMChatting(_ query: FetchDMChattingQuery) -> [DMChatting]
+    func saveChannelChatting(_ channelChatting: [ChannelChatting]) async throws
+    func fetchChannelChatting(_ query: FetchChannelChattingQuery) async -> [ChannelChatting] 
+    func saveDMChatting(_ dmChatting: DMChattingList) async throws
+    func fetchDMChatting(_ query: FetchDMChattingQuery) async -> [DMChatting]
 }

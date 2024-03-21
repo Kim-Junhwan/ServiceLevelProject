@@ -30,6 +30,4 @@ extension DefaultFetchEnterDMChatListUsecase: FetchEnterDMChatListUsecase {
         fetchChattingList.append(contentsOf: fetchChat.chats)
         return .init(workspaceId: fetchChat.workspaceId, roomId: fetchChat.roomId, chats: fetchChattingList)
     }
-    
-    
 }
