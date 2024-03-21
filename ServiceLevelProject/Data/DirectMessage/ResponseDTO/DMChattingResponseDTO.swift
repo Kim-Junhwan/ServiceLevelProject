@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct DMChattingResponseDTO: Decodable {
+struct DMChattingResponseDTO: Codable {
     let dmId: Int
     let roomId: Int
     let content: String?
