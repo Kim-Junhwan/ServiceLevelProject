@@ -28,7 +28,7 @@ extension DefaultFetchDMRoomListUsecase: FetchDMRoomListUsecase {
             for dm in fetchDMRoomList {
                 taskGroup.addTask {
                     let chattingList = try? await self.dmRepository.fetchDMChattingList(.init(audienceId: dm.user.id, workspaceId: workspaceId, cursorDate: nil))
-                    var fetchChattingList = await self.chattingRepository.fetchDMChatting(.init(workspaceId: workspaceId, audienceId: dm.user.id))
+                    let fetchChattingList = await self.chattingRepository.fetchDMChatting(.init(workspaceId: workspaceId, audienceId: dm.user.id))
                     let lastChattingDate = fetchChattingList.last?.createdAt
                     let notReadCount = try? await self.dmRepository.fetchNotReadChattingCount(.init(roomId: dm.roomId, workspaceId: workspaceId, cursorDate: lastChattingDate))
                     return (chattingList?.chats.sorted { $0.createdAt > $1.createdAt }.first?.content, notReadCount ?? 0)

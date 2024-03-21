@@ -63,17 +63,10 @@ final class DMChattingViewModel: ViewModel, ObservableObject {
     }
     
     private func applyChatting(chattingList: [DMChatting], roomId: Int) {
-        guard let workspaceId = appState.currentWorkspace?.id else { return }
-        Task {
-            do {
-                try await sendDMChattingUsecase.saveChatting(roomId: roomId, workspaceId: workspaceId, chatting: chattingList)
-                DispatchQueue.main.async {
-                    self.state.chattingList = chattingList.map { .init(chatId: $0.dmId, content: $0.content, createdAt: $0.createdAt, files: $0.files, user: .init(userThumnail: $0.user)) }
-                }
-            } catch {
-                print(error)
-            }
+        DispatchQueue.main.async {
+            self.state.chattingList = chattingList.map { .init(chatId: $0.dmId, content: $0.content, createdAt: $0.createdAt, files: $0.files, user: .init(userThumnail: $0.user)) }
         }
+        
     }
     
     private func fetchDM() {

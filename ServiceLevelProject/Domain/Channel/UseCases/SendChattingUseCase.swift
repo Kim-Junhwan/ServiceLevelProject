@@ -9,7 +9,6 @@ import Foundation
 
 protocol SendChattingUseCase {
     func excute(channelName: String, workspaceId: Int, content: String, files: [Data]) async throws -> ChannelChatting
-    func saveChatting(chattingList: [ChannelChatting]) async throws
 }
 
 final class DefaultSendChattingUseCase {
@@ -27,9 +26,5 @@ extension DefaultSendChattingUseCase: SendChattingUseCase {
         let postChat = try await channelRepository.postChatting(.init(name: channelName, workspaceId: workspaceId, content: content, files: files))
         try await chattingRepository.saveChannelChatting([postChat])
         return postChat
-    }
-    
-    func saveChatting(chattingList: [ChannelChatting]) async throws {
-        try await chattingRepository.saveChannelChatting(chattingList)
     }
 }
