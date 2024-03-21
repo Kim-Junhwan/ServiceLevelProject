@@ -9,19 +9,18 @@ import SocketIO
 import Foundation
 import Combine
 
-final class SocketIOManager: NSObject {
-    
-    enum SocketType: String {
-        case channel
-        case dm
-    }
-    
+enum SocketType: String {
+    case channel
+    case dm
+}
+
+class SocketIOManager<T: Codable>: NSObject {
     private var manager: SocketManager?
     var socket: SocketIOClient?
-    var channelMessageSubject = PassthroughSubject<ChannelChatting, Never>()
-    var dmMessageSubject = PassthroughSubject<DMChatting, Never>()
+    var socketType: SocketType
     
     init(id: Int, type: SocketType) {
+        self.socketType = type
         super.init()
         createSocket(type: type, id: id)
         socket?.on(clientEvent: .connect) { data, ack in
@@ -31,21 +30,15 @@ final class SocketIOManager: NSObject {
             do {
                 let originData = data[0]
                 let dat = try JSONSerialization.data(withJSONObject: originData)
-                print(String(decoding: dat, as: UTF8.self))
-                if type == .channel {
-                    let res = try JSONDecoder().decode(ChannelChattingResponseDTO.self, from: dat)
-                    self.channelMessageSubject.send(try res.toDomain())
-                } else {
-                    let res = try JSONDecoder().decode(DMChattingResponseDTO.self, from: dat)
-                    let dm = try res.toDomain()
-                    self.dmMessageSubject.send(dm)
-                }
-                
+                let res = try JSONDecoder().decode(T.self, from: dat)
+                self.messageClosure(decodeData: res)
             } catch {
                 print(error)
             }
         }
     }
+    
+    func messageClosure(decodeData: T) {}
     
     private func createSocket(type: SocketType, id: Int) {
         guard let baseUrlStr = Bundle.main.infoDictionary?["SESAC_BASE_URL"] as? String else { return }
@@ -65,11 +58,10 @@ final class SocketIOManager: NSObject {
         manager = nil
     }
     
-    func sendMessage(channelChatting: ChannelChattingResponseDTO) {
-        guard let data = try? JSONEncoder().encode(channelChatting) else { return }
+    func sendMessage(chatting: T) {
+        guard let data = try? JSONEncoder().encode(chatting) else { return }
         if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
-            socket?.emit("channel", json)
+            socket?.emit(socketType.rawValue, json)
         }
-        
     }
 }
