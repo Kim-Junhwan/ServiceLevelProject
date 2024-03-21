@@ -9,5 +9,4 @@ import Foundation
 
 struct FetchChannelChattingQuery {
     let channelId: Int
-    let cursorDate: Date
 }

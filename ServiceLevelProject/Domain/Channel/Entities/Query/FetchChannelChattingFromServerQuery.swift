@@ -10,5 +10,5 @@ import Foundation
 struct FetchChannelChattingFromServerQuery {
     let workspaceId: Int
     let channelName: String
-    let cursorDate: Date
+    let cursorDate: Date?
 }

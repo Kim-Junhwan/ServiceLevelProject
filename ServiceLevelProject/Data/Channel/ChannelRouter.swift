@@ -14,7 +14,7 @@ enum ChannelRouter: URLRequestConvertible {
     case fetchWorkspaceChannel(workspaceId: Int)
     case fetchDetailChannelInfo(workspaceId: Int, channelName: String)
     case postChatting(workspaceId: Int, channelName: String)
-    case fetchChannelChattingList(workspaceId: Int, channelName: String, cursorDate: Date)
+    case fetchChannelChattingList(workspaceId: Int, channelName: String, cursorDate: Date?)
     case fetchNotReadChattingCount(workspaceId: Int, channelName: String, cursorDate: Date)
     
     var method: HTTPMethod {
@@ -63,7 +63,9 @@ enum ChannelRouter: URLRequestConvertible {
         request.method = method
         switch self {
         case .fetchChannelChattingList(_, _, let cursorDate):
-            request.url?.append(queryItems: [.init(name: "cursor_date", value: DateFormatter.defaultFormatter.string(from: cursorDate))])
+            if let cursorDate {
+                request.url?.append(queryItems: [.init(name: "cursor_date", value: DateFormatter.defaultFormatter.string(from: cursorDate))])
+            }
         case .fetchNotReadChattingCount(_, _, let cursorDate):
             request.url?.append(queryItems: [.init(name: "cursor_date", value: DateFormatter.defaultFormatter.string(from: cursorDate))])
         case .createChannel(_, let query):
