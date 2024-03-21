@@ -17,11 +17,10 @@ class DMSceneAssembly: Assembly {
             let fetchDMRoomUsecase = resolver.resolve(FetchDMRoomListUsecase.self)!
             return DMViewModel(appState: appState, dmRepository: dmRepository, fetchDMRoomListUsecase: fetchDMRoomUsecase)
         }
-        container.register(DMChattingViewModel.self) { resolver,  userInfo in
+        container.register(DMChattingViewModel.self) { resolver, userInfo in
             let sendUsecase = resolver.resolve(SendDMChattingUsecase.self)!
             let fetchChatUsecase = resolver.resolve(FetchEnterDMChatListUsecase.self)!
-            let chattingRepository = resolver.resolve(ChattingRepository.self)!
-            return DMChattingViewModel(appState: appState, fetchEnterDMChattingUsecase: fetchChatUsecase, sendDMChattingUsecase: sendUsecase, user: userInfo, chattingRepository: chattingRepository)
+            return DMChattingViewModel(appState: appState, fetchEnterDMChattingUsecase: fetchChatUsecase, sendDMChattingUsecase: sendUsecase, user: userInfo)
         }
     }
 }
