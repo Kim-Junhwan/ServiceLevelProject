@@ -57,7 +57,7 @@
 
 ## 아키텍처
 
-![SLPArch](https://github.com/Kim-Junhwan/SesacTalk/assets/58679737/e3613e54-c527-4d17-a5d0-436708a68282)
+![SLP 아키텍처](https://github.com/Kim-Junhwan/SesacTalk/assets/58679737/9ec2f8e4-68e0-4b3b-88f4-494032be83aa)
 
 전체적으로 유지되어야 하는 상태값(로그인 상태, 유저 프로필 등등), 또는 데이터를 관리하기 위해 AppState라는 객체를 두어 이를 관리. 많은 API를 사용하는 기능을 보다 수월하게 개발하기 위해, 이를 Usecase와 Repository로 추상화를 진행하여 Presentation계층과 Domain계층, Data계층을 나누었음.
 
