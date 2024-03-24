@@ -28,6 +28,7 @@
 <img src = "https://github.com/Kim-Junhwan/SesacTalk/assets/58679737/d810bc25-fef6-45e7-8880-c28517f34994" width="200" height="433">
 <img src = "https://github.com/Kim-Junhwan/SesacTalk/assets/58679737/99f3f276-8b5c-447f-800e-e0622544f5f6" width="200" height="433">
 <img src = "https://github.com/Kim-Junhwan/SesacTalk/assets/58679737/02e34df8-2003-4a1e-b51e-c6b5394e307f" width="200" height="433">
+<img src = "https://github.com/Kim-Junhwan/SesacTalk/assets/58679737/236d9828-cd13-40b7-b215-62bb8837e11a" width="200" height="333">
 
 - jwt 로그인, 소셜 로그인 및 회원가입
 - 워크스페이스 생성, 삭제, 편집
